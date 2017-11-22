@@ -56,22 +56,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <TextView
         android:id="@+id/date_today"
-        android:layout_width="105dp"
-        android:layout_height="55dp"
-        android:layout_marginEnd="76dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="20.11.2017"
-        android:inputType="date"
+        android:layout_width="145dp"
+        android:layout_height="41dp"
+        android:layout_marginEnd="134dp"
+        android:layout_marginStart="105dp"
+        android:layout_marginTop="4dp"
         android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
         app:layout_constraintBottom_toTopOf="@+id/daily_sum"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.425"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/HelloText"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/HelloText" />
 
 </android.support.constraint.ConstraintLayout>

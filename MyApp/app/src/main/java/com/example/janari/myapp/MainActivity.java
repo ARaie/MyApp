@@ -1,8 +1,6 @@
 package com.example.janari.myapp;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +25,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        TextView dateView = (TextView)findViewById(R.id.date_today);
+        setDate(dateView);
+
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("WrongViewCast")
+
             @Override
             public void onClick(View view) {
 
@@ -42,9 +48,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-   
-
+    public void setDate (TextView view){
+        String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        view.setText(date);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
