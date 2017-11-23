@@ -1,5 +1,6 @@
 package com.example.janari.myapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,15 +26,33 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Display the current date
         TextView dateView = (TextView)findViewById(R.id.date_today);
         setDate(dateView);
 
+        // Get calculated daily sum and displays it in Daily sum field
+        String value = getIntent().getStringExtra("key");
+        TextView textValue = (TextView) findViewById(R.id.daily_sum);
+        textValue.setText(value);
+
+        // This button exists because at the moment I don't have another option to communicate with other views
+        Button btn = (Button)findViewById(R.id.add_money);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, EnterIncomeAndExpenses.class));
+            }
+        });
+
+        // This is the "-" button, that calculates daily expenses
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
+                // Here I take data from fields and parse them to doubles and then use the
+                // MyWorker class to do the simple math and then display value back to Daily sum field.
                 TextView textValue = (TextView) findViewById(R.id.daily_sum);
                 String stringValue = textValue.getText().toString();
                 double originalValue = Double.parseDouble(stringValue);
@@ -48,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    // This method is for get current date
     public void setDate (TextView view){
         String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
         view.setText(date);
@@ -73,4 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
