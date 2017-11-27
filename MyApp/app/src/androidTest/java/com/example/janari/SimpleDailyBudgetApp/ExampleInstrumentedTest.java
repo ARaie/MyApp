@@ -1,4 +1,4 @@
-package com.example.janari.myapp;
+package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

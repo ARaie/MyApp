@@ -1,4 +1,4 @@
-package com.example.janari.myapp;
+package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
         TextView textValue = (TextView) findViewById(R.id.daily_sum);
         textValue.setText(value);
 
-        // This button exists because at the moment I don't have another option to communicate with other views
+        // TODO This button exists because at the moment I don't have another option to communicate with other views
         Button btn = (Button)findViewById(R.id.add_money);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, EnterIncomeAndExpenses.class));
+                startActivity(new Intent(MainActivity.this, EnterIncomeAndExpensesActivity.class));
             }
         });
 
@@ -52,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // Here I take data from fields and parse them to doubles and then use the
-                // MyWorker class to do the simple math and then display value back to Daily sum field.
+                // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
                 TextView textValue = (TextView) findViewById(R.id.daily_sum);
                 String stringValue = textValue.getText().toString();
                 double originalValue = Double.parseDouble(stringValue);
                 EditText expences = (EditText) findViewById(R.id.expences);
                 String stringValue2 = expences.getText().toString();
                 double expencesValue = Double.parseDouble(stringValue2);
-                double newValue = MyWorker.calculateSum(originalValue, expencesValue);
+                double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
                 textValue.setText(Double.toString(newValue));
 
                 Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)

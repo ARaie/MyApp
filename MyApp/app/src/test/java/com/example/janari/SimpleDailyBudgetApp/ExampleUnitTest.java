@@ -1,4 +1,4 @@
-package com.example.janari.myapp;
+package com.example.janari.SimpleDailyBudgetApp;
 
 import org.junit.Test;
 
