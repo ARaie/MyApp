@@ -14,7 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.content.Intent;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
 
 public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
@@ -28,6 +32,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_enter_income_and_expenses);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         // TODO majority of picking date code should move to CalendarAcrivity class
         final EditText startDate = (EditText)findViewById(R.id.start_date);
@@ -47,8 +52,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // set day of month , month and year value in the edit text
-                                startDate.setText(dayOfMonth + "/"
-                                        + (monthOfYear + 1) + "/" + year);
+                                startDate.setText(dayOfMonth + "."
+                                        + (monthOfYear + 1) + "." + year);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -73,8 +78,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // set day of month , month and year value in the edit text
-                                endDate.setText(dayOfMonth + "/"
-                                        + (monthOfYear + 1) + "/" + year);
+                                endDate.setText(dayOfMonth + "."
+                                        + (monthOfYear + 1) + "." + year);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -98,7 +103,14 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 String stringExpences = fixedExpenses.getText().toString();
                 double fixedExpensesValue = Double.parseDouble(stringExpences);
 
-                double value = (incomeValue - fixedExpensesValue) / 30;
+                // Get dates from EditText fields and use Daybetween() method to set days for value calculation process
+                EditText start = (EditText) findViewById(R.id.start_date);
+                String stringStart = start.getText().toString();
+                EditText end = (EditText) findViewById(R.id.end_date);
+                String stringEnd= end.getText().toString();
+
+                // TODO I don't know if it is better when period 1.11-30.11 makes 30days or period 1.11-1.12. (How to count days.)
+                double value = (incomeValue - fixedExpensesValue) /Daybetween(stringStart, stringEnd, "dd.MM.yyyy");
                 double rounded = Math.round(value);
                 String calculated = String.valueOf(rounded);
 
@@ -109,7 +121,18 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
             }
         });
-        
-    }
 
+    }
+    public double Daybetween(String date1,String date2,String pattern)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        Date Date1 = null,Date2 = null;
+        try {
+            Date1 = sdf.parse(date1);
+            Date2 = sdf.parse(date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return (double) (Date2.getTime() - Date1.getTime())/(24*60*60*1000);
+    }
 }

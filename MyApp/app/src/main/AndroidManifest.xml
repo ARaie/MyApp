@@ -22,8 +22,8 @@
         <activity
             android:name="com.example.janari.SimpleDailyBudgetApp.EnterIncomeAndExpensesActivity"
             android:label="@string/title_activity_enter_income_and_expenses"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.example.janari.SimpleDailyBudgetApp.CalendarActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
