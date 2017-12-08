@@ -1,13 +1,13 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,178 +15,120 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText Email, Password, Name ;
-    Button Register;
-    String NameHolder, EmailHolder, PasswordHolder;
-    Boolean EditTextEmptyHolder;
-    SQLiteDatabase sqLiteDatabaseObj;
-    String SQLiteDataBaseQueryHolder ;
-    SQLiteHelper sqLiteHelper;
-    Cursor cursor;
-    String F_Result = "Not_Found";
+    DatabaseHelper myDb;
+    EditText Name, Email, Password, ID;
+    Button btnAddData, nextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        myDb = new DatabaseHelper(this);
 
-        Register = (Button)findViewById(R.id.buttonRegister);
+        Name = (EditText)findViewById(R.id.editText_name);
+        Email = (EditText)findViewById(R.id.editText_surname);
+        Password = (EditText)findViewById(R.id.editText_Marks);
+        ID = (EditText)findViewById(R.id.editText_id);
+        btnAddData = (Button)findViewById(R.id.button_add);
 
-        Email = (EditText)findViewById(R.id.editEmail);
-        Password = (EditText)findViewById(R.id.editPassword);
-        Name = (EditText)findViewById(R.id.editName);
+        AddData();
 
-        sqLiteHelper = new SQLiteHelper(this);
+        nextView = (Button) findViewById(R.id.next_view);
+        nextView.setOnClickListener(new View.OnClickListener() {
 
-        // Adding click listener to register button.
-        Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Creating SQLite database if dose n't exists
-                SQLiteDataBaseBuild();
-
-                // Creating SQLite table if dose n't exists.
-                SQLiteTableBuild();
-
-                // Checking EditText is empty or Not.
-                CheckEditTextStatus();
-
-                // Method to check Email is already exists or not.
-                CheckingEmailAlreadyExistsOrNot();
-
-                // Empty EditText After done inserting process.
-                EmptyEditTextAfterDataInsert();
-
+                Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                startActivity(intent);
 
             }
         });
+    }
+
+
+    public  void AddData() {
+        btnAddData.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean isInserted = myDb.insertData(Name.getText().toString(),
+                                Email.getText().toString(),
+                                Password.getText().toString() );
+                        if(isInserted == true)
+                            Toast.makeText(RegisterActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
+
+                        else
+                            Toast.makeText(RegisterActivity.this,"Data not Inserted",Toast.LENGTH_LONG).show();
+                    }
+
+                }
+
+        );
 
     }
 
-    // SQLite database build method.
-    public void SQLiteDataBaseBuild(){
+   /* public void DeleteData() {
+        btnDelete.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Integer deletedRows = myDb.deleteData(editTextId.getText().toString());
+                        if(deletedRows > 0)
+                            Toast.makeText(MainActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(MainActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+    }
+    public void UpdateData() {
+        btnviewUpdate.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean isUpdate = myDb.updateData(editTextId.getText().toString(),
+                                editName.getText().toString(),
+                                editSurname.getText().toString(),editMarks.getText().toString());
+                        if(isUpdate == true)
+                            Toast.makeText(MainActivity.this,"Data Update",Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(MainActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+    }
+*/
 
-        sqLiteDatabaseObj = openOrCreateDatabase(SQLiteHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
-
+    public void showMessage(String title,String Message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 
-    // SQLite table build method.
-    public void SQLiteTableBuild() {
 
-        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + " PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table_Column_1_Name + " VARCHAR, " + SQLiteHelper.Table_Column_2_Email + " VARCHAR, " + SQLiteHelper.Table_Column_3_Password + " VARCHAR);");
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    // Insert data into SQLite database method.
-    public void InsertDataIntoSQLiteDatabase(){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        // If editText is not empty then this block will executed.
-        if(EditTextEmptyHolder == true)
-        {
-
-            // SQLite query to insert data into table.
-            SQLiteDataBaseQueryHolder = "INSERT INTO "+SQLiteHelper.TABLE_NAME+" (name,email,password) VALUES('"+NameHolder+"', '"+EmailHolder+"', '"+PasswordHolder+"');";
-
-            // Executing query.
-            sqLiteDatabaseObj.execSQL(SQLiteDataBaseQueryHolder);
-
-            // Closing SQLite database object.
-            sqLiteDatabaseObj.close();
-
-            // Printing toast message after done inserting.
-            Toast.makeText(RegisterActivity.this,"User Registered Successfully", Toast.LENGTH_LONG).show();
-
-        }
-        // This block will execute if any of the registration EditText is empty.
-        else {
-
-            // Printing toast message if any of EditText is empty.
-            Toast.makeText(RegisterActivity.this,"Please Fill All The Required Fields.", Toast.LENGTH_LONG).show();
-
-        }
-
-    }
-
-    // Empty edittext after done inserting process method.
-    public void EmptyEditTextAfterDataInsert(){
-
-        Name.getText().clear();
-
-        Email.getText().clear();
-
-        Password.getText().clear();
-
-    }
-
-    // Method to check EditText is empty or Not.
-    public void CheckEditTextStatus(){
-
-        // Getting value from All EditText and storing into String Variables.
-        NameHolder = Name.getText().toString() ;
-        EmailHolder = Email.getText().toString();
-        PasswordHolder = Password.getText().toString();
-
-        if(TextUtils.isEmpty(NameHolder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)){
-
-            EditTextEmptyHolder = false ;
-
-        }
-        else {
-
-            EditTextEmptyHolder = true ;
-        }
-    }
-
-    // Checking Email is already exists or not.
-    public void CheckingEmailAlreadyExistsOrNot(){
-
-        // Opening SQLite database write permission.
-        sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
-
-        // Adding search email query to cursor.
-        cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{EmailHolder}, null, null, null);
-
-        while (cursor.moveToNext()) {
-
-            if (cursor.isFirst()) {
-
-                cursor.moveToFirst();
-
-                // If Email is already exists then Result variable value set as Email Found.
-                F_Result = "Email Found";
-
-                // Closing cursor.
-                cursor.close();
-            }
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
 
-        // Calling method to check final result and insert data into SQLite database.
-        CheckFinalResult();
-
+        return super.onOptionsItemSelected(item);
     }
-
-
-    // Checking result
-    public void CheckFinalResult(){
-
-        // Checking whether email is already exists or not.
-        if(F_Result.equalsIgnoreCase("Email Found"))
-        {
-
-            // If email is exists then toast msg will display.
-            Toast.makeText(RegisterActivity.this,"Email Already Exists",Toast.LENGTH_LONG).show();
-
-        }
-        else {
-
-            // If email already dose n't exists then user registration details will entered to SQLite database.
-            InsertDataIntoSQLiteDatabase();
-
-        }
-
-        F_Result = "Not_Found" ;
-
-    }
-
 }

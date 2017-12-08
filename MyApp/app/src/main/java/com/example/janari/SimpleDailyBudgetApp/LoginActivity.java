@@ -13,12 +13,12 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
+    DatabaseHelper myDb;
     Button LogInButton, RegisterButton ;
     EditText Email, Password ;
     String EmailHolder, PasswordHolder;
     Boolean EditTextEmptyHolder;
     SQLiteDatabase sqLiteDatabaseObj;
-    SQLiteHelper sqLiteHelper;
     Cursor cursor;
     String TempPassword = "NOT_FOUND" ;
     public static final String UserEmail = "";
@@ -29,13 +29,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         LogInButton = (Button)findViewById(R.id.buttonLogin);
-
         RegisterButton = (Button)findViewById(R.id.buttonRegister);
-
         Email = (EditText)findViewById(R.id.editEmail);
+        //String stringEmail = Email.getText().toString();
         Password = (EditText)findViewById(R.id.editPassword);
 
-        sqLiteHelper = new SQLiteHelper(this);
+        myDb = new DatabaseHelper(this);
 
         //Adding click listener to log in button.
         LogInButton.setOnClickListener(new View.OnClickListener() {
@@ -46,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                 CheckEditTextStatus();
 
                 // Calling login method.
-                LoginFunction();
+               LoginFunction();
 
 
             }
@@ -66,16 +65,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    // Login function starts from here.
+   /// Login function starts from here.
     public void LoginFunction(){
 
         if(EditTextEmptyHolder) {
 
             // Opening SQLite database write permission.
-            sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
+            sqLiteDatabaseObj = myDb.getWritableDatabase();
 
             // Adding search email query to cursor.
-            cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{EmailHolder}, null, null, null);
+            cursor = sqLiteDatabaseObj.query(DatabaseHelper.TABLE_NAME, null, " " + DatabaseHelper.COL_3 + "=?", new String[]{Email.toString()}, null, null, null);
 
             while (cursor.moveToNext()) {
 
@@ -84,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                     cursor.moveToFirst();
 
                     // Storing Password associated with entered email.
-                    TempPassword = cursor.getString(cursor.getColumnIndex(SQLiteHelper.Table_Column_3_Password));
+                    TempPassword = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_4));
 
                     // Closing cursor.
                     cursor.close();
@@ -135,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
 
             // Sending Email to Dashboard Activity using intent.
-            intent.putExtra(UserEmail, EmailHolder);
+           // intent.putExtra(UserEmail, EmailHolder);
 
             startActivity(intent);
 
@@ -143,7 +142,17 @@ public class LoginActivity extends AppCompatActivity {
         }
         else {
 
-            Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
+            //TODO tegelt peaks salasõna vale olema. Ehk on asi et kuskil peaks passwordi stringiks teisendama, sest emaili tundis ka alles siis ära
+            Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
+
+            // Going to Dashboard activity after login success message.
+            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+
+            // Sending Email to Dashboard Activity using intent.
+            // intent.putExtra(UserEmail, EmailHolder);
+
+            startActivity(intent);
+            //Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
 
         }
         TempPassword = "NOT_FOUND" ;

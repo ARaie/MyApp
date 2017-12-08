@@ -1,6 +1,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
-import android.content.Intent;
+import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,37 +11,58 @@ import android.widget.Toast;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    String EmailHolder;
-    TextView Email;
-    Button LogOUT ;
+    DatabaseHelper myDb;
+    Button btnviewAll;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        myDb = new DatabaseHelper(this);
 
-        Email = (TextView)findViewById(R.id.textView1);
-        LogOUT = (Button)findViewById(R.id.button1);
 
-        Intent intent = getIntent();
+        btnviewAll = (Button) findViewById(R.id.btnviewAll);
 
-        // Receiving User Email Send By MainActivity.
-        EmailHolder = intent.getStringExtra(LoginActivity.UserEmail);
 
-        // Setting up received email to TextView.
-        Email.setText(Email.getText().toString()+ EmailHolder);
-
-        // Adding click listener to Log Out button.
-        LogOUT.setOnClickListener(new View.OnClickListener() {
+        btnviewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //Finishing current DashBoard activity on button click.
-                finish();
+                viewAll();
 
-                Toast.makeText(DashboardActivity.this,"Log Out Successfull", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(DashboardActivity.this, "Log Out Successfull", Toast.LENGTH_LONG).show();
             }
         });
+    }
 
+    public void viewAll() {
+
+
+                        Cursor res = myDb.getAllData();
+                        if (res.getCount() == 0) {
+                            // show message
+                            showMessage("Error", "Nothing found");
+                            return;
+                        }
+
+                        StringBuffer buffer = new StringBuffer();
+                        while (res.moveToNext()) {
+                            buffer.append("Id :" + res.getString(0) + "\n");
+                            buffer.append("Name :" + res.getString(1) + "\n");
+                            buffer.append("Email :" + res.getString(2) + "\n");
+                            buffer.append("Password :" + res.getString(3) + "\n\n");
+                        }
+
+                        // Show all data
+                        showMessage("Data", buffer.toString());
+                    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 }
