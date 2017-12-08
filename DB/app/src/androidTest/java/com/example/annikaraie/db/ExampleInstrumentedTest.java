@@ -1,4 +1,4 @@
-package com.example.janari.myapp;
+package com.example.annikaraie.db;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.janari.myapp", appContext.getPackageName());
+        assertEquals("com.example.annikaraie.db", appContext.getPackageName());
     }
 }

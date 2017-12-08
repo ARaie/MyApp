@@ -1,13 +1,13 @@
-package com.example.janari.myapp;
+package com.example.janari.SimpleDailyBudgetApp;
 
-/**
- * Created by Janari on 11/20/2017.
- */
 
-public class MyWorker {
+public class CalculateDailySumClass {
+
 
     public static double calculateSum (double value, double sum){
 
         return value - sum;
     }
+
+
 }
