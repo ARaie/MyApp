@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -31,6 +30,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //TODO I don't know where to call this code. This is about getting user data and show it on navigation drawer view.
+        //String email = getIntent().getStringExtra("userEmail");
+        //TextView setUserEmail = (TextView) findViewById(R.id.user_email);
+        //String calculated = String.valueOf(email);
+        //setUserEmail.setText(email);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_main);
@@ -40,6 +45,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
 
         // Display the current date
         TextView dateView = (TextView)findViewById(R.id.date_today);
@@ -111,8 +117,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         Bundle bundle = new Bundle();
+
         if (id == R.id.nav_main) {
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(anIntent);
@@ -126,7 +132,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(anIntent);
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -2,8 +2,6 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,7 +16,6 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseHelper myDb;
     EditText Name, Email, Password, ID;
     Button btnAddData, nextView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
 
             }
@@ -56,6 +53,8 @@ public class RegisterActivity extends AppCompatActivity {
                         boolean isInserted = myDb.insertData(Name.getText().toString(),
                                 Email.getText().toString(),
                                 Password.getText().toString() );
+                                UpdateData();
+
                         if(isInserted == true)
                             Toast.makeText(RegisterActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
 
@@ -69,46 +68,24 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-   /* public void DeleteData() {
-        btnDelete.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Integer deletedRows = myDb.deleteData(editTextId.getText().toString());
-                        if(deletedRows > 0)
-                            Toast.makeText(MainActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(MainActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
+    public void DeleteData() {
+
+        Integer deletedRows = myDb.deleteData(ID.getText().toString());
+        if(deletedRows > 0)
+            Toast.makeText(RegisterActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(RegisterActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
                     }
-                }
-        );
-    }
+
     public void UpdateData() {
-        btnviewUpdate.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean isUpdate = myDb.updateData(editTextId.getText().toString(),
-                                editName.getText().toString(),
-                                editSurname.getText().toString(),editMarks.getText().toString());
-                        if(isUpdate == true)
-                            Toast.makeText(MainActivity.this,"Data Update",Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(MainActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-    }
-*/
-
-    public void showMessage(String title,String Message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
-    }
-
+        boolean isUpdate = myDb.updateData(ID.getText().toString(),
+                Name.getText().toString(),
+                Email.getText().toString(),Password.getText().toString());
+        if(isUpdate == true)
+            Toast.makeText(RegisterActivity.this,"Data Update",Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(RegisterActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
+                   }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

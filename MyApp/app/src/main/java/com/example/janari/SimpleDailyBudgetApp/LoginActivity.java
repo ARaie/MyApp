@@ -20,8 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     Boolean EditTextEmptyHolder;
     SQLiteDatabase sqLiteDatabaseObj;
     Cursor cursor;
-    String TempPassword = "NOT_FOUND" ;
-    public static final String UserEmail = "";
+    String TempPassword = "NOT_FOUND", email ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
         LogInButton = (Button)findViewById(R.id.buttonLogin);
         RegisterButton = (Button)findViewById(R.id.buttonRegister);
         Email = (EditText)findViewById(R.id.editEmail);
-        //String stringEmail = Email.getText().toString();
         Password = (EditText)findViewById(R.id.editPassword);
 
         myDb = new DatabaseHelper(this);
@@ -43,11 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Calling EditText is empty or no method.
                 CheckEditTextStatus();
-
                 // Calling login method.
-               LoginFunction();
-
-
+                LoginFunction();
             }
         });
 
@@ -59,13 +54,11 @@ public class LoginActivity extends AppCompatActivity {
                 // Opening new user registration activity using intent on button click.
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
-
             }
         });
 
     }
-
-   /// Login function starts from here.
+   // Login function starts from here.
     public void LoginFunction(){
 
         if(EditTextEmptyHolder) {
@@ -84,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Storing Password associated with entered email.
                     TempPassword = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_4));
+                    email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_3));
 
                     // Closing cursor.
                     cursor.close();
@@ -130,30 +124,22 @@ public class LoginActivity extends AppCompatActivity {
 
             Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
 
-            // Going to Dashboard activity after login success message.
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-
-            // Sending Email to Dashboard Activity using intent.
-           // intent.putExtra(UserEmail, EmailHolder);
-
+            // Going to NavigationDrawerActivity after login success message.
+            Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
             startActivity(intent);
-
-
         }
         else {
 
             //TODO tegelt peaks salasõna vale olema. Ehk on asi et kuskil peaks passwordi stringiks teisendama, sest emaili tundis ka alles siis ära
-            Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
 
-            // Going to Dashboard activity after login success message.
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+            Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
 
-            // Sending Email to Dashboard Activity using intent.
-            // intent.putExtra(UserEmail, EmailHolder);
-
+            Email = (EditText)findViewById(R.id.editEmail);
+            String stringEmail = Email.getText().toString();
+            intent.putExtra("userEmail", email);
             startActivity(intent);
             //Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
-
         }
         TempPassword = "NOT_FOUND" ;
 

@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+//TODO Helper Activity to see all data in database
 public class DashboardActivity extends AppCompatActivity {
 
     DatabaseHelper myDb;
@@ -20,15 +20,12 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         myDb = new DatabaseHelper(this);
 
-
         btnviewAll = (Button) findViewById(R.id.btnviewAll);
-
 
         btnviewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //Finishing current DashBoard activity on button click.
                 viewAll();
 
                 Toast.makeText(DashboardActivity.this, "Log Out Successfull", Toast.LENGTH_LONG).show();
@@ -37,7 +34,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void viewAll() {
-
 
                         Cursor res = myDb.getAllData();
                         if (res.getCount() == 0) {

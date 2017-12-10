@@ -10,11 +10,11 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+// TODO Should be deleted activity. NavigationDrawerActivity in now my main activity.
 public class MainActivity extends AppCompatActivity {
 
 
