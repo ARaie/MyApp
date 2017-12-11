@@ -17,6 +17,7 @@ import java.util.Locale;
 // TODO Should be deleted activity. NavigationDrawerActivity in now my main activity.
 public class MainActivity extends AppCompatActivity {
 
+/*
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+*/
 
 
 }

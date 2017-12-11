@@ -50,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+
     public boolean updateData(String id,String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

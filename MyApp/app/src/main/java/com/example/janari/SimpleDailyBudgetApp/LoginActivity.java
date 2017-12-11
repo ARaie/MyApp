@@ -3,6 +3,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,11 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 public class LoginActivity extends AppCompatActivity {
 
+    Button btnviewAll;
     DatabaseHelper myDb;
     Button LogInButton, RegisterButton ;
-    EditText Email, Password ;
+    EditText Email, Password;
     String EmailHolder, PasswordHolder;
     Boolean EditTextEmptyHolder;
     SQLiteDatabase sqLiteDatabaseObj;
@@ -57,7 +60,49 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // TODO Temporary button for checking data in user info database
+        btnviewAll = (Button) findViewById(R.id.view_data);
+        btnviewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                viewAll();
+
+            }
+        });
     }
+
+    // TODO Temporary two functions to check data in database
+    public void viewAll() {
+
+        Cursor res = myDb.getAllData();
+        if (res.getCount() == 0) {
+            // show message
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id :" + res.getString(0) + "\n");
+            buffer.append("Name :" + res.getString(1) + "\n");
+            buffer.append("Email :" + res.getString(2) + "\n");
+            buffer.append("Password :" + res.getString(3) + "\n\n");
+
+        }
+
+        // Show all data
+        showMessage("Data", buffer.toString());
+    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
+    }
+
    // Login function starts from here.
     public void LoginFunction(){
 
@@ -77,14 +122,14 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Storing Password associated with entered email.
                     TempPassword = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_4));
-                    email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_3));
+                    //email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_3));
 
                     // Closing cursor.
                     cursor.close();
                 }
             }
 
-            // Calling method to check final result ..
+            // Calling method to check final result
             CheckFinalResult();
 
         }
@@ -135,13 +180,30 @@ public class LoginActivity extends AppCompatActivity {
 
             Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
 
+            // Passing user name and email to navigation drawer header.
+            viewName();
             Email = (EditText)findViewById(R.id.editEmail);
+            EditText userName = (EditText)findViewById(R.id.name);
             String stringEmail = Email.getText().toString();
-            intent.putExtra("userEmail", email);
+            String stringName = userName.getText().toString();
+            intent.putExtra("userName", stringName);
+            intent.putExtra("userEmail", stringEmail);
             startActivity(intent);
-            //Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
+
         }
         TempPassword = "NOT_FOUND" ;
+
+    }
+
+    // Method fo getting user name from database to pass it to navigation drawer header view
+    public void viewName() {
+
+        Cursor res = myDb.getAllData();
+
+        EditText userName = (EditText)findViewById(R.id.name);
+        while (res.moveToNext()) {
+            userName.setText(res.getString(1));
+        }
 
     }
 

@@ -67,5 +67,11 @@
             android:layout_height="wrap_content"
             android:text="Calculate"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View all data" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

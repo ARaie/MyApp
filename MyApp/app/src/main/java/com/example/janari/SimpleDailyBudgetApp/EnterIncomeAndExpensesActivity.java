@@ -5,6 +5,8 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
+import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,6 +27,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
     DatePickerDialog datePickerDialog;
     Boolean EmptyField;
+    DBHelper budgetDB;
+    String dailySum = "", ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +36,9 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_enter_income_and_expenses);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        budgetDB = new DBHelper(this);
 
-        // TODO majority of picking date code should move to CalendarAcrivity class
+        // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,15 +98,30 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                // Check that all fields are filled
                 CheckFieldsAreFilled();
 
+                // Daily sum calculating method
                 CalculateDataFunction();
 
-
+                // Method that adds data do user budget database
+                AddData();
             }
         });
 
+        // TODO this button and viewAll() method is for checking the user budget database. Temporary function.
+        Button all = (Button) findViewById(R.id.all);
+        all.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                viewAll();
+
+            }
+        });
     }
+
 // Method for get the days between user selected period
     public double Daybetween(String date1, String date2, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -139,6 +159,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         }
     }
 
+    // Calculating daily sum logic is in this method
     public void CalculateDataFunction() {
 
         if (EmptyField) {
@@ -164,12 +185,89 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
             // I use Indent to send calculated value to NavigationDrawerActivity - because this is at the moment my main activity
             Intent intent = new Intent(getBaseContext(), NavigationDrawerActivity.class);
-            intent.putExtra("key", calculated);
+            // Here I get calculated dailySum from this method to use this value to addData() method
+            dailySum = calculated;
             startActivity(intent);
 
         }else {
             Toast.makeText(EnterIncomeAndExpensesActivity.this,"Please fill all fields",Toast.LENGTH_LONG).show();
 
         }
+    }
+
+    // Method for adding data to database. Start date, end date and Daily sum.
+    public  void AddData() {
+
+        EditText start = (EditText) findViewById(R.id.start_date);
+        EditText end = (EditText) findViewById(R.id.end_date);
+
+        boolean isInserted = budgetDB.insertData(dailySum.toString(),
+                start.getText().toString(),
+                end.getText().toString() );
+        UpdateData();
+
+        if(isInserted == true)
+            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
+
+        else
+            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Inserted",Toast.LENGTH_LONG).show();
+    }
+
+    // Useful method, but become to use maybe later.
+    public void DeleteData() {
+
+        ID = "";
+
+        Integer deletedRows = budgetDB.deleteData(ID);
+        if(deletedRows > 0)
+            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
+    }
+
+    // It should be for changing data in database
+    public void UpdateData() {
+
+       ID = "";
+        EditText start = (EditText) findViewById(R.id.start_date);
+        EditText end = (EditText) findViewById(R.id.end_date);
+
+        boolean isUpdate = budgetDB.updateData(ID,
+                dailySum.toString(),
+                start.getText().toString(),end.getText().toString());
+        if(isUpdate == true)
+            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Update",Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
+    }
+
+    // Two methods for showing all data in user budget database. Temporary. Only for checking.
+    public void viewAll() {
+
+        Cursor res = budgetDB.getAllData();
+        if (res.getCount() == 0) {
+            // show message
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id :" + res.getString(0) + "\n");
+            buffer.append("daily :" + res.getString(1) + "\n");
+            buffer.append("start :" + res.getString(2) + "\n");
+            buffer.append("end :" + res.getString(3) + "\n\n");
+        }
+
+        // Show all data
+        showMessage("Data", buffer.toString());
+    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 }

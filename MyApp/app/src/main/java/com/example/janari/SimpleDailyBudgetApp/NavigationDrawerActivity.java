@@ -1,12 +1,14 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -23,19 +25,27 @@ import java.util.Locale;
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    DBHelper budgetDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        budgetDB = new DBHelper(this);
 
-        //TODO I don't know where to call this code. This is about getting user data and show it on navigation drawer view.
-        //String email = getIntent().getStringExtra("userEmail");
-        //TextView setUserEmail = (TextView) findViewById(R.id.user_email);
-        //String calculated = String.valueOf(email);
-        //setUserEmail.setText(email);
+        // Get user email and name and save them to navigation drawer header viwe
+        NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
+        View hView =  navigation.getHeaderView(0);
+        String email = getIntent().getStringExtra("userEmail");
+        TextView setUserEmail = (TextView)hView.findViewById(R.id.user_email);
+        setUserEmail.setText(email);
+        String name = getIntent().getStringExtra("userName");
+        TextView setUserName = (TextView)hView.findViewById(R.id.user_name);
+        setUserName.setText(name);
 
+        // Navigation drawer code
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_main);
@@ -46,15 +56,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
+        // Main activity code
         // Display the current date
         TextView dateView = (TextView)findViewById(R.id.date_today);
         setDate(dateView);
 
-        // Get calculated daily sum and displays it in Daily sum field
-        String value = getIntent().getStringExtra("key");
-        TextView textValue = (TextView) findViewById(R.id.daily_sum);
-        textValue.setText(value);
+        // Calling method for get daily sum data from user budget database and show it to main page
+        viewAll();
 
         // This is the "-" button, that calculates daily expenses
         Button button = (Button) findViewById(R.id.button);
@@ -73,7 +81,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 double expencesValue = Double.parseDouble(stringValue2);
                 double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
                 textValue.setText(Double.toString(newValue));
+                expences.setText(null);
 
+                // TODO not very useful code I think
                 Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -108,10 +118,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_logout) {
+
+            Intent intent = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
+    // TODO Navigation drawer menu items. The Share part is not connected to right pages yet.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
 
@@ -137,9 +155,27 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     // This method is for get current date
     public void setDate (TextView view){
         String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
         view.setText(date);
+    }
+
+    // Method for get all data from user budget database but show only daily sum value
+    public void viewAll() {
+
+        Cursor res = budgetDB.getAllData();
+        if (res.getCount() == 0) {
+            TextView textValue = (TextView) findViewById(R.id.daily_sum);
+            textValue.setText(null);
+            return;
+        }
+
+        TextView textValue = (TextView) findViewById(R.id.daily_sum);
+        while (res.moveToNext()) {
+            textValue.setText(res.getString(1));
+        }
+
     }
 }

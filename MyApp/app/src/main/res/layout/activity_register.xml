@@ -61,14 +61,6 @@
                     android:layout_marginTop="76dp"
                     android:text="Add Data" />
 
-                <Button
-                    android:id="@+id/next_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/button_add"
-                    android:layout_alignBottom="@+id/button_add"
-                    android:layout_alignStart="@+id/editText_Marks"
-                    android:text="Next view" />
         </LinearLayout>
 
 

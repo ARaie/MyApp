@@ -15,7 +15,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     DatabaseHelper myDb;
     EditText Name, Email, Password, ID;
-    Button btnAddData, nextView;
+    Button btnAddData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,22 +29,12 @@ public class RegisterActivity extends AppCompatActivity {
         ID = (EditText)findViewById(R.id.editText_id);
         btnAddData = (Button)findViewById(R.id.button_add);
 
+        // calling method for add data to user info database
         AddData();
 
-        nextView = (Button) findViewById(R.id.next_view);
-        nextView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-            }
-        });
     }
 
-
+    // Adding data to user info database
     public  void AddData() {
         btnAddData.setOnClickListener(
                 new View.OnClickListener() {
@@ -54,7 +44,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 Email.getText().toString(),
                                 Password.getText().toString() );
                                 UpdateData();
+                                //DeleteData();
 
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        
                         if(isInserted == true)
                             Toast.makeText(RegisterActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
 
@@ -68,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    // May be useful method, but not in use at the moment
     public void DeleteData() {
 
         Integer deletedRows = myDb.deleteData(ID.getText().toString());
@@ -75,8 +70,9 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
         else
             Toast.makeText(RegisterActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
-                    }
+    }
 
+    // Updates data in user info database
     public void UpdateData() {
         boolean isUpdate = myDb.updateData(ID.getText().toString(),
                 Name.getText().toString(),
