@@ -6,16 +6,19 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
 import android.database.Cursor;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.ImageView;
 import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +40,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
+
 
         // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
@@ -120,6 +124,17 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
             }
         });
+        // Back "button"
+        ImageView back = (ImageView) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 // Method for get the days between user selected period
@@ -146,6 +161,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         String stringIncome = income.getText().toString();
         EditText fixedExpenses = (EditText) findViewById(R.id.fixed_expenses);
         String stringExpences = fixedExpenses.getText().toString();
+
 
         // Checking EditText is empty or no using TextUtils.
         if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(stringEnd) || TextUtils.isEmpty(stringIncome) || TextUtils.isEmpty(stringExpences)) {

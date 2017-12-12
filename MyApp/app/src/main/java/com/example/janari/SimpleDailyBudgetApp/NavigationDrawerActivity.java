@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -26,6 +26,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     DBHelper budgetDB;
+    String dailySum = "", ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
 
-        // Get user email and name and save them to navigation drawer header viwe
+        yesturdaysLeft ();
+
+        // Get user email and name and save them to navigation drawer header view
+        //TODO aadressi uuendab kenasti ära, nimi jääb eelmise useri oma
         NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
         View hView =  navigation.getHeaderView(0);
         String email = getIntent().getStringExtra("userEmail");
@@ -81,6 +85,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 double expencesValue = Double.parseDouble(stringValue2);
                 double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
                 textValue.setText(Double.toString(newValue));
+                dailySum = Double.toString(newValue);
+                RefreshData();
                 expences.setText(null);
 
                 // TODO not very useful code I think
@@ -116,6 +122,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
         if (id == R.id.action_logout) {
@@ -176,6 +184,37 @@ public class NavigationDrawerActivity extends AppCompatActivity
         while (res.moveToNext()) {
             textValue.setText(res.getString(1));
         }
+    }
+    public void yesturdaysLeft (){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String strDate = sdf.format(c.getTime());
+        if (strDate == "00:00:00"){
+            Cursor res = budgetDB.getAllData();
+            if (res.getCount() == 0) {
+                TextView value = (TextView) findViewById(R.id.daily_sum);
+                value.setText(null);
+                return;
+            }
+            String value = "";
+            while (res.moveToNext()) {
+                value = res.getString(1);
+            }
+            TextView textValue = (TextView) findViewById(R.id.daily_sum);
+            String stringValue = textValue.getText().toString();
+            double originalValue = Double.parseDouble(stringValue);
+            originalValue = originalValue + Double.parseDouble(value);
+            textValue.setText(Double.toString(originalValue));
+        }
+    }
+
+    // TODO Ma ei tea veel kuidas summat andmebaasis refreshida. Kui perioodi ja sissetulekuid muudan siis uuendab kenasti ära aga maha arvutatud summat ei jäta meelde
+    public  void RefreshData() {
+
+        ID = "";
+        boolean isUpdate = budgetDB.updateSum(ID,
+                dailySum.toString());
 
     }
+
 }

@@ -51,15 +51,23 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
         public boolean updateData(String id,String daily_sum,String start_date,String end_date) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(COL_1,id);
-            contentValues.put(COL_2,daily_sum);
-            contentValues.put(COL_3,start_date);
-            contentValues.put(COL_4,end_date);
-            db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
-            return true;
-        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1,id);
+        contentValues.put(COL_2,daily_sum);
+        contentValues.put(COL_3,start_date);
+        contentValues.put(COL_4,end_date);
+        db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
+        return true;
+    }
+    public boolean updateSum(String id,String daily_sum) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1,id);
+        contentValues.put(COL_2,daily_sum);
+        db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
+        return true;
+    }
 
         public Integer deleteData (String id) {
             SQLiteDatabase db = this.getWritableDatabase();
