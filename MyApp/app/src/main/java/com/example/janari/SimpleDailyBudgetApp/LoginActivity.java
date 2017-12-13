@@ -2,6 +2,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     Boolean EditTextEmptyHolder;
     SQLiteDatabase sqLiteDatabaseObj;
     Cursor cursor;
-    String TempPassword = "NOT_FOUND", email ;
+    String TempPassword = "NOT_FOUND";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,12 +109,13 @@ public class LoginActivity extends AppCompatActivity {
 
         if(EditTextEmptyHolder) {
 
-            // Opening SQLite database write permission.
+           // Opening SQLite database write permission.
             sqLiteDatabaseObj = myDb.getWritableDatabase();
 
             // Adding search email query to cursor.
             cursor = sqLiteDatabaseObj.query(DatabaseHelper.TABLE_NAME, null, " " + DatabaseHelper.COL_3 + "=?", new String[]{Email.toString()}, null, null, null);
 
+            //SELECT * FROM table1 where column1='XYZ';
             while (cursor.moveToNext()) {
 
                 if (cursor.isFirst()) {
@@ -122,7 +124,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Storing Password associated with entered email.
                     TempPassword = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_4));
-                    //email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_3));
 
                     // Closing cursor.
                     cursor.close();
@@ -141,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
 
     // Checking EditText is empty or not.
     public void CheckEditTextStatus(){
@@ -161,16 +163,16 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // Checking entered password from SQLite database email associated password.
+   // Checking entered password from SQLite database email associated password.
     public void CheckFinalResult(){
 
-        if(TempPassword.equalsIgnoreCase(PasswordHolder))
+        if(TempPassword.equals(Password.getText().toString()))
         {
 
             Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
 
             // Going to NavigationDrawerActivity after login success message.
-            Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         }
         else {
@@ -178,33 +180,17 @@ public class LoginActivity extends AppCompatActivity {
             //TODO tegelt peaks salasõna vale olema. Ehk on asi et kuskil peaks passwordi stringiks teisendama, sest emaili tundis ka alles siis ära
             Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
 
-            Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
+           // Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
 
-            // Passing user name and email to navigation drawer header.
-            viewName();
+            // Passing user email to navigation drawer header.
             Email = (EditText)findViewById(R.id.editEmail);
-            EditText userName = (EditText)findViewById(R.id.name);
-            String stringEmail = Email.getText().toString();
-            String stringName = userName.getText().toString();
-            intent.putExtra("userName", stringName);
-            intent.putExtra("userEmail", stringEmail);
-            startActivity(intent);
+            Email.setText(TempPassword);
+           //String stringEmail = Email.getText().toString();
+           // intent.putExtra("userEmail", stringEmail);
+            //startActivity(intent);
 
         }
         TempPassword = "NOT_FOUND" ;
 
     }
-
-    // Method fo getting user name from database to pass it to navigation drawer header view
-    public void viewName() {
-
-        Cursor res = myDb.getAllData();
-
-        EditText userName = (EditText)findViewById(R.id.name);
-        while (res.moveToNext()) {
-            userName.setText(res.getString(1));
-        }
-
-    }
-
 }

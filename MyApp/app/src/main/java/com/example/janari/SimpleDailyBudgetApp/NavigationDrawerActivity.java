@@ -26,7 +26,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     DBHelper budgetDB;
-    String dailySum = "", ID;
+    String dailySum = "", ID, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +36,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
 
-        yesturdaysLeft ();
+        // TODO Method for add yesturdays left sum when time is 00:00:00. need little bit more thinking...
+        // yesturdaysLeft ();
 
         // Get user email and name and save them to navigation drawer header view
-        //TODO aadressi uuendab kenasti ära, nimi jääb eelmise useri oma
+        //TODO fine with email. Need to view also name that is corresponding to this email(name from database)
         NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
         View hView =  navigation.getHeaderView(0);
-        String email = getIntent().getStringExtra("userEmail");
+        email = getIntent().getStringExtra("userEmail");
         TextView setUserEmail = (TextView)hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
-        String name = getIntent().getStringExtra("userName");
-        TextView setUserName = (TextView)hView.findViewById(R.id.user_name);
-        setUserName.setText(name);
+
 
         // Navigation drawer code
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -64,9 +63,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // Display the current date
         TextView dateView = (TextView)findViewById(R.id.date_today);
         setDate(dateView);
-
-        // Calling method for get daily sum data from user budget database and show it to main page
-        viewAll();
 
         // This is the "-" button, that calculates daily expenses
         Button button = (Button) findViewById(R.id.button);
@@ -86,14 +82,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
                 textValue.setText(Double.toString(newValue));
                 dailySum = Double.toString(newValue);
-                RefreshData();
+                AddData();
                 expences.setText(null);
 
                 // TODO not very useful code I think
                 Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Actaion", null).show();
             }
         });
+
+        // Calling method for get daily sum data from user budget database and show it to main page
+        viewAll();
     }
 
     @Override
@@ -185,6 +184,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             textValue.setText(res.getString(1));
         }
     }
+
+    // TODO Add left money. Needs thinking
     public void yesturdaysLeft (){
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -208,13 +209,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
     }
 
-    // TODO Ma ei tea veel kuidas summat andmebaasis refreshida. Kui perioodi ja sissetulekuid muudan siis uuendab kenasti ära aga maha arvutatud summat ei jäta meelde
+    // Two methods for after every "-" button click add new daily sum in the budget database
     public  void RefreshData() {
 
         ID = "";
         boolean isUpdate = budgetDB.updateSum(ID,
                 dailySum.toString());
 
+    }
+    public  void AddData() {
+
+        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
+        RefreshData();
     }
 
 }

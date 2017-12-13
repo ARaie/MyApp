@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +32,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     Boolean EmptyField;
     DBHelper budgetDB;
-    String dailySum = "", ID;
+    InputDBHelper InputDB;
+    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
+        InputDB = new InputDBHelper(this);
 
+        // Method for save user input data and show it
+        viewData();
 
         // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
@@ -109,21 +114,12 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 CalculateDataFunction();
 
                 // Method that adds data do user budget database
+                AddDaily();
+
                 AddData();
             }
         });
 
-        // TODO this button and viewAll() method is for checking the user budget database. Temporary function.
-        Button all = (Button) findViewById(R.id.all);
-        all.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                viewAll();
-
-            }
-        });
         // Back "button"
         ImageView back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -182,17 +178,21 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             // Here I get income and fixed expenses data and calculate it for one day
             EditText income = (EditText) findViewById(R.id.incomes);
             String stringIncome = income.getText().toString();
+            mIncome = stringIncome;
             double incomeValue = Double.parseDouble(stringIncome);
 
             EditText fixedExpenses = (EditText) findViewById(R.id.fixed_expenses);
             String stringExpences = fixedExpenses.getText().toString();
+            mExpenses = stringExpences;
             double fixedExpensesValue = Double.parseDouble(stringExpences);
 
             // Get dates from EditText fields and use Daybetween() method to set days for value calculation process
             EditText start = (EditText) findViewById(R.id.start_date);
             String stringStart = start.getText().toString();
+            mStart = stringStart;
             EditText end = (EditText) findViewById(R.id.end_date);
             String stringEnd = end.getText().toString();
+            mEnd = stringEnd;
 
             // TODO I don't know if it is better when period 1.11-30.11 makes 30days or period 1.11-1.12. (How to count days.)
             double value = (incomeValue - fixedExpensesValue) / Daybetween(stringStart, stringEnd, "dd.MM.yyyy");
@@ -212,14 +212,12 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
 
     // Method for adding data to database. Start date, end date and Daily sum.
-    public  void AddData() {
+    public  void AddDaily() {
 
         EditText start = (EditText) findViewById(R.id.start_date);
         EditText end = (EditText) findViewById(R.id.end_date);
 
-        boolean isInserted = budgetDB.insertData(dailySum.toString(),
-                start.getText().toString(),
-                end.getText().toString() );
+        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
         UpdateData();
 
         if(isInserted == true)
@@ -245,45 +243,53 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     public void UpdateData() {
 
        ID = "";
-        EditText start = (EditText) findViewById(R.id.start_date);
-        EditText end = (EditText) findViewById(R.id.end_date);
-
-        boolean isUpdate = budgetDB.updateData(ID,
-                dailySum.toString(),
-                start.getText().toString(),end.getText().toString());
+        boolean isUpdate = budgetDB.updateSum(ID,
+                dailySum.toString());
         if(isUpdate == true)
             Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Update",Toast.LENGTH_LONG).show();
         else
             Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
     }
 
-    // Two methods for showing all data in user budget database. Temporary. Only for checking.
-    public void viewAll() {
+    // Method for show user entered data in input fields
+    public void viewData() {
 
-        Cursor res = budgetDB.getAllData();
+        Cursor res = InputDB.getAllData();
         if (res.getCount() == 0) {
-            // show message
-            showMessage("Error", "Nothing found");
+            EditText income = (EditText) findViewById(R.id.incomes);
+            income.setText(null);
+            EditText fixedExpenses = (EditText) findViewById(R.id.fixed_expenses);
+            fixedExpenses.setText(null);
+            EditText start = (EditText) findViewById(R.id.start_date);
+            start.setText(null);
+            EditText end = (EditText) findViewById(R.id.end_date);
+            end.setText(null);
             return;
         }
-
-        StringBuffer buffer = new StringBuffer();
+        EditText income = (EditText) findViewById(R.id.incomes);
+        EditText fixedExpenses = (EditText) findViewById(R.id.fixed_expenses);
+        EditText start = (EditText) findViewById(R.id.start_date);
+        EditText end = (EditText) findViewById(R.id.end_date);
         while (res.moveToNext()) {
-            buffer.append("Id :" + res.getString(0) + "\n");
-            buffer.append("daily :" + res.getString(1) + "\n");
-            buffer.append("start :" + res.getString(2) + "\n");
-            buffer.append("end :" + res.getString(3) + "\n\n");
+            income.setText(res.getString(1));
+            fixedExpenses.setText(res.getString(2));
+            start.setText(res.getString(3));
+            end.setText(res.getString(4));
         }
-
-        // Show all data
-        showMessage("Data", buffer.toString());
     }
 
-    public void showMessage(String title, String Message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
+    // Add and update data for user entered period, income and expenses
+    public  void AddData() {
+
+        boolean isInserted = InputDB.insertData(mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
+        UpdateInput();
+
+    }
+    public void UpdateInput() {
+
+        ID = "";
+        boolean isUpdate = InputDB.updateData(ID,
+                mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
+
     }
 }
