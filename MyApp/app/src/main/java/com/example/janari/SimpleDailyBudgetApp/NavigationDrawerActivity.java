@@ -47,7 +47,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         TextView setUserEmail = (TextView)hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
 
-
         // Navigation drawer code
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

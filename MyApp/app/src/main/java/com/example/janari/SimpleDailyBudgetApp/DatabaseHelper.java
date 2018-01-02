@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
+import android.widget.Toast;
 
 
 //My database class
@@ -44,13 +46,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public Cursor getAllData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
-        return res;
-    }
-
-
     public boolean updateData(String id,String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -65,5 +60,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Integer deleteData (String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
+    }
+
+    public Cursor getAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
+        return res;
+    }
+
+    // Method that checks if in one tables row are both entered email and entered password
+    public boolean hasObject(String email, String password){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectString = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_3 + "= ?"+ " AND "+ COL_4 + " =?";
+
+        Cursor cursor = db.rawQuery(selectString,new String[]{email, password});
+        boolean exist;
+        if(cursor.getCount()>0){
+            exist=true;
+        } else {
+            exist=false;
+        }
+        db.close();
+        cursor.close();
+
+        return exist;
     }
 }

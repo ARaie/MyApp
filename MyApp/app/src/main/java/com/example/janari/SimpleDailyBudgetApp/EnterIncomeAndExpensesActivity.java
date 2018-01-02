@@ -163,7 +163,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(stringEnd) || TextUtils.isEmpty(stringIncome) || TextUtils.isEmpty(stringExpences)) {
 
             EmptyField = false ;
-
         }
         else {
 

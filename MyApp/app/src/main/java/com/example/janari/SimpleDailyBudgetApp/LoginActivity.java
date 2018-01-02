@@ -2,7 +2,6 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,23 +17,20 @@ public class LoginActivity extends AppCompatActivity {
 
     Button btnviewAll;
     DatabaseHelper myDb;
-    Button LogInButton, RegisterButton ;
+    Button LogInButton, RegisterButton;
     EditText Email, Password;
     String EmailHolder, PasswordHolder;
     Boolean EditTextEmptyHolder;
-    SQLiteDatabase sqLiteDatabaseObj;
-    Cursor cursor;
-    String TempPassword = "NOT_FOUND";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        LogInButton = (Button)findViewById(R.id.buttonLogin);
-        RegisterButton = (Button)findViewById(R.id.buttonRegister);
-        Email = (EditText)findViewById(R.id.editEmail);
-        Password = (EditText)findViewById(R.id.editPassword);
+        LogInButton = (Button) findViewById(R.id.buttonLogin);
+        RegisterButton = (Button) findViewById(R.id.buttonRegister);
+        Email = (EditText) findViewById(R.id.editEmail);
+        Password = (EditText) findViewById(R.id.editPassword);
 
         myDb = new DatabaseHelper(this);
 
@@ -47,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
                 CheckEditTextStatus();
                 // Calling login method.
                 LoginFunction();
+                Email.setText(null);
+                Password.setText(null);
             }
         });
 
@@ -109,88 +107,38 @@ public class LoginActivity extends AppCompatActivity {
 
         if(EditTextEmptyHolder) {
 
-           // Opening SQLite database write permission.
-            sqLiteDatabaseObj = myDb.getWritableDatabase();
+            boolean recordExists = myDb.hasObject(Email.getText().toString(), Password.getText().toString());
 
-            // Adding search email query to cursor.
-            cursor = sqLiteDatabaseObj.query(DatabaseHelper.TABLE_NAME, null, " " + DatabaseHelper.COL_3 + "=?", new String[]{Email.toString()}, null, null, null);
-
-            //SELECT * FROM table1 where column1='XYZ';
-            while (cursor.moveToNext()) {
-
-                if (cursor.isFirst()) {
-
-                    cursor.moveToFirst();
-
-                    // Storing Password associated with entered email.
-                    TempPassword = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COL_4));
-
-                    // Closing cursor.
-                    cursor.close();
-                }
+            if(recordExists == true){
+                Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
+                Toast.makeText(getApplicationContext(), "Login successful.", Toast.LENGTH_LONG).show();
+                String stringEmail = Email.getText().toString();
+                intentSignIn.putExtra("userEmail", stringEmail);
+                startActivity(intentSignIn);
+            } else {
+                Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
             }
 
-            // Calling method to check final result
-            CheckFinalResult();
-
+        }else{
+            Toast.makeText(getApplicationContext(), "Enter email and password", Toast.LENGTH_LONG).show();
         }
-        else {
-
-            //If any of login EditText empty then this block will be executed.
-            Toast.makeText(LoginActivity.this,"Please Enter UserName or Password.",Toast.LENGTH_LONG).show();
-
-        }
-
     }
 
-
     // Checking EditText is empty or not.
-    public void CheckEditTextStatus(){
+    public void CheckEditTextStatus() {
 
         // Getting value from All EditText and storing into String Variables.
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
 
         // Checking EditText is empty or no using TextUtils.
-        if( TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)){
+        if (TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)) {
 
-            EditTextEmptyHolder = false ;
+            EditTextEmptyHolder = false;
 
+        } else {
+
+            EditTextEmptyHolder = true;
         }
-        else {
-
-            EditTextEmptyHolder = true ;
-        }
-    }
-
-   // Checking entered password from SQLite database email associated password.
-    public void CheckFinalResult(){
-
-        if(TempPassword.equals(Password.getText().toString()))
-        {
-
-            Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
-
-            // Going to NavigationDrawerActivity after login success message.
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        }
-        else {
-
-            //TODO tegelt peaks salasõna vale olema. Ehk on asi et kuskil peaks passwordi stringiks teisendama, sest emaili tundis ka alles siis ära
-            Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();
-
-           // Intent intent = new Intent(LoginActivity.this, NavigationDrawerActivity.class);
-
-            // Passing user email to navigation drawer header.
-            Email = (EditText)findViewById(R.id.editEmail);
-            Email.setText(TempPassword);
-           //String stringEmail = Email.getText().toString();
-           // intent.putExtra("userEmail", stringEmail);
-            //startActivity(intent);
-
-        }
-        TempPassword = "NOT_FOUND" ;
-
     }
 }
