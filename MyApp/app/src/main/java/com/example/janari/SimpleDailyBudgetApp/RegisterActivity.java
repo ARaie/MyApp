@@ -13,9 +13,12 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    //TODO Kõik lahtrid peavad olema täidetud
+
     DatabaseHelper myDb;
-    EditText Name, Email, Password, ID;
+    EditText Name, Email, Password;
     Button btnAddData;
+    String ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +26,13 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         myDb = new DatabaseHelper(this);
 
+
+        //TODO Muuda ära nimetused
         Name = (EditText)findViewById(R.id.editText_name);
         Email = (EditText)findViewById(R.id.editText_surname);
         Password = (EditText)findViewById(R.id.editText_Marks);
-        ID = (EditText)findViewById(R.id.editText_id);
+
+        ID = "1";
         btnAddData = (Button)findViewById(R.id.button_add);
 
         // calling method for add data to user info database
@@ -65,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
     // May be useful method, but not in use at the moment
     public void DeleteData() {
 
-        Integer deletedRows = myDb.deleteData(ID.getText().toString());
+        Integer deletedRows = myDb.deleteData(ID);
         if(deletedRows > 0)
             Toast.makeText(RegisterActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
         else
@@ -74,7 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // Updates data in user info database
     public void UpdateData() {
-        boolean isUpdate = myDb.updateData(ID.getText().toString(),
+        boolean isUpdate = myDb.updateData(ID,
                 Name.getText().toString(),
                 Email.getText().toString(),Password.getText().toString());
         if(isUpdate == true)

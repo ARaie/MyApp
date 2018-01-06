@@ -144,7 +144,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
 
         if (id == R.id.nav_main) {
-            Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent anIntent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
             startActivity(anIntent);
         } else if (id == R.id.nav_data) {
             Intent anIntent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);

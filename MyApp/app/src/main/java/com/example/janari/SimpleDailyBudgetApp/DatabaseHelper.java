@@ -85,4 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return exist;
     }
+
+    // Uus meetod samasugune kus emaili järgi võtab välja selle ID ja saadab tagasi
+
 }

@@ -1,7 +1,11 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,8 +20,9 @@ import java.util.Locale;
 
 // TODO Should be deleted activity. NavigationDrawerActivity in now my main activity.
 public class MainActivity extends AppCompatActivity {
-
 /*
+    DBHelper budgetDB;
+    String dailySum = "", ID, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +57,18 @@ public class MainActivity extends AppCompatActivity {
                 double expencesValue = Double.parseDouble(stringValue2);
                 double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
                 textValue.setText(Double.toString(newValue));
+                dailySum = Double.toString(newValue);
+                AddData();
+                expences.setText(null);
 
+                // TODO not very useful code I think
                 Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Actaion", null).show();
             }
         });
+
+        // Calling method for get daily sum data from user budget database and show it to main page
+        viewAll();
     }
     // This method is for get current date
     public void setDate (TextView view){
@@ -64,9 +76,19 @@ public class MainActivity extends AppCompatActivity {
         view.setText(date);
     }
     @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.navigation_drawer, menu);
         return true;
     }
 
@@ -79,12 +101,46 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        if (id == R.id.action_logout) {
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-*/
+    // Method for get all data from user budget database but show only daily sum value
+    public void viewAll() {
 
+        Cursor res = budgetDB.getAllData();
+        if (res.getCount() == 0) {
+            TextView textValue = (TextView) findViewById(R.id.daily_sum);
+            textValue.setText(null);
+            return;
+        }
 
+        TextView textValue = (TextView) findViewById(R.id.daily_sum);
+        while (res.moveToNext()) {
+            textValue.setText(res.getString(1));
+        }
+    }
+    // Two methods for after every "-" button click add new daily sum in the budget database
+    public  void RefreshData() {
+
+        ID = "";
+        boolean isUpdate = budgetDB.updateSum(ID,
+                dailySum.toString());
+
+    }
+    public  void AddData() {
+
+        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
+        RefreshData();
+    }*/
 }
