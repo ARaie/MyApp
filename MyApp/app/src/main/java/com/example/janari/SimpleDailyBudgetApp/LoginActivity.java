@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         Password = (EditText) findViewById(R.id.editPassword);
 
         myDb = new DatabaseHelper(this);
+
 
         //Adding click listener to log in button.
         LogInButton.setOnClickListener(new View.OnClickListener() {

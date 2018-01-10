@@ -42,15 +42,6 @@
                     android:layout_toEndOf="@+id/textView3"
                     android:hint="Password" />
 
-                <EditText
-                    android:id="@+id/editText_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/editText_Marks"
-                    android:layout_marginTop="11dp"
-                    android:layout_toEndOf="@+id/textView3"
-                    android:hint="ID" />
-
                 <Button
                     android:id="@+id/button_add"
                     android:layout_width="match_parent"

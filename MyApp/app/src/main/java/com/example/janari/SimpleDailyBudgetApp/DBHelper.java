@@ -30,15 +30,31 @@ public class DBHelper extends SQLiteOpenHelper {
             onCreate(db);
         }
 
-    public boolean insertDaily(String daily_sum) {
+    public boolean insertDaily(String id,String daily_sum) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1,id);
         contentValues.put(COL_2,daily_sum);
         long result = db.insert(TABLE_NAME,null ,contentValues);
         if(result == -1)
             return false;
         else
             return true;
+    }
+    public String id(String id){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long recc=0;
+        String rec=null;
+        Cursor mCursor = db.rawQuery(
+                "SELECT *  FROM  TABLE_NAME WHERE COL_1= '"+id+"'" , null);
+        if (mCursor != null)
+        {
+            mCursor.moveToFirst();
+            recc=mCursor.getLong(0);
+            rec=String.valueOf(recc);
+        }
+        return rec;
     }
 
     public Cursor getAllData() {

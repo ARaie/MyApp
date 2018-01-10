@@ -32,12 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
         Email = (EditText)findViewById(R.id.editText_surname);
         Password = (EditText)findViewById(R.id.editText_Marks);
 
-       id = myDb.insertData(Name.getText().toString(),
-               Email.getText().toString(),
-               Password.getText().toString());
 
-        Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
-        intent.putExtra("id", id);
+
 
         btnAddData = (Button)findViewById(R.id.button_add);
 
@@ -52,9 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        myDb.insertData(Name.getText().toString(),
-                                Email.getText().toString(),
-                                Password.getText().toString() );
+
                                 UpdateData();
                                 //DeleteData();
 
@@ -81,6 +75,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     // Updates data in user info database
     public void UpdateData() {
+
+        long i = myDb.insertData(Name.getText().toString(),
+                Email.getText().toString(),
+                Password.getText().toString());
+        id = String.valueOf(i);
         boolean isUpdate = myDb.updateData(id,
                 Name.getText().toString(),
                 Email.getText().toString(),Password.getText().toString());

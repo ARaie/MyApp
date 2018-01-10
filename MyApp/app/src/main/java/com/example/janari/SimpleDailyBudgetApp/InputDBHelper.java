@@ -45,11 +45,33 @@ public class InputDBHelper extends SQLiteOpenHelper {
         else
             return true;
     }
-    public Cursor getAllData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
-        return res;
+    public Cursor getAllData(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_NAME, new String[] { COL_1, COL_2,
+                        COL_3, COL_4, COL_5 }, COL_1 + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToNext();
+
+        return cursor;
     }
+    public String id(String id){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long recc=0;
+        String rec=null;
+        Cursor mCursor = db.rawQuery(
+                "SELECT *  FROM  TABLE_NAME WHERE COL_1= '"+id+"'" , null);
+        if (mCursor != null)
+        {
+            mCursor.moveToFirst();
+            recc=mCursor.getLong(0);
+            rec=String.valueOf(recc);
+        }
+        return rec;
+    }
+
 
     public boolean updateData(String id, String income, String expenses, String start_date, String end_date) {
         SQLiteDatabase db = this.getWritableDatabase();

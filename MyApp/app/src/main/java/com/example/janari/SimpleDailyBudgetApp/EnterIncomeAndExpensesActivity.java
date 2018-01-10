@@ -6,12 +6,9 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
 import android.database.Cursor;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -19,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,11 +39,12 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
         InputDB = new InputDBHelper(this);
-        ID = getIntent().getStringExtra("id");
 
         // Method for save user input data and show it
         viewData();
 
+        EditText start = (EditText) findViewById(R.id.incomes);
+        start.setText(ID);
         // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
@@ -217,8 +214,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         EditText start = (EditText) findViewById(R.id.start_date);
         EditText end = (EditText) findViewById(R.id.end_date);
 
-        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
-        UpdateData();
+        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
+        //UpdateData();
 
         if(isInserted == true)
             Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
@@ -242,19 +239,19 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // It should be for changing data in database
     public void UpdateData() {
 
-       ID = "";
-        boolean isUpdate = budgetDB.updateSum(ID,
-                dailySum.toString());
-        if(isUpdate == true)
-            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Update",Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
+        if (ID == budgetDB.id(ID)) {
+            boolean isUpdate = budgetDB.updateSum(ID,
+                    dailySum.toString());
+            if (isUpdate == true)
+                Toast.makeText(EnterIncomeAndExpensesActivity.this, "Data Update", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(EnterIncomeAndExpensesActivity.this, "Data not Updated", Toast.LENGTH_LONG).show();
+        }
     }
-
     // Method for show user entered data in input fields
     public void viewData() {
 
-        Cursor res = InputDB.getAllData();
+        Cursor res = InputDB.getAllData(ID);
         if (res.getCount() == 0) {
             EditText income = (EditText) findViewById(R.id.incomes);
             income.setText(null);
@@ -287,9 +284,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
     public void UpdateInput() {
 
+        if (ID == InputDB.id(ID)) {
+            boolean isUpdate = InputDB.updateData(ID,
+                    mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
 
-        boolean isUpdate = InputDB.updateData(ID,
-                mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
-
+        }
     }
 }

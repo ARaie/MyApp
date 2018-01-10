@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -26,6 +27,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     DBHelper budgetDB;
+    DatabaseHelper myDb;
     String dailySum = "", ID, email;
 
     @Override
@@ -35,6 +37,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
+        myDb = new DatabaseHelper(this);
 
         // TODO Method for add yesturdays left sum when time is 00:00:00. need little bit more thinking...
         // yesturdaysLeft ();
@@ -46,6 +49,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         email = getIntent().getStringExtra("userEmail");
         TextView setUserEmail = (TextView)hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
+
 
         // Navigation drawer code
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -62,6 +66,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // Display the current date
         TextView dateView = (TextView)findViewById(R.id.date_today);
         setDate(dateView);
+
 
         // This is the "-" button, that calculates daily expenses
         Button button = (Button) findViewById(R.id.button);
@@ -84,6 +89,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 AddData();
                 expences.setText(null);
 
+
                 // TODO not very useful code I think
                 Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
                         .setAction("Actaion", null).show();
@@ -92,6 +98,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         // Calling method for get daily sum data from user budget database and show it to main page
         viewAll();
+        TextView textValue = (TextView) findViewById(R.id.HelloText);
+        long a = myDb.id(email);
+        String b = String.valueOf(a);
+        textValue.setText(b);
+
     }
 
     @Override
@@ -211,14 +222,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Two methods for after every "-" button click add new daily sum in the budget database
     public  void RefreshData() {
 
-        ID = "";
         boolean isUpdate = budgetDB.updateSum(ID,
                 dailySum.toString());
 
     }
     public  void AddData() {
 
-        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
+        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
         RefreshData();
     }
 

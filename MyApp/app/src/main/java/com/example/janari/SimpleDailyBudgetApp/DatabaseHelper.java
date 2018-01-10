@@ -3,6 +3,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.ContactsContract;
@@ -17,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2 = "NAME";
     public static final String COL_3 = "EMAIL";
     public static final String COL_4 = "PASSWORD";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -33,15 +35,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public String insertData(String name,String email,String password) {
+    public long insertData(String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2,name);
         contentValues.put(COL_3,email);
         contentValues.put(COL_4,password);
-        String id = String.valueOf( db.insert(TABLE_NAME,null ,contentValues));
+        long id = db.insert(TABLE_NAME,null ,contentValues);
 
         return id;
+    }
+    public long id(String email){
+
+        String query = "SELECT rowid" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ email });
     }
 
     public boolean updateData(String id,String name,String email,String password) {
