@@ -31,9 +31,10 @@ public class InputDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
-    public boolean insertData(String income, String expenses, String start_date, String end_date) {
+    public boolean insertData(String id, String income, String expenses, String start_date, String end_date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1, id);
         contentValues.put(COL_2,income);
         contentValues.put(COL_3,expenses);
         contentValues.put(COL_4,start_date);

@@ -33,17 +33,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String name,String email,String password) {
+    public String insertData(String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2,name);
         contentValues.put(COL_3,email);
         contentValues.put(COL_4,password);
-        long result = db.insert(TABLE_NAME,null ,contentValues);
-        if(result == -1)
-            return false;
-        else
-            return true;
+        String id = String.valueOf( db.insert(TABLE_NAME,null ,contentValues));
+
+        return id;
     }
 
     public boolean updateData(String id,String name,String email,String password) {

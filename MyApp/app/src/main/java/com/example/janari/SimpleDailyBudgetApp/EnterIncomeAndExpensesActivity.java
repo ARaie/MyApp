@@ -43,6 +43,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
         InputDB = new InputDBHelper(this);
+        ID = getIntent().getStringExtra("id");
 
         // Method for save user input data and show it
         viewData();
@@ -280,13 +281,13 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // Add and update data for user entered period, income and expenses
     public  void AddData() {
 
-        boolean isInserted = InputDB.insertData(mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
+        boolean isInserted = InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
         UpdateInput();
 
     }
     public void UpdateInput() {
 
-        ID = "";
+
         boolean isUpdate = InputDB.updateData(ID,
                 mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
 

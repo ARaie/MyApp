@@ -18,7 +18,7 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseHelper myDb;
     EditText Name, Email, Password;
     Button btnAddData;
-    String ID;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,13 @@ public class RegisterActivity extends AppCompatActivity {
         Email = (EditText)findViewById(R.id.editText_surname);
         Password = (EditText)findViewById(R.id.editText_Marks);
 
-        ID = "1";
+       id = myDb.insertData(Name.getText().toString(),
+               Email.getText().toString(),
+               Password.getText().toString());
+
+        Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
+        intent.putExtra("id", id);
+
         btnAddData = (Button)findViewById(R.id.button_add);
 
         // calling method for add data to user info database
@@ -46,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean isInserted = myDb.insertData(Name.getText().toString(),
+                        myDb.insertData(Name.getText().toString(),
                                 Email.getText().toString(),
                                 Password.getText().toString() );
                                 UpdateData();
@@ -54,12 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                         startActivity(intent);
-                        
-                        if(isInserted == true)
-                            Toast.makeText(RegisterActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
 
-                        else
-                            Toast.makeText(RegisterActivity.this,"Data not Inserted",Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -71,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
     // May be useful method, but not in use at the moment
     public void DeleteData() {
 
-        Integer deletedRows = myDb.deleteData(ID);
+        Integer deletedRows = myDb.deleteData(id);
         if(deletedRows > 0)
             Toast.makeText(RegisterActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
         else
@@ -80,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // Updates data in user info database
     public void UpdateData() {
-        boolean isUpdate = myDb.updateData(ID,
+        boolean isUpdate = myDb.updateData(id,
                 Name.getText().toString(),
                 Email.getText().toString(),Password.getText().toString());
         if(isUpdate == true)
