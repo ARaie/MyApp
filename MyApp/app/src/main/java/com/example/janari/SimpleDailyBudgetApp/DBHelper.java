@@ -4,6 +4,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -76,4 +77,18 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
         }
+    public long budget(String id){
+
+        String query = "SELECT DAILY_SUM" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+
+    }
+
+    public void delete(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_NAME);
+    }
     }

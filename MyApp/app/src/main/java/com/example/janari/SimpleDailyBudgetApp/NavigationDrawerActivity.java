@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +30,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
-    String dailySum = "", ID, email;
+    String dailySum = "", ID, email, b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         TextView setUserEmail = (TextView)hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
 
-
         // Navigation drawer code
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -67,9 +68,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
         TextView dateView = (TextView)findViewById(R.id.date_today);
         setDate(dateView);
 
+        // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas aga kui uus konto teha siis jookseb kokku. Vb sellepärast et tal pole midagi näidata
+        long a = myDb.id(email);
+        b = String.valueOf(a);
+        TextView start = (TextView) findViewById(R.id.oo);
+        start.setText(b);
+
+        viewAll();
 
         // This is the "-" button, that calculates daily expenses
-        Button button = (Button) findViewById(R.id.button);
+        final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -77,6 +85,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                 // Here I take data from fields and parse them to doubles and then use the
                 // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
+                dailySum = getIntent().getStringExtra("dailySum");
                 TextView textValue = (TextView) findViewById(R.id.daily_sum);
                 String stringValue = textValue.getText().toString();
                 double originalValue = Double.parseDouble(stringValue);
@@ -97,12 +106,45 @@ public class NavigationDrawerActivity extends AppCompatActivity
         });
 
         // Calling method for get daily sum data from user budget database and show it to main page
-        viewAll();
-        TextView textValue = (TextView) findViewById(R.id.HelloText);
-        long a = myDb.id(email);
-        String b = String.valueOf(a);
-        textValue.setText(b);
 
+        Button be = (Button) findViewById(R.id.ooo);
+        be.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                //budgetDB.delete();
+                viewData();
+            }
+        });
+
+
+    }
+    public void viewData() {
+
+        Cursor res = budgetDB.getAllData();
+        if (res.getCount() == 0) {
+            // show message
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id :" + res.getString(0) + "\n");
+            buffer.append("Name :" + res.getString(1) + "\n");
+        }
+
+        // Show all data
+        showMessage("Data", buffer.toString());
+    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 
     @Override
@@ -158,8 +200,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Intent anIntent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
             startActivity(anIntent);
         } else if (id == R.id.nav_data) {
-            Intent anIntent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
-            startActivity(anIntent);
+            long a = myDb.id(email);
+            String b = String.valueOf(a);
+            Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
+            intent.putExtra("id", b);
+            startActivity(intent);
         }else if (id == R.id.nav_fb) {
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(anIntent);
@@ -182,17 +227,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Method for get all data from user budget database but show only daily sum value
     public void viewAll() {
 
-        Cursor res = budgetDB.getAllData();
-        if (res.getCount() == 0) {
-            TextView textValue = (TextView) findViewById(R.id.daily_sum);
-            textValue.setText(null);
-            return;
-        }
-
+        long res = budgetDB.budget(b);
+        String ser = String.valueOf(res);
         TextView textValue = (TextView) findViewById(R.id.daily_sum);
-        while (res.moveToNext()) {
-            textValue.setText(res.getString(1));
-        }
+        textValue.setText(ser);
     }
 
     // TODO Add left money. Needs thinking
@@ -222,13 +260,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Two methods for after every "-" button click add new daily sum in the budget database
     public  void RefreshData() {
 
-        boolean isUpdate = budgetDB.updateSum(ID,
+        boolean isUpdate = budgetDB.updateSum(b,
                 dailySum.toString());
 
     }
     public  void AddData() {
 
-        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
+        boolean isInserted = budgetDB.insertDaily(b, dailySum.toString());
         RefreshData();
     }
 

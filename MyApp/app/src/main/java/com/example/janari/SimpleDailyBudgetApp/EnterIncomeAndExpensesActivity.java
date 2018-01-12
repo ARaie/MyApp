@@ -6,6 +6,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,8 +30,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     Boolean EmptyField;
     DBHelper budgetDB;
-    InputDBHelper InputDB;
-    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd;
+    DataHelper InputDB;
+    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd, i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +40,14 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
-        InputDB = new InputDBHelper(this);
+        InputDB = new DataHelper(this);
+        ID = getIntent().getStringExtra("id");
 
         // Method for save user input data and show it
-        viewData();
-
-        EditText start = (EditText) findViewById(R.id.incomes);
+        //viewData();
+        TextView start = (TextView) findViewById(R.id.o);
         start.setText(ID);
+
         // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +121,18 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             }
         });
 
-        // Back "button"
+        Button i = (Button) findViewById(R.id.i);
+        i.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+            viewData();
+        }
+    });
+
+
+    // Back "button"
         ImageView back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
 
@@ -197,10 +211,12 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             String calculated = String.valueOf(rounded);
 
             // I use Indent to send calculated value to NavigationDrawerActivity - because this is at the moment my main activity
-            Intent intent = new Intent(getBaseContext(), NavigationDrawerActivity.class);
+            Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
             // Here I get calculated dailySum from this method to use this value to addData() method
             dailySum = calculated;
+            intent.putExtra("dailySum", dailySum);
             startActivity(intent);
+
 
         }else {
             Toast.makeText(EnterIncomeAndExpensesActivity.this,"Please fill all fields",Toast.LENGTH_LONG).show();
@@ -215,13 +231,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         EditText end = (EditText) findViewById(R.id.end_date);
 
         boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
-        //UpdateData();
+        UpdateData();
 
-        if(isInserted == true)
-            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
-
-        else
-            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Inserted",Toast.LENGTH_LONG).show();
     }
 
     // Useful method, but become to use maybe later.
@@ -239,40 +250,39 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // It should be for changing data in database
     public void UpdateData() {
 
-        if (ID == budgetDB.id(ID)) {
             boolean isUpdate = budgetDB.updateSum(ID,
                     dailySum.toString());
-            if (isUpdate == true)
-                Toast.makeText(EnterIncomeAndExpensesActivity.this, "Data Update", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(EnterIncomeAndExpensesActivity.this, "Data not Updated", Toast.LENGTH_LONG).show();
-        }
     }
+
     // Method for show user entered data in input fields
     public void viewData() {
 
-        Cursor res = InputDB.getAllData(ID);
+        Cursor res = InputDB.getAllData();
         if (res.getCount() == 0) {
-            EditText income = (EditText) findViewById(R.id.incomes);
-            income.setText(null);
-            EditText fixedExpenses = (EditText) findViewById(R.id.fixed_expenses);
-            fixedExpenses.setText(null);
-            EditText start = (EditText) findViewById(R.id.start_date);
-            start.setText(null);
-            EditText end = (EditText) findViewById(R.id.end_date);
-            end.setText(null);
+            // show message
+            showMessage("Error", "Nothing found");
             return;
         }
-        EditText income = (EditText) findViewById(R.id.incomes);
-        EditText fixedExpenses = (EditText) findViewById(R.id.fixed_expenses);
-        EditText start = (EditText) findViewById(R.id.start_date);
-        EditText end = (EditText) findViewById(R.id.end_date);
+
+        StringBuffer buffer = new StringBuffer();
         while (res.moveToNext()) {
-            income.setText(res.getString(1));
-            fixedExpenses.setText(res.getString(2));
-            start.setText(res.getString(3));
-            end.setText(res.getString(4));
+            buffer.append("Id :" + res.getString(0) + "\n");
+            buffer.append("Name :" + res.getString(1) + "\n");
+            buffer.append("Email :" + res.getString(2) + "\n");
+            buffer.append("Password :" + res.getString(3) + "\n\n");
+
         }
+
+        // Show all data
+        showMessage("Data", buffer.toString());
+    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 
     // Add and update data for user entered period, income and expenses
@@ -284,10 +294,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
     public void UpdateInput() {
 
-        if (ID == InputDB.id(ID)) {
+
             boolean isUpdate = InputDB.updateData(ID,
                     mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
 
+
         }
-    }
 }

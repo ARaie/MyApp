@@ -1,29 +1,29 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class InputDBHelper extends SQLiteOpenHelper {
+public class DataHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "InputData";
     public static final String TABLE_NAME = "Input";
+    public static final String COL_0 = "auto";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "INCOME";
     public static final String COL_3 = "EXPENSES";
     public static final String COL_4 = "START_DATE";
     public static final String COL_5 = "END_DATE";
 
-    public InputDBHelper(Context context) {
+    public DataHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,INCOME TEXT,EXPENSES TEXT,START_DATE TEXT,END_DATE TEXT)");
+        db.execSQL("create table " + TABLE_NAME + " (ID TEXT, INCOME TEXT,EXPENSES TEXT,START_DATE TEXT,END_DATE TEXT)");
     }
 
     @Override
@@ -31,6 +31,7 @@ public class InputDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
+
     public boolean insertData(String id, String income, String expenses, String start_date, String end_date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -45,17 +46,13 @@ public class InputDBHelper extends SQLiteOpenHelper {
         else
             return true;
     }
-    public Cursor getAllData(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_NAME, new String[] { COL_1, COL_2,
-                        COL_3, COL_4, COL_5 }, COL_1 + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToNext();
-
-        return cursor;
+    public Cursor getAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
+        return res;
     }
+
     public String id(String id){
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -71,11 +68,10 @@ public class InputDBHelper extends SQLiteOpenHelper {
         }
         return rec;
     }
-
-
     public boolean updateData(String id, String income, String expenses, String start_date, String end_date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+
         contentValues.put(COL_1, id);
         contentValues.put(COL_2,income);
         contentValues.put(COL_3,expenses);
