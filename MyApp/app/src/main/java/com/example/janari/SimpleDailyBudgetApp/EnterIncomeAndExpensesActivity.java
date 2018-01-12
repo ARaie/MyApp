@@ -127,7 +127,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-            viewData();
+                //InputDB.delete();
+                viewData();
         }
     });
 

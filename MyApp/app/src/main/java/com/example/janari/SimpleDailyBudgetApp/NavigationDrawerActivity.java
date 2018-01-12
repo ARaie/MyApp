@@ -68,7 +68,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         TextView dateView = (TextView)findViewById(R.id.date_today);
         setDate(dateView);
 
-        // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas aga kui uus konto teha siis jookseb kokku. Vb sellepärast et tal pole midagi näidata
+        // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas ja uue kasutajaga on ka timmu
         long a = myDb.id(email);
         b = String.valueOf(a);
         TextView start = (TextView) findViewById(R.id.oo);
@@ -227,10 +227,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Method for get all data from user budget database but show only daily sum value
     public void viewAll() {
 
-        long res = budgetDB.budget(b);
-        String ser = String.valueOf(res);
-        TextView textValue = (TextView) findViewById(R.id.daily_sum);
-        textValue.setText(ser);
+        Cursor es = budgetDB.getAllData();
+        if (es.getCount() == 0) {
+            TextView textValue = (TextView) findViewById(R.id.daily_sum);
+            textValue.setText(null);
+        }else {
+
+            long res = budgetDB.budget(b);
+            String ser = String.valueOf(res);
+            TextView textValue = (TextView) findViewById(R.id.daily_sum);
+            textValue.setText(ser);
+        }
     }
 
     // TODO Add left money. Needs thinking

@@ -93,6 +93,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return exist;
     }
+    public void delete(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_NAME);
+    }
 
     // Uus meetod samasugune kus emaili järgi võtab välja selle ID ja saadab tagasi
 
