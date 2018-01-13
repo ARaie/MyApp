@@ -58,6 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return rec;
     }
 
+
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
@@ -77,14 +78,23 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
         }
-    public long budget(String id){
+    public Cursor budget(String id){
 
         String query = "SELECT DAILY_SUM" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+        Cursor res = db.rawQuery(query, new String[]{ id });
+        return res;
 
+    }
+    public long bud(String id){
+
+        String query = "SELECT rowid" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
     }
 
     public void delete(){

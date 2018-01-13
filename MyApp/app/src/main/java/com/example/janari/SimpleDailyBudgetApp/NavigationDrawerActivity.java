@@ -227,16 +227,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Method for get all data from user budget database but show only daily sum value
     public void viewAll() {
 
-        Cursor es = budgetDB.getAllData();
-        if (es.getCount() == 0) {
+        Cursor res = budgetDB.budget(b);
+        if (res.getCount() == 0) {
+
             TextView textValue = (TextView) findViewById(R.id.daily_sum);
             textValue.setText(null);
-        }else {
+            return;
+        }else{
 
-            long res = budgetDB.budget(b);
-            String ser = String.valueOf(res);
+            long budget = budgetDB.bud(b);
+            String budgetToString = String.valueOf(budget);
             TextView textValue = (TextView) findViewById(R.id.daily_sum);
-            textValue.setText(ser);
+            textValue.setText(budgetToString);
         }
     }
 
