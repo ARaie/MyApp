@@ -90,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public long bud(String id){
 
-        String query = "SELECT rowid" +
+        String query = "SELECT DAILY_SUM" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();

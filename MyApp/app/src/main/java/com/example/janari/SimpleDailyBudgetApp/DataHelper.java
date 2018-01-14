@@ -3,14 +3,15 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+// User input database
 public class DataHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "InputData";
     public static final String TABLE_NAME = "Input";
-    public static final String COL_0 = "auto";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "INCOME";
     public static final String COL_3 = "EXPENSES";
@@ -89,6 +90,79 @@ public class DataHelper extends SQLiteOpenHelper {
     public void delete(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from " + TABLE_NAME);
+    }
+    public Cursor AllIncome(String id){
+
+        String query = "SELECT INCOME" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ id });
+        return res;
+
+    }
+    public long Income(String id){
+
+        String query = "SELECT INCOME" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+    }
+    public Cursor AllExpenses(String id){
+
+        String query = "SELECT EXPENSES" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ id });
+        return res;
+
+    }
+    public long Expenses(String id){
+
+        String query = "SELECT EXPENSES" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+    }
+    public Cursor AllStart(String id){
+
+        String query = "SELECT START_DATE" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ id });
+        return res;
+
+    }
+    public long Start(String id){
+
+        String query = "SELECT START_DATE" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+    }
+
+    public Cursor AllEnd(String id){
+
+        String query = "SELECT END_DATE" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ id });
+        return res;
+
+    }
+    public long End(String id){
+
+        String query = "SELECT END_DATE" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
     }
 }
 

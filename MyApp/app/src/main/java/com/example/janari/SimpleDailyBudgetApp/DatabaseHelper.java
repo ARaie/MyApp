@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
-import android.widget.Toast;
 
 
-//My database class
+//My user database class
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "UserData";
     public static final String TABLE_NAME = "User";
@@ -47,12 +45,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public long id(String email){
 
-        String query = "SELECT rowid" +
+        String query = "SELECT ID" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_3 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
         return DatabaseUtils.longForQuery(db, query, new String[]{ email });
     }
+    public String name(String email){
+
+        String query = "SELECT NAME" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ email });
+        }
 
     public boolean updateData(String id,String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();

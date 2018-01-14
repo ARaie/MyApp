@@ -31,7 +31,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     Boolean EmptyField;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd, i;
+    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +43,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         InputDB = new DataHelper(this);
         ID = getIntent().getStringExtra("id");
 
-        // Method for save user input data and show it
-        //viewData();
+        //TODO temporary. For check user ID
         TextView start = (TextView) findViewById(R.id.o);
         start.setText(ID);
+
 
         // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
@@ -101,6 +101,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             }
         });
 
+        // TODO Something wrong with this button. Dies when clicking. Cant open NavigationDrawer again
         // This button helps to send calculated sum to Daily sum field
         Button calculate = (Button) findViewById(R.id.calculate);
         calculate.setOnClickListener(new View.OnClickListener() {
@@ -117,10 +118,13 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 // Method that adds data do user budget database
                 AddDaily();
 
+                //Method that adds data to input database and refresh it
                 AddData();
+
             }
         });
 
+        //TODO Temporary. Checking input database
         Button i = (Button) findViewById(R.id.i);
         i.setOnClickListener(new View.OnClickListener() {
 
@@ -144,6 +148,13 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Methods for ask data from input database and show them in fields
+        //TODO Dates are shown in ints. Need to be corrected.
+        viewIncome();
+        viewExpenses();
+        viewStart();
+        viewEnd();
     }
 
 // Method for get the days between user selected period
@@ -184,6 +195,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
 
     // Calculating daily sum logic is in this method
+    // TODO Math should be corrected - same day for start and end collapse the app
     public void CalculateDataFunction() {
 
         if (EmptyField) {
@@ -228,14 +240,18 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // Method for adding data to database. Start date, end date and Daily sum.
     public  void AddDaily() {
 
-        EditText start = (EditText) findViewById(R.id.start_date);
-        EditText end = (EditText) findViewById(R.id.end_date);
-
         boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
         UpdateData();
 
     }
+    // Refreshing data in database
+    public void UpdateData() {
 
+        boolean isUpdate = budgetDB.updateSum(ID,
+                dailySum.toString());
+    }
+
+    //TODO Not useful, but still don't delete code
     // Useful method, but become to use maybe later.
     public void DeleteData() {
 
@@ -248,14 +264,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
     }
 
-    // It should be for changing data in database
-    public void UpdateData() {
 
-            boolean isUpdate = budgetDB.updateSum(ID,
-                    dailySum.toString());
-    }
-
-    // Method for show user entered data in input fields
+    // TODO Temporary for checking
     public void viewData() {
 
         Cursor res = InputDB.getAllData();
@@ -271,6 +281,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             buffer.append("Name :" + res.getString(1) + "\n");
             buffer.append("Email :" + res.getString(2) + "\n");
             buffer.append("Password :" + res.getString(3) + "\n\n");
+            buffer.append("Password :" + res.getString(4) + "\n\n");
 
         }
 
@@ -295,10 +306,73 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
     public void UpdateInput() {
 
-
             boolean isUpdate = InputDB.updateData(ID,
                     mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
 
-
         }
+
+    public void viewIncome() {
+
+        Cursor res = InputDB.AllIncome(ID);
+        if (res.getCount() == 0) {
+
+            TextView textValue = (TextView) findViewById(R.id.incomes);
+            textValue.setText(null);
+            return;
+        }else{
+
+            long input = InputDB.Income(ID);
+            String inputToString = String.valueOf(input);
+            TextView textValue = (TextView) findViewById(R.id.incomes);
+            textValue.setText(inputToString);
+        }
+    }
+    public void viewStart() {
+
+        Cursor res = InputDB.AllStart(ID);
+        if (res.getCount() == 0) {
+
+            TextView textValue = (TextView) findViewById(R.id.start_date);
+            textValue.setText(null);
+            return;
+        }else{
+
+            long start_date = InputDB.Start(ID);
+            String start_dateToString = String.valueOf(start_date);
+            TextView textValue = (TextView) findViewById(R.id.start_date);
+            textValue.setText(start_dateToString);
+        }
+    }
+    public void viewExpenses() {
+
+        Cursor res = InputDB.AllExpenses(ID);
+        if (res.getCount() == 0) {
+
+            TextView textValue = (TextView) findViewById(R.id.fixed_expenses);
+            textValue.setText(null);
+            return;
+        }else{
+
+            long expenses = InputDB.Expenses(ID);
+            String expensesToString = String.valueOf(expenses);
+            TextView textValue = (TextView) findViewById(R.id.fixed_expenses);
+            textValue.setText(expensesToString);
+        }
+    }
+    public void viewEnd() {
+
+        Cursor res = InputDB.AllEnd(ID);
+        if (res.getCount() == 0) {
+
+            TextView textValue = (TextView) findViewById(R.id.end_date);
+            textValue.setText(null);
+            return;
+        }else{
+
+            long end_date = InputDB.End(ID);
+            String end_dateToString = String.valueOf(end_date);
+            TextView textValue = (TextView) findViewById(R.id.end_date);
+            textValue.setText(end_dateToString);
+        }
+    }
 }

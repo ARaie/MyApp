@@ -4,6 +4,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,8 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseHelper myDb;
     EditText Name, Email, Password;
     Button btnAddData;
-    String id;
+    String EmailHolder, PasswordHolder, NameHolder, id;
+    Boolean EditTextEmptyHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,38 +30,33 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         //TODO Muuda ära nimetused
-        Name = (EditText)findViewById(R.id.editText_name);
-        Email = (EditText)findViewById(R.id.editText_surname);
-        Password = (EditText)findViewById(R.id.editText_Marks);
+        Name = (EditText) findViewById(R.id.editText_name);
+        Email = (EditText) findViewById(R.id.editText_surname);
+        Password = (EditText) findViewById(R.id.editText_Marks);
+
+        btnAddData = (Button) findViewById(R.id.button_add);
+        btnAddData.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
 
 
+                CheckEditTextStatus();
+                if(EditTextEmptyHolder) {
 
+                    // Add new user to database
+                    UpdateData();
+                    //DeleteData();
 
-        btnAddData = (Button)findViewById(R.id.button_add);
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
 
-        // calling method for add data to user info database
-        AddData();
-
-    }
-
-    // Adding data to user info database
-    public  void AddData() {
-        btnAddData.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                                UpdateData();
-                                //DeleteData();
-
-                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(intent);
-
-                    }
-
+                }else{
+                    Toast.makeText(getApplicationContext(), "Enter email and password", Toast.LENGTH_LONG).show();
                 }
 
-        );
+            }
+        });
 
     }
 
@@ -89,6 +86,25 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
                    }
 
+    public void CheckEditTextStatus() {
+
+        // Getting value from All EditText and storing into String Variables.
+        NameHolder = Name.getText().toString();
+        EmailHolder = Email.getText().toString();
+        PasswordHolder = Password.getText().toString();
+
+        // Checking EditText is empty or no using TextUtils.
+        if (TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)) {
+
+            EditTextEmptyHolder = false;
+
+        } else {
+
+            EditTextEmptyHolder = true;
+        }
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -103,6 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        //TODO Menu is missing some functions...
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
