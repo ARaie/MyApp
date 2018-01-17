@@ -31,7 +31,7 @@
         <activity
             android:name=".NavigationDrawerActivity"
             android:label="Simple daily budget app"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -40,6 +40,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.janari.SimpleDailyBudgetApp.NavigationDrawerActivity" />
         </activity>
+
+        <receiver android:name=".Widget">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="yourpackage.TEXT_CHANGED" />
+        </intent-filter>
+
+        <meta-data
+            android:name="android.appwidget.provider"
+            android:resource="@xml/widget_info" />
+    </receiver>
     </application>
 
 </manifest>

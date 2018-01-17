@@ -1,8 +1,13 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -11,12 +16,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +34,7 @@ import java.util.Locale;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
@@ -44,12 +54,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         // Get user email and name and save them to navigation drawer header view
         NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
-        View hView =  navigation.getHeaderView(0);
+        View hView = navigation.getHeaderView(0);
         email = getIntent().getStringExtra("userEmail");
-        TextView setUserEmail = (TextView)hView.findViewById(R.id.user_email);
+        TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
         String Name = myDb.name(email);
-        TextView user = (TextView)hView.findViewById(R.id.user_name);
+        TextView user = (TextView) hView.findViewById(R.id.user_name);
         user.setText(Name);
 
         // Navigation drawer code
@@ -65,7 +75,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         // Main activity code
         // Display the current date
-        TextView dateView = (TextView)findViewById(R.id.date_today);
+        TextView dateView = (TextView) findViewById(R.id.date_today);
         setDate(dateView);
 
         // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas ja uue kasutajaga on ka timmu
@@ -118,9 +128,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 viewData();
             }
         });
-
+updateWidget();
 
     }
+
     //TODO Temporary. For checking budget database
     public void viewData() {
 
@@ -207,7 +218,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
             intent.putExtra("id", b);
             startActivity(intent);
-        }else if (id == R.id.nav_fb) {
+        } else if (id == R.id.nav_fb) {
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(anIntent);
         } else if (id == R.id.nav_send) {
@@ -221,7 +232,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     }
 
     // This method is for get current date
-    public void setDate (TextView view){
+    public void setDate(TextView view) {
         String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
         view.setText(date);
     }
@@ -235,7 +246,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView textValue = (TextView) findViewById(R.id.daily_sum);
             textValue.setText(null);
             return;
-        }else{
+        } else {
 
             long budget = budgetDB.bud(id);
             String budgetToString = String.valueOf(budget);
@@ -245,11 +256,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
     }
 
     // TODO Add left money. Needs thinking
-    public void yesturdaysLeft (){
+    public void yesturdaysLeft() {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String strDate = sdf.format(c.getTime());
-        if (strDate == "00:00:00"){
+        if (strDate == "00:00:00") {
             Cursor res = budgetDB.getAllData();
             if (res.getCount() == 0) {
                 TextView value = (TextView) findViewById(R.id.daily_sum);
@@ -269,16 +280,27 @@ public class NavigationDrawerActivity extends AppCompatActivity
     }
 
     // Two methods for after every "-" button click add new daily sum in the budget database
-    public  void RefreshData() {
+    public void RefreshData() {
 
         boolean isUpdate = budgetDB.updateSum(id,
                 dailySum.toString());
 
     }
-    public  void AddData() {
+
+    public void AddData() {
 
         boolean isInserted = budgetDB.insertDaily(id, dailySum.toString());
         RefreshData();
     }
 
+    private void updateWidget() {
+
+        TextView textValue = (TextView) findViewById(R.id.daily_sum);
+        String stringValue = textValue.getText().toString();
+        if(stringValue == ""){
+            sendBroadcast(new Intent(Widget.ACTION_UPDATE).putExtra("budget", "0"));
+        }else{
+            sendBroadcast(new Intent(Widget.ACTION_UPDATE).putExtra("budget", stringValue));
+        }
+    }
 }

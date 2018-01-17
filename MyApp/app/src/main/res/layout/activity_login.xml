@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/textView" />
+        android:id="@+id/text" />
 
     <EditText
         android:layout_width="fill_parent"
@@ -28,7 +28,7 @@
         android:hint="Enter Email"
         android:textColor="#000"
         android:ems="10"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:id="@+id/editEmail"
