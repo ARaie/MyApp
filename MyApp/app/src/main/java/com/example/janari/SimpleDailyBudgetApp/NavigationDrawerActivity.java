@@ -1,13 +1,8 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -16,16 +11,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RemoteViews;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,7 +29,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
-    String dailySum = "", email, id;
+    String dailySum = "", email, id, Name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +40,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         budgetDB = new DBHelper(this);
         myDb = new DatabaseHelper(this);
 
+
         // TODO Method for add yesturdays left sum when time is 00:00:00. need little bit more thinking...
         // yesturdaysLeft ();
 
@@ -58,79 +50,78 @@ public class NavigationDrawerActivity extends AppCompatActivity
         email = getIntent().getStringExtra("userEmail");
         TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
-        String Name = myDb.name(email);
+        Name = myDb.name(email);
         TextView user = (TextView) hView.findViewById(R.id.user_name);
         user.setText(Name);
 
-        // Navigation drawer code
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_main);
+            // Navigation drawer code
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+            navigationView.setCheckedItem(R.id.nav_main);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
 
-        // Main activity code
-        // Display the current date
-        TextView dateView = (TextView) findViewById(R.id.date_today);
-        setDate(dateView);
+            // Main activity code
+            // Display the current date
+            TextView dateView = (TextView) findViewById(R.id.date_today);
+            setDate(dateView);
 
-        // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas ja uue kasutajaga on ka timmu
-        long a = myDb.id(email);
-        id = String.valueOf(a);
-        TextView start = (TextView) findViewById(R.id.oo);
-        start.setText(id);
+            // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas ja uue kasutajaga on ka timmu
+            long a = myDb.id(email);
+            id = String.valueOf(a);
+            TextView start = (TextView) findViewById(R.id.oo);
+            start.setText(id);
 
-        // Shows user daily budget
-        viewAll();
+            // Shows user daily budget
+            viewAll();
 
-        // This is the "-" button, that calculates daily expenses
-        final Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+            // This is the "-" button, that calculates daily expenses
+            final Button button = (Button) findViewById(R.id.button);
+            button.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
 
-                // Here I take data from fields and parse them to doubles and then use the
-                // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
-                dailySum = getIntent().getStringExtra("dailySum");
-                TextView textValue = (TextView) findViewById(R.id.daily_sum);
-                String stringValue = textValue.getText().toString();
-                double originalValue = Double.parseDouble(stringValue);
-                EditText expences = (EditText) findViewById(R.id.expences);
-                String stringValue2 = expences.getText().toString();
-                double expencesValue = Double.parseDouble(stringValue2);
-                double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
-                textValue.setText(Double.toString(newValue));
-                dailySum = Double.toString(newValue);
-                AddData();
-                expences.setText(null);
+                    // Here I take data from fields and parse them to doubles and then use the
+                    // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
+                    dailySum = getIntent().getStringExtra("dailySum");
+                    TextView textValue = (TextView) findViewById(R.id.daily_sum);
+                    String stringValue = textValue.getText().toString();
+                    double originalValue = Double.parseDouble(stringValue);
+                    EditText expences = (EditText) findViewById(R.id.expences);
+                    String stringValue2 = expences.getText().toString();
+                    double expencesValue = Double.parseDouble(stringValue2);
+                    double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
+                    textValue.setText(Double.toString(newValue));
+                    dailySum = Double.toString(newValue);
+                    AddData();
+                    expences.setText(null);
 
 
-                // TODO not very useful code I think
-                Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
-                        .setAction("Actaion", null).show();
-            }
-        });
+                    // TODO not very useful code I think
+                    Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
+                            .setAction("Actaion", null).show();
+                }
+            });
 
-        // Calling method for get daily sum data from user budget database and show it to main page
+            // Calling method for get daily sum data from user budget database and show it to main page
 
-        Button be = (Button) findViewById(R.id.ooo);
-        be.setOnClickListener(new View.OnClickListener() {
+            Button be = (Button) findViewById(R.id.ooo);
+            be.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
 
-                //budgetDB.delete();
-                viewData();
-            }
-        });
-updateWidget();
-
-    }
+                    //budgetDB.delete();
+                    viewData();
+                }
+            });
+            updateWidget();
+        }
 
     //TODO Temporary. For checking budget database
     public void viewData() {

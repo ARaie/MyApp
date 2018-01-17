@@ -1,6 +1,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText Email, Password;
     String EmailHolder, PasswordHolder;
     Boolean EditTextEmptyHolder;
+    public static final String PREFS_NAME = "MyPrefsFile";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,14 @@ public class LoginActivity extends AppCompatActivity {
                 LoginFunction();
                 Email.setText(null);
                 Password.setText(null);
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
+                SharedPreferences.Editor editor = settings.edit();
+
+//Set "hasLoggedIn" to true
+                editor.putBoolean("hasLoggedIn", true);
+
+// Commit the edits!
+                editor.commit();
             }
         });
 
@@ -142,4 +153,5 @@ public class LoginActivity extends AppCompatActivity {
             EditTextEmptyHolder = true;
         }
     }
+
 }
