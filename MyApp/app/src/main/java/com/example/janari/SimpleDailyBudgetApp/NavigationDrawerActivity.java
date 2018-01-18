@@ -1,6 +1,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -44,15 +45,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // TODO Method for add yesturdays left sum when time is 00:00:00. need little bit more thinking...
         // yesturdaysLeft ();
 
+        // TODO ta ei saa enam kätte emaili kui ma olen sisse logitud. Nimi ka nüüd puudu
         // Get user email and name and save them to navigation drawer header view
         NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigation.getHeaderView(0);
         email = getIntent().getStringExtra("userEmail");
         TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
         setUserEmail.setText(email);
-        Name = myDb.name(email);
-        TextView user = (TextView) hView.findViewById(R.id.user_name);
-        user.setText(Name);
+        TextView ee = (TextView) findViewById(R.id.e);
+        ee.setText(email);
+
 
             // Navigation drawer code
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -71,13 +73,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
             setDate(dateView);
 
             // TODO see koodike ei lase teda andmete sisetusest tagasi ja muidu on kenasti igal kärsal om andmebaas ja uue kasutajaga on ka timmu
-            long a = myDb.id(email);
-            id = String.valueOf(a);
-            TextView start = (TextView) findViewById(R.id.oo);
-            start.setText(id);
+        //TODO Nüüd viimase meetodiga kokku ei jookse enam. vaheta andmete pärimise meetodid ära. Tagasi minnes ta ainult kaotab ära oma IDd ja email'id
+
+            viewID();
 
             // Shows user daily budget
-            viewAll();
+            //viewAll();
 
             // This is the "-" button, that calculates daily expenses
             final Button button = (Button) findViewById(R.id.button);
@@ -184,6 +185,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if (id == R.id.action_logout) {
 
             Intent intent = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
+            TextView start = (TextView) findViewById(R.id.oo);
+            start.setText(null);
+            SharedPreferences preferences = getSharedPreferences("key", StartActivity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.commit();
             startActivity(intent);
             finish();
             return true;
@@ -204,10 +211,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Intent anIntent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
             startActivity(anIntent);
         } else if (id == R.id.nav_data) {
-            long a = myDb.id(email);
-            String b = String.valueOf(a);
+            TextView start = (TextView) findViewById(R.id.oo);
+            String string = start.getText().toString();
             Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
-            intent.putExtra("id", b);
+            intent.putExtra("id", string);
             startActivity(intent);
         } else if (id == R.id.nav_fb) {
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -294,4 +301,25 @@ public class NavigationDrawerActivity extends AppCompatActivity
             sendBroadcast(new Intent(Widget.ACTION_UPDATE).putExtra("budget", stringValue));
         }
     }
+
+    public void viewID() {
+
+        TextView ee = (TextView) findViewById(R.id.e);
+        String e = ee.getText().toString();
+
+        Cursor res = myDb.AllID(e);
+        if (res.getCount() == 0) {
+
+            TextView textValue = (TextView) findViewById(R.id.oo);
+            textValue.setText(null);
+            return;
+        }else{
+
+            long idee = myDb.ID(e);
+            String stringID = String.valueOf(idee);
+            TextView textValue = (TextView) findViewById(R.id.oo);
+            textValue.setText(stringID);
+        }
+    }
+
 }

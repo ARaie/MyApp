@@ -19,9 +19,10 @@ public class LoginActivity extends AppCompatActivity {
     DatabaseHelper myDb;
     Button LogInButton, RegisterButton;
     EditText Email, Password;
-    String EmailHolder, PasswordHolder;
+    String EmailHolder, PasswordHolder, id;
     Boolean EditTextEmptyHolder;
     public static final String PREFS_NAME = "MyPrefsFile";
+
 
 
     @Override
@@ -50,12 +51,10 @@ public class LoginActivity extends AppCompatActivity {
                 Password.setText(null);
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
                 SharedPreferences.Editor editor = settings.edit();
-
-//Set "hasLoggedIn" to true
-                editor.putBoolean("hasLoggedIn", true);
-
-// Commit the edits!
+                editor.putString("key", "olemas");
                 editor.commit();
+
+
             }
         });
 
@@ -125,7 +124,10 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 Toast.makeText(getApplicationContext(), "Login successful.", Toast.LENGTH_LONG).show();
                 String stringEmail = Email.getText().toString();
+                //long a = myDb.id(email);
+                //id = String.valueOf(a);
                 intentSignIn.putExtra("userEmail", stringEmail);
+                intentSignIn.putExtra("id", id);
                 startActivity(intentSignIn);
             } else {
                 Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();

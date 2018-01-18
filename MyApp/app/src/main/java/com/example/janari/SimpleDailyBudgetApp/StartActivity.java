@@ -9,18 +9,16 @@ import android.util.Log;
 public class StartActivity extends AppCompatActivity {
 
 
-//TODO võiks ju olla aga miks see i tööta emulaatoril juba nii nagu andmebaasid. kui on mälus siis ei näita mulle enne
-    //välja login'i kui ma pole teinud logout'i
+//TODO miks ma saan koguaeg et tal on olemas see sharedpreference
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_start);
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-//Get "hasLoggedIn" value. If the value doesn't exist yet false is returned
-            boolean hasLoggedIn = settings.getBoolean("hasLoggedIn", false);
 
-            if(hasLoggedIn)
-            {
+            String string = settings.getString("key", null);
+
+            if(string == null) {
                 Intent intent = new Intent(StartActivity.this, LoginActivity.class);
                 startActivity(intent);
                 this.finish();

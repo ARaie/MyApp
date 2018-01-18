@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 //My user database class
@@ -104,6 +105,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("delete from " + TABLE_NAME);
     }
 
-    // Uus meetod samasugune kus emaili järgi võtab välja selle ID ja saadab tagasi
+
+    public Cursor AllID(String email){
+
+        String query = "SELECT ID" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ email });
+        return res;
+
+    }
+    public long ID(String email){
+
+        String query = "SELECT ID" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ email });
+    }
+
 
 }
