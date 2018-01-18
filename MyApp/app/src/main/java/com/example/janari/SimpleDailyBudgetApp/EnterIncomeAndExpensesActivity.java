@@ -33,6 +33,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     DataHelper InputDB;
     String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd;
 
+    //TODO going back to daily view activity ID is wrong
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +102,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             }
         });
 
-        // TODO Something wrong with this button. Dies when clicking. Cant open NavigationDrawer again
         // This button helps to send calculated sum to Daily sum field
         Button calculate = (Button) findViewById(R.id.calculate);
         calculate.setOnClickListener(new View.OnClickListener() {
@@ -250,20 +250,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         boolean isUpdate = budgetDB.updateSum(ID,
                 dailySum.toString());
     }
-
-    //TODO Not useful, but still don't delete code
-    // Useful method, but become to use maybe later.
-    public void DeleteData() {
-
-        ID = "";
-
-        Integer deletedRows = budgetDB.deleteData(ID);
-        if(deletedRows > 0)
-            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(EnterIncomeAndExpensesActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
-    }
-
 
     // TODO Temporary for checking
     public void viewData() {

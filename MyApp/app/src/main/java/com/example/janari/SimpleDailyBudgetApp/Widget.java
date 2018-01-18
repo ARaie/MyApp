@@ -49,6 +49,15 @@ public class Widget extends AppWidgetProvider {
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
 
+            
+            RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget);
+            view.setTextViewText(R.id.text, "Hea töö! :D");
+
+            ComponentName appWidget = new ComponentName(context, Widget.class);
+            AppWidgetManager apWidgetManager = AppWidgetManager.getInstance(context);
+
+            apWidgetManager.updateAppWidget(appWidget, view);
+
         }
     }
 
@@ -56,45 +65,13 @@ public class Widget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-        /*if (intent.getAction().equals(ACTION_UPDATE)) {
-            // handle intent here
-            String s = intent.getStringExtra("budget");
-
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-            views.setTextViewText(R.id.text, "tuli kohale :D");
-
-            ComponentName appWidget = new ComponentName(context, Widget.class);
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-            appWidgetManager.updateAppWidget(appWidget, views);
-        }*/
-
         if (ACTION_SIMPLEAPPWIDGET.equals(intent.getAction())) {
-
 
             Bundle extras = intent.getExtras();
             String s = extras.getString("budget");
 
-            if (extras == null) {
-                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-                views.setTextViewText(R.id.text, "shitkit pole :D");
 
-                ComponentName appWidget = new ComponentName(context, Widget.class);
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-                appWidgetManager.updateAppWidget(appWidget, views);
-            } else {
-                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-                views.setTextViewText(R.id.text, s);
-
-                ComponentName appWidget = new ComponentName(context, Widget.class);
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-                appWidgetManager.updateAppWidget(appWidget, views);
             }
-
-
-        }
     }
 }
 

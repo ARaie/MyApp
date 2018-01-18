@@ -74,10 +74,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-        public Integer deleteData (String id) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
-        }
     public Cursor budget(String id){
 
         String query = "SELECT DAILY_SUM" +

@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    //TODO Kõik lahtrid peavad olema täidetud
-
     DatabaseHelper myDb;
     EditText Name, Email, Password;
     Button btnAddData;
