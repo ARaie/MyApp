@@ -34,6 +34,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     DatabaseHelper myDb;
     String dailySum = "", id;
     EmailHelper emailDB;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
 
     @Override
@@ -177,18 +178,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_logout) {
-//TODO see logout ei puhasta Shared prefi ära. Ma ei teagi kuidas puhta lehe ette saab. niikaua kuni keegi teine sisse ei logi on ikkagi vanad andmed ees
+//TODO Logout is OK. Only widget holds data. And when you logout and click widget button
+            //TODO it opens last users budget activity. It doesn' t care that user loged out before.
             Intent intent = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
-            TextView start = (TextView) findViewById(R.id.oo);
-            start.setText(null);
-            SharedPreferences preferences = getSharedPreferences("key", StartActivity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.clear();
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.remove("key");
             editor.commit();
-            //TextView textValue = (TextView) findViewById(R.id.daily_sum);
-            //textValue.setText(null);
-            startActivity(intent);
             finish();
+            startActivity(intent);
             return true;
         }
 
