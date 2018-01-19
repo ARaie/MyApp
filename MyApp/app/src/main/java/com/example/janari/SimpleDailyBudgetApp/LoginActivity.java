@@ -17,11 +17,12 @@ public class LoginActivity extends AppCompatActivity {
 
     Button btnviewAll;
     DatabaseHelper myDb;
-    Button LogInButton, RegisterButton;
+    Button LogInButton, RegisterButton, emails;
     EditText Email, Password;
     String EmailHolder, PasswordHolder, id;
     Boolean EditTextEmptyHolder;
     public static final String PREFS_NAME = "MyPrefsFile";
+    EmailHelper emailDB;
 
 
 
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         Password = (EditText) findViewById(R.id.editPassword);
 
         myDb = new DatabaseHelper(this);
+        emailDB = new EmailHelper(this);
 
 
         //Adding click listener to log in button.
@@ -47,12 +49,14 @@ public class LoginActivity extends AppCompatActivity {
                 CheckEditTextStatus();
                 // Calling login method.
                 LoginFunction();
+                AddEmail();
                 Email.setText(null);
                 Password.setText(null);
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("key", "olemas");
                 editor.commit();
+
 
 
             }
@@ -80,6 +84,15 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+        emails = (Button) findViewById(R.id.aa);
+        emails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                viewEmails();
+
+            }
+        });
     }
 
     // TODO Temporary two functions to check data in database
@@ -98,6 +111,26 @@ public class LoginActivity extends AppCompatActivity {
             buffer.append("Name :" + res.getString(1) + "\n");
             buffer.append("Email :" + res.getString(2) + "\n");
             buffer.append("Password :" + res.getString(3) + "\n\n");
+
+        }
+
+        // Show all data
+        showMessage("Data", buffer.toString());
+    }
+    // TODO Temporary two functions to check data in database
+    public void viewEmails() {
+
+        Cursor res = emailDB.getAllData();
+        if (res.getCount() == 0) {
+            // show message
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id :" + res.getString(0) + "\n");
+            buffer.append("Name :" + res.getString(1) + "\n");
 
         }
 
@@ -123,11 +156,6 @@ public class LoginActivity extends AppCompatActivity {
             if(recordExists == true){
                 Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 Toast.makeText(getApplicationContext(), "Login successful.", Toast.LENGTH_LONG).show();
-                String stringEmail = Email.getText().toString();
-                //long a = myDb.id(email);
-                //id = String.valueOf(a);
-                intentSignIn.putExtra("userEmail", stringEmail);
-                intentSignIn.putExtra("id", id);
                 startActivity(intentSignIn);
             } else {
                 Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
@@ -154,6 +182,19 @@ public class LoginActivity extends AppCompatActivity {
 
             EditTextEmptyHolder = true;
         }
+    }
+    public void RefreshEmail() {
+
+
+        boolean isUpdate = emailDB.updateEmail("1",
+                Email.getText().toString());
+
+    }
+    public void AddEmail() {
+
+
+        boolean isInserted = emailDB.insertEmail("1", Email.getText().toString());
+        RefreshEmail();
     }
 
 }

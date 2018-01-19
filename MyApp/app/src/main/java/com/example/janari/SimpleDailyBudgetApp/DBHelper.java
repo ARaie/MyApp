@@ -84,7 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
 
     }
-    public long bud(String id){
+    public double bud(String id){
 
         String query = "SELECT DAILY_SUM" +
                 " FROM " + TABLE_NAME +

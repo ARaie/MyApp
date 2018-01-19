@@ -142,23 +142,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return DatabaseUtils.stringForQuery(db, query, new String[]{ email });
     }
-    public Cursor viewEmail(String id){
-
-        String query = "SELECT EMAIL" +
-                " FROM " + TABLE_NAME +
-                " WHERE " + COL_1 + " = ?;";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(query, new String[]{ id });
-        return res;
-
-    }
-    public String email(String id){
-
-        String query = "SELECT EMAIL" +
-                " FROM " + TABLE_NAME +
-                " WHERE " + COL_1 + " = ?;";
-        SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
-    }
-
 }

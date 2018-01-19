@@ -73,4 +73,14 @@
         android:layout_marginTop="27dp"
         android:text="View all data" />
 
+    <Button
+        android:id="@+id/aa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/view_data"
+        android:layout_below="@+id/view_data"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="13dp"
+        android:text="Button" />
+
 </RelativeLayout>

@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,12 +32,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
-    String dailySum = "", email, id;
+    String dailySum = "", id;
+    EmailHelper emailDB;
 
 
-// TODO After login to go NavigationDrawer activity - everything is working, but when going from another activity to
-    // NavigationDraver then fields that are related with ID will disappear.
-    //TODO one thing might be that in login activity I pass email to NavigationDrawer and its all about email. From another activities it cant take email
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,19 +44,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
         myDb = new DatabaseHelper(this);
+        emailDB = new EmailHelper(this);
 
 
         //Method for add yesturdays left sum when time is 00:00:00
          yesturdaysLeft ();
 
         // Get user email and name and save them to navigation drawer header view
-        NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
-        View hView = navigation.getHeaderView(0);
-        email = getIntent().getStringExtra("userEmail");
-        TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
-        setUserEmail.setText(email);
-        TextView ee = (TextView) findViewById(R.id.e);
-        ee.setText(email);
+        view_email();
         // View user name in navigation drawer view
         viewName();
 
@@ -81,7 +73,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             // TODO temporay fields. For viewing user ID and email
             viewID();
-            viewEmail();
 
             // Shows user daily budget
             viewAll();
@@ -186,7 +177,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_logout) {
-//TODO see logout ei puhasta Shared prefi ära
+//TODO see logout ei puhasta Shared prefi ära. Ma ei teagi kuidas puhta lehe ette saab. niikaua kuni keegi teine sisse ei logi on ikkagi vanad andmed ees
             Intent intent = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
             TextView start = (TextView) findViewById(R.id.oo);
             start.setText(null);
@@ -194,6 +185,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.commit();
+            //TextView textValue = (TextView) findViewById(R.id.daily_sum);
+            //textValue.setText(null);
             startActivity(intent);
             finish();
             return true;
@@ -252,8 +245,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return;
         } else {
 
-            long budget = budgetDB.bud(ID);
-            String budgetToString = String.valueOf(budget);
+            double budget = budgetDB.bud(ID);
+            double rounded = Math.round(budget);
+            String budgetToString = String.valueOf(rounded);
             TextView textValue = (TextView) findViewById(R.id.daily_sum);
             textValue.setText(budgetToString);
         }
@@ -274,9 +268,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 return;
             }else{
 
-                long budget = budgetDB.bud(ID);
-                String budgetToString = String.valueOf(budget);
-                double left = Double.parseDouble(budgetToString);
+                double left = budgetDB.bud(ID);
                 String daily = getIntent().getStringExtra("dailySum");
                 double Daily = Double.parseDouble(daily);
                 double sum = left + Daily;
@@ -322,8 +314,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     public void viewID() {
 
-        TextView ee = (TextView) findViewById(R.id.e);
-        String e = ee.getText().toString();
+        NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
+        View hView = navigation.getHeaderView(0);
+        TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
+        String e = setUserEmail.getText().toString();
 
         Cursor res = myDb.AllID(e);
         if (res.getCount() == 0) {
@@ -339,45 +333,48 @@ public class NavigationDrawerActivity extends AppCompatActivity
             textValue.setText(stringID);
         }
     }
-    public void viewEmail() {
-
-        TextView textValue = (TextView) findViewById(R.id.oo);
-        String es = textValue.getText().toString();
-
-        Cursor res = myDb.viewEmail(es);
-        if (res.getCount() == 0) {
-
-            TextView value = (TextView) findViewById(R.id.e);
-            value.setText(null);
-            return;
-        }else{
-
-            String email = myDb.email(es);
-            TextView textEmail = (TextView) findViewById(R.id.e);
-            textEmail.setText(email);
-        }
-    }
 
     public void viewName() {
 
-        TextView ee = (TextView) findViewById(R.id.e);
-        String e = ee.getText().toString();
+        NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
+        View hView = navigation.getHeaderView(0);
+        TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
+        String e = setUserEmail.getText().toString();
 
         Cursor res = myDb.AllName(e);
         if (res.getCount() == 0) {
 
-            NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
-            View hView = navigation.getHeaderView(0);
-            TextView setUserName = (TextView) hView.findViewById(R.id.user_name);
+            NavigationView navigation1 = (NavigationView) findViewById(R.id.nav_view);
+            View hView1 = navigation1.getHeaderView(0);
+            TextView setUserName = (TextView) hView1.findViewById(R.id.user_name);
             setUserName.setText(null);
             return;
         }else{
 
             String name = myDb.Name(e);
+            NavigationView navigation2 = (NavigationView) findViewById(R.id.nav_view);
+            View hView2 = navigation2.getHeaderView(0);
+            TextView setUserName = (TextView) hView2.findViewById(R.id.user_name);
+            setUserName.setText(name);
+        }
+    }
+    public void view_email() {
+
+        Cursor res = emailDB.viewEmail();
+        if (res.getCount() == 0) {
+
             NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
             View hView = navigation.getHeaderView(0);
-            TextView setUserName = (TextView) hView.findViewById(R.id.user_name);
-            setUserName.setText(name);
+            TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
+            setUserEmail.setText(null);
+            return;
+        }else{
+
+            String email = emailDB.email("1");
+            NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
+            View hView = navigation.getHeaderView(0);
+            TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
+            setUserEmail.setText(email);
         }
     }
 
