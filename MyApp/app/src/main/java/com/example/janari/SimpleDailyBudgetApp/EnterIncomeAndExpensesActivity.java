@@ -33,7 +33,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     DataHelper InputDB;
     String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd;
 
-    //TODO going back to daily view activity ID is wrong
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +48,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         start.setText(ID);
 
 
-        // TODO majority of picking date code should move to CalendarActivity class
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +148,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         });
 
         // Methods for ask data from input database and show them in fields
-        //TODO Dates are shown in ints. Need to be corrected.
         viewIncome();
         viewExpenses();
         viewStart();
@@ -323,10 +320,9 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             return;
         }else{
 
-            long start_date = InputDB.Start(ID);
-            String start_dateToString = String.valueOf(start_date);
+            String start_date = InputDB.Start(ID);
             TextView textValue = (TextView) findViewById(R.id.start_date);
-            textValue.setText(start_dateToString);
+            textValue.setText(start_date);
         }
     }
     public void viewExpenses() {
@@ -355,10 +351,9 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             return;
         }else{
 
-            long end_date = InputDB.End(ID);
-            String end_dateToString = String.valueOf(end_date);
+            String end_date = InputDB.End(ID);
             TextView textValue = (TextView) findViewById(R.id.end_date);
-            textValue.setText(end_dateToString);
+            textValue.setText(end_date);
         }
     }
 }

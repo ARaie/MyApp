@@ -7,6 +7,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Date;
+
 // User input database
 public class DataHelper extends SQLiteOpenHelper {
 
@@ -132,13 +134,13 @@ public class DataHelper extends SQLiteOpenHelper {
         return res;
 
     }
-    public long Start(String id){
+    public String Start(String id){
 
         String query = "SELECT START_DATE" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
 
     public Cursor AllEnd(String id){
@@ -151,13 +153,13 @@ public class DataHelper extends SQLiteOpenHelper {
         return res;
 
     }
-    public long End(String id){
+    public String End(String id){
 
         String query = "SELECT END_DATE" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
 }
 

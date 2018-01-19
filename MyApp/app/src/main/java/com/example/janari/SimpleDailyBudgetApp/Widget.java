@@ -8,70 +8,71 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class Widget extends AppWidgetProvider {
 
-    private static final String ACTION_SIMPLEAPPWIDGET = "ACTION_BROADCASTWIDGETSAMPLE";
-    public static final String ACTION_UPDATE = "yourpackage.TEXT_CHANGED";
-    private static int mCounter = 0;
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    public static final String APPWIDGET_UPDATE = "yourpackage.TEXT_CHANGED";
 
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-        // Construct an Intent which is pointing this class.
-        Intent intent = new Intent(context, Widget.class);
-        intent.setAction(ACTION_SIMPLEAPPWIDGET);
-        // And this time we are sending a broadcast with getBroadcast
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
 
-        views.setOnClickPendingIntent(R.id.text, pendingIntent);
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-    }
-
-    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+        final int N = appWidgetIds.length;
 
-            Intent intent = new Intent(context, RegisterActivity.class);
+        // Perform this loop procedure for each App Widget that belongs to this provider
+        for (int i=0; i<N; i++) {
+            int appWidgetId = appWidgetIds[i];
+
+            // TODO Don't know is this necessary code
+            Intent intent = new Intent(context, NavigationDrawerActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
             views.setOnClickPendingIntent(R.id.btn, pendingIntent);
 
-            // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
-
-            
-            RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget);
-            view.setTextViewText(R.id.text, "Hea töö! :D");
-
-            ComponentName appWidget = new ComponentName(context, Widget.class);
-            AppWidgetManager apWidgetManager = AppWidgetManager.getInstance(context);
-
-            apWidgetManager.updateAppWidget(appWidget, view);
-
         }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
 
-        if (ACTION_SIMPLEAPPWIDGET.equals(intent.getAction())) {
+        String action = intent.getAction();
+        Bundle extras = intent.getExtras();
+        String title1 = extras.getString("title");
+        Toast.makeText(context, title1,Toast.LENGTH_LONG).show();
 
-            Bundle extras = intent.getExtras();
-            String s = extras.getString("budget");
-
-
+        if (action != null && action.equals(APPWIDGET_UPDATE)) {
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName name = new ComponentName(context, Widget.class);
+            int[] appWidgetId = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
+            final int N = appWidgetId.length;
+            if (N < 1)
+            {
+                return ;
             }
+            else {
+                int id = appWidgetId[N-1];
+                updateWidget(context, appWidgetManager, id ,title1);
+            }
+        }
+
+        else {
+            super.onReceive(context, intent);
+        }
+    }
+
+
+    static void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, String title){
+
+        Intent intent = new Intent(context, NavigationDrawerActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
+        views.setTextViewText(R.id.text, title);
+        views.setOnClickPendingIntent(R.id.btn, pendingIntent);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+
     }
 }
 

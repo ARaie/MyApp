@@ -1,5 +1,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -17,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +35,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
     DatabaseHelper myDb;
     String dailySum = "", email, id;
 
+
+// TODO After login to go NavigationDrawer activity - everything is working, but when going from another activity to
+    // NavigationDraver then fields that are related with ID will disappear.
+    //TODO one thing might be that in login activity I pass email to NavigationDrawer and its all about email. From another activities it cant take email
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +107,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     dailySum = Double.toString(newValue);
                     AddData();
                     expences.setText(null);
+                    updateWidget();
 
                 }
             });
@@ -177,7 +186,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_logout) {
-
+//TODO see logout ei puhasta Shared prefi ära
             Intent intent = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
             TextView start = (TextView) findViewById(R.id.oo);
             start.setText(null);
@@ -283,21 +292,32 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Two methods for after every "-" button click add new daily sum in the budget database
     public void RefreshData() {
 
-        boolean isUpdate = budgetDB.updateSum(id,
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+        boolean isUpdate = budgetDB.updateSum(ID,
                 dailySum.toString());
 
     }
     public void AddData() {
 
-        boolean isInserted = budgetDB.insertDaily(id, dailySum.toString());
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
         RefreshData();
     }
 
     private void updateWidget() {
 
-        TextView textValue = (TextView) findViewById(R.id.daily_sum);
-        String stringValue = textValue.getText().toString();
-        sendBroadcast(new Intent(Widget.ACTION_UPDATE).putExtra("budget", stringValue));
+        TextView budget = (TextView) findViewById(R.id.daily_sum);
+
+        Intent i = new Intent(this, Widget.class);
+        i.setAction("yourpackage.TEXT_CHANGED");
+        Toast.makeText(getApplicationContext(),budget.getText().toString()+"from the activity",
+                Toast.LENGTH_SHORT).show();
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), Widget.class));
+        i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        i.putExtra("title", budget.getText().toString());
+        sendBroadcast(i);
     }
 
     public void viewID() {
