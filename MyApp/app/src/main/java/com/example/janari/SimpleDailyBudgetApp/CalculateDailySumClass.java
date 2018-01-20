@@ -4,9 +4,9 @@ package com.example.janari.SimpleDailyBudgetApp;
 public class CalculateDailySumClass {
 
 
-    public static double calculateSum (double value, double sum){
+    public static double calculateSum (double value, double sum, double days){
 
-        return value - sum;
+        return (value - sum)/ days;
     }
 
 

@@ -27,10 +27,9 @@ public class RegisterActivity extends AppCompatActivity {
         myDb = new DatabaseHelper(this);
 
 
-        //TODO Muuda ära nimetused
-        Name = (EditText) findViewById(R.id.editText_name);
-        Email = (EditText) findViewById(R.id.editText_surname);
-        Password = (EditText) findViewById(R.id.editText_Marks);
+        Name = (EditText) findViewById(R.id.enter_name);
+        Email = (EditText) findViewById(R.id.enter_email);
+        Password = (EditText) findViewById(R.id.enter_password);
 
         btnAddData = (Button) findViewById(R.id.button_add);
         btnAddData.setOnClickListener(new View.OnClickListener() {

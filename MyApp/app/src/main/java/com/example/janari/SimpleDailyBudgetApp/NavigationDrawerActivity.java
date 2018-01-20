@@ -32,8 +32,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
-    String dailySum = "", id;
+    String dailySum = "", id, days;
     EmailHelper emailDB;
+    DataHelper daysDB;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -46,10 +47,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
         budgetDB = new DBHelper(this);
         myDb = new DatabaseHelper(this);
         emailDB = new EmailHelper(this);
+        daysDB = new DataHelper(this);
 
 
         //Method for add yesturdays left sum when time is 00:00:00
-         yesturdaysLeft ();
+        // yesturdaysLeft ();
 
         // Get user email and name and save them to navigation drawer header view
         view_email();
@@ -87,15 +89,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                     // Here I take data from fields and parse them to doubles and then use the
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
+
                     dailySum = getIntent().getStringExtra("dailySum");
+                    String getDays = viewDays();
+                    double doubleDays = Double.parseDouble(getDays);
+                    String originalValue = view_sum();
+                    double originalValueDouble = Double.parseDouble(originalValue);
                     TextView textValue = (TextView) findViewById(R.id.daily_sum);
-                    String stringValue = textValue.getText().toString();
-                    double originalValue = Double.parseDouble(stringValue);
                     EditText expences = (EditText) findViewById(R.id.expences);
                     String stringValue2 = expences.getText().toString();
                     double expencesValue = Double.parseDouble(stringValue2);
-                    double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
-                    textValue.setText(Double.toString(newValue));
+                    double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
+                    double rounded = Math.round(newValue);
+                    textValue.setText(Double.toString(rounded));
                     dailySum = Double.toString(newValue);
                     AddData();
                     expences.setText(null);
@@ -113,6 +119,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 public void onClick(View view) {
 
                     //budgetDB.delete();
+                    //emailDB.delete();
                     viewData();
                 }
             });
@@ -251,7 +258,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
     }
 
-    public void yesturdaysLeft() {
+    /*public void yesturdaysLeft() {
 
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
@@ -278,7 +285,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             }
         }
     }
-
+*/
     // Two methods for after every "-" button click add new daily sum in the budget database
     public void RefreshData() {
 
@@ -373,6 +380,38 @@ public class NavigationDrawerActivity extends AppCompatActivity
             View hView = navigation.getHeaderView(0);
             TextView setUserEmail = (TextView) hView.findViewById(R.id.user_email);
             setUserEmail.setText(email);
+        }
+    }
+    public String viewDays() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = daysDB.AllDays(ID);
+        if (res.getCount() == 0) {
+
+            days = "1";
+            return days;
+        }else{
+
+            days = daysDB.Days(ID);
+            return days;
+        }
+    }
+    public String view_sum() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = daysDB.AllSum(ID);
+        if (res.getCount() == 0) {
+
+            days = "0";
+            return days;
+        }else{
+
+            days = daysDB.Sum(ID);
+            return days;
         }
     }
 

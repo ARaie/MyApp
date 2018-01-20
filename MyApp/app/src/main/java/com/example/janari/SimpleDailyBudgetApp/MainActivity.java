@@ -21,7 +21,7 @@ import java.util.Locale;
 // TODO Should be deleted activity. NavigationDrawerActivity in now my main activity.
 public class MainActivity extends AppCompatActivity {
 
-    DBHelper budgetDB;
+    /*DBHelper budgetDB;
     String dailySum = "", ID, email;
 
     @Override
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Actaion", null).show();
             }
         });
-
+*/
         // Calling method for get daily sum data from user budget database and show it to main page
         //viewAll();
     }
@@ -143,4 +143,4 @@ public class MainActivity extends AppCompatActivity {
        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
         RefreshData();
     }*/
-}
+

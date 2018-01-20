@@ -16,6 +16,8 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COL_2 = "DAILY_SUM";
 
 
+
+
         public DBHelper(Context context) {
             super(context, DATABASE_NAME, null, 1);
         }

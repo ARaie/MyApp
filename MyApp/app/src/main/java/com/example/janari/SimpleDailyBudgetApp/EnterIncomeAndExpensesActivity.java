@@ -31,7 +31,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     Boolean EmptyField;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd;
+    String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd, Days, sum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,9 +214,15 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             EditText end = (EditText) findViewById(R.id.end_date);
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
+            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy");
+            double rounded2 = Math.round(days);
+            Days = String.valueOf(rounded2);
+            double sumDouble = incomeValue - fixedExpensesValue;
+            double rounded3 = Math.round(sumDouble);
+            sum = String.valueOf(rounded3);
 
             // TODO I don't know if it is better when period 1.11-30.11 makes 30days or period 1.11-1.12. (How to count days.)
-            double value = (incomeValue - fixedExpensesValue) / Daybetween(stringStart, stringEnd, "dd.MM.yyyy");
+            double value = (incomeValue - fixedExpensesValue) / days;
             double rounded = Math.round(value);
             String calculated = String.valueOf(rounded);
 
@@ -263,8 +269,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             buffer.append("Id :" + res.getString(0) + "\n");
             buffer.append("Name :" + res.getString(1) + "\n");
             buffer.append("Email :" + res.getString(2) + "\n");
-            buffer.append("Password :" + res.getString(3) + "\n\n");
-            buffer.append("Password :" + res.getString(4) + "\n\n");
+            buffer.append("Password :" + res.getString(3) + "\n");
+            buffer.append("Password :" + res.getString(4) + "\n");
+            buffer.append("Password :" + res.getString(5) + "\n");
+            buffer.append("Password :" + res.getString(6) + "\n\n");
 
         }
 
@@ -283,14 +291,14 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // Add and update data for user entered period, income and expenses
     public  void AddData() {
 
-        boolean isInserted = InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
+        boolean isInserted = InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days, sum);
         UpdateInput();
 
     }
     public void UpdateInput() {
 
             boolean isUpdate = InputDB.updateData(ID,
-                    mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString());
+                    mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days, sum);
 
         }
 
