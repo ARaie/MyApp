@@ -193,7 +193,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
 
     // Calculating daily sum logic is in this method
-    // TODO Math should be corrected - same day for start and end will collapse the app
     public void CalculateDataFunction() {
 
         if (EmptyField) {
@@ -216,14 +215,13 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
             // Days and sum are saved also separately to database for using them in further calculations
-            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy");
+            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
             double rounded2 = Math.round(days);
             Days = String.valueOf(rounded2);
             double sumDouble = incomeValue - fixedExpensesValue;
             double rounded3 = Math.round(sumDouble);
             sum = String.valueOf(rounded3);
 
-            // TODO I don't know if it is better when period 1.11-30.11 makes 30days or period 1.11-1.12. (How to count days.)
             double value = (incomeValue - fixedExpensesValue) / days;
             double rounded = Math.round(value);
             String calculated = String.valueOf(rounded);

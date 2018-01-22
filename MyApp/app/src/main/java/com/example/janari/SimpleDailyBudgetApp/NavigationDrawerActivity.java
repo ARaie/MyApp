@@ -89,7 +89,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     // Here I take data from fields and parse them to doubles and then use the
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
 
-                    //TODO Little math problems. It takes always the first sum. How to refresh the sum?
                     dailySum = getIntent().getStringExtra("dailySum");
                     String getDays = viewDays();
                     double doubleDays = Double.parseDouble(getDays);
@@ -407,7 +406,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Cursor res = daysDB.AllDays(ID);
         if (res.getCount() == 0) {
 
-            days = "1";
+            days = "0";
             return days;
         }else{
 
