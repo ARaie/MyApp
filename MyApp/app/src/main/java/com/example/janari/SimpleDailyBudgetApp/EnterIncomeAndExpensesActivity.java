@@ -48,6 +48,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         start.setText(ID);
 
 
+// Calendar activity code
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,7 +193,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
 
     // Calculating daily sum logic is in this method
-    // TODO Math should be corrected - same day for start and end collapse the app
+    // TODO Math should be corrected - same day for start and end will collapse the app
     public void CalculateDataFunction() {
 
         if (EmptyField) {
@@ -214,6 +215,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             EditText end = (EditText) findViewById(R.id.end_date);
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
+            // Days and sum are saved also separately to database for using them in further calculations
             double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy");
             double rounded2 = Math.round(days);
             Days = String.valueOf(rounded2);
@@ -226,7 +228,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             double rounded = Math.round(value);
             String calculated = String.valueOf(rounded);
 
-            // I use Indent to send calculated value to NavigationDrawerActivity - because this is at the moment my main activity
+            // I use Indent to send calculated value to NavigationDrawerActivity
             Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
             // Here I get calculated dailySum from this method to use this value to addData() method
             dailySum = calculated;
@@ -240,10 +242,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         }
     }
 
-    // Method for adding data to database. Start date, end date and Daily sum.
+    // Method for adding data to budget database. ID and Daily sum.
     public  void AddDaily() {
 
-        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
+        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString(), sum);
         UpdateData();
 
     }
@@ -251,10 +253,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     public void UpdateData() {
 
         boolean isUpdate = budgetDB.updateSum(ID,
-                dailySum.toString());
+                dailySum.toString(), sum);
     }
 
-    // TODO Temporary for checking
+    // TODO Temporary for checking input database
     public void viewData() {
 
         Cursor res = InputDB.getAllData();
@@ -272,7 +274,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             buffer.append("Password :" + res.getString(3) + "\n");
             buffer.append("Password :" + res.getString(4) + "\n");
             buffer.append("Password :" + res.getString(5) + "\n");
-            buffer.append("Password :" + res.getString(6) + "\n\n");
 
         }
 
@@ -291,17 +292,19 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // Add and update data for user entered period, income and expenses
     public  void AddData() {
 
-        boolean isInserted = InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days, sum);
+        boolean isInserted = InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days);
         UpdateInput();
 
     }
+    // Refreshing data in database
     public void UpdateInput() {
 
             boolean isUpdate = InputDB.updateData(ID,
-                    mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days, sum);
+                    mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days);
 
         }
 
+// Four methods for check if there is data in database and if there is then save it in activity fields
     public void viewIncome() {
 
         Cursor res = InputDB.AllIncome(ID);

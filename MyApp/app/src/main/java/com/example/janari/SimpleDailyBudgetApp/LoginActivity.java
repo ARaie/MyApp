@@ -49,14 +49,16 @@ public class LoginActivity extends AppCompatActivity {
                 CheckEditTextStatus();
                 // Calling login method.
                 LoginFunction();
+                // Adds logged in user email to email database to identify user with ID
                 AddEmail();
+                // Removes data from EditText fields
                 Email.setText(null);
                 Password.setText(null);
+                // Saving data for logged in session
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("key", "olemas");
                 editor.commit();
-
 
 
             }
@@ -84,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+        //TODO Temporary button for check logged in user email
         emails = (Button) findViewById(R.id.aa);
         emails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +187,8 @@ public class LoginActivity extends AppCompatActivity {
             EditTextEmptyHolder = true;
         }
     }
+
+    // Refreshes and saves over the user email
     public void RefreshEmail() {
 
 
@@ -190,6 +196,8 @@ public class LoginActivity extends AppCompatActivity {
                 Email.getText().toString());
 
     }
+
+    // Saves logged in user email
     public void AddEmail() {
 
 

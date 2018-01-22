@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -32,7 +31,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
-    String dailySum = "", id, days;
+    String dailySum = "", id, days, sum;
     EmailHelper emailDB;
     DataHelper daysDB;
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -50,12 +49,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         daysDB = new DataHelper(this);
 
 
+        // TODO another method for calculate daily sum
         //Method for add yesturdays left sum when time is 00:00:00
         // yesturdaysLeft ();
 
         // Get user email and name and save them to navigation drawer header view
         view_email();
-        // View user name in navigation drawer view
         viewName();
 
             // Navigation drawer code
@@ -74,7 +73,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView dateView = (TextView) findViewById(R.id.date_today);
             setDate(dateView);
 
-            // TODO temporay fields. For viewing user ID and email
+            // TODO temporary fields. To view user ID
             viewID();
 
             // Shows user daily budget
@@ -90,6 +89,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     // Here I take data from fields and parse them to doubles and then use the
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
 
+                    //TODO Little math problems. It takes always the first sum. How to refresh the sum?
                     dailySum = getIntent().getStringExtra("dailySum");
                     String getDays = viewDays();
                     double doubleDays = Double.parseDouble(getDays);
@@ -103,14 +103,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     double rounded = Math.round(newValue);
                     textValue.setText(Double.toString(rounded));
                     dailySum = Double.toString(newValue);
+                    double sumDouble = originalValueDouble - expencesValue;
+                    sum = Double.toString(sumDouble);
+                    // Adds calculated daily sum back to budget database
                     AddData();
+                    // Empty the EditText field
                     expences.setText(null);
+                    // Method that updates widget view
                     updateWidget();
 
                 }
             });
 
-            // TODO Temporary. Calling method for get daily sum data from user budget database and show it to main page
+            // TODO Temporary. Calling method for get daily sum data from user budget database
 
             Button be = (Button) findViewById(R.id.ooo);
             be.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +128,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     viewData();
                 }
             });
+            // Method that updates widget view
             updateWidget();
         }
 
@@ -139,7 +145,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         StringBuffer buffer = new StringBuffer();
         while (res.moveToNext()) {
             buffer.append("Id :" + res.getString(0) + "\n");
-            buffer.append("Name :" + res.getString(1) + "\n");
+            buffer.append("Daily :" + res.getString(1) + "\n");
+            buffer.append("CalculatedSum :" + res.getString(2) + "\n\n");
         }
 
         // Show all data
@@ -186,8 +193,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
         if (id == R.id.action_logout) {
 //TODO Logout is OK. Only widget holds data. And when you logout and click widget button
-            //TODO it opens last users budget activity. It doesn' t care that user loged out before.
+// TODO it opens last users budget activity. It doesn' t care that user was already logged out.
             Intent intent = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
+            // Empties SharedPreferences
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.remove("key");
@@ -212,6 +220,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Intent anIntent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
             startActivity(anIntent);
         } else if (id == R.id.nav_data) {
+            // Starts the input entering activity and also gives logged in user ID
             TextView start = (TextView) findViewById(R.id.oo);
             String string = start.getText().toString();
             Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
@@ -292,17 +301,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
         boolean isUpdate = budgetDB.updateSum(ID,
-                dailySum.toString());
+                dailySum.toString(), sum);
 
     }
     public void AddData() {
 
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
-        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString());
+        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString(), sum);
         RefreshData();
     }
 
+    // Method for passing daily sum to widget view
     private void updateWidget() {
 
         TextView budget = (TextView) findViewById(R.id.daily_sum);
@@ -317,6 +327,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         sendBroadcast(i);
     }
 
+    // Takes user id from user database and show it in activity field. Based on logged in user email
     public void viewID() {
 
         NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
@@ -339,6 +350,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
     }
 
+    // Takes user name from user database and show it in navigation drawer menu field. Based on logged in user email
     public void viewName() {
 
         NavigationView navigation = (NavigationView) findViewById(R.id.nav_view);
@@ -363,6 +375,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             setUserName.setText(name);
         }
     }
+
+    // Takes user email from user database and show it in navigation drawer menu field. Based on email database.
     public void view_email() {
 
         Cursor res = emailDB.viewEmail();
@@ -382,6 +396,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
             setUserEmail.setText(email);
         }
     }
+
+    // Takes days between user entered start and end dates from input database. Based on user ID.
+    // Method is for calculating new daily sum when new expenses are entered.
     public String viewDays() {
 
         TextView id = (TextView) findViewById(R.id.oo);
@@ -398,21 +415,23 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return days;
         }
     }
+
+    // Takes sum from input database that is calculated based on user incomes and fixed expenses. Based on user ID.
+    // Method is for calculating new daily sum when new expenses are entered.
     public String view_sum() {
 
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
 
-        Cursor res = daysDB.AllSum(ID);
+        Cursor res = budgetDB.AllSum(ID);
         if (res.getCount() == 0) {
 
-            days = "0";
-            return days;
+            String calculatedSum = "0";
+            return calculatedSum;
         }else{
 
-            days = daysDB.Sum(ID);
-            return days;
+            String calculatedSum = budgetDB.Sum(ID);
+            return calculatedSum;
         }
     }
-
 }

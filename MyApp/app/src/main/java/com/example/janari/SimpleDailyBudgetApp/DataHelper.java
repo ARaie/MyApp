@@ -7,7 +7,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.Date;
 
 // User input database
 public class DataHelper extends SQLiteOpenHelper {
@@ -20,7 +19,6 @@ public class DataHelper extends SQLiteOpenHelper {
     public static final String COL_4 = "START_DATE";
     public static final String COL_5 = "END_DATE";
     public static final String COL_6 = "DAYS";
-    public static final String COL_7 = "SUM";
 
     public DataHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -28,7 +26,7 @@ public class DataHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (ID TEXT, INCOME TEXT,EXPENSES TEXT,START_DATE TEXT,END_DATE TEXT,DAYS TEXT,SUM TEXT)");
+        db.execSQL("create table " + TABLE_NAME + " (ID TEXT, INCOME TEXT,EXPENSES TEXT,START_DATE TEXT,END_DATE TEXT,DAYS TEXT)");
     }
 
     @Override
@@ -37,7 +35,7 @@ public class DataHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String id, String income, String expenses, String start_date, String end_date, String days, String sum) {
+    public boolean insertData(String id, String income, String expenses, String start_date, String end_date, String days) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, id);
@@ -46,7 +44,6 @@ public class DataHelper extends SQLiteOpenHelper {
         contentValues.put(COL_4,start_date);
         contentValues.put(COL_5,end_date);
         contentValues.put(COL_6,days);
-        contentValues.put(COL_7,sum);
         long result = db.insert(TABLE_NAME,null ,contentValues);
         if(result == -1)
             return false;
@@ -75,7 +72,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
         return rec;
     }
-    public boolean updateData(String id, String income, String expenses, String start_date, String end_date, String days, String sum) {
+    public boolean updateData(String id, String income, String expenses, String start_date, String end_date, String days) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -85,7 +82,6 @@ public class DataHelper extends SQLiteOpenHelper {
         contentValues.put(COL_4,start_date);
         contentValues.put(COL_5,end_date);
         contentValues.put(COL_6,days);
-        contentValues.put(COL_7,sum);
         db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
         return true;
     }
@@ -185,23 +181,6 @@ public class DataHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
-    public Cursor AllSum(String id){
 
-        String query = "SELECT SUM" +
-                " FROM " + TABLE_NAME +
-                " WHERE " + COL_1 + " = ?;";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(query, new String[]{ id });
-        return res;
-
-    }
-    public String Sum(String id){
-
-        String query = "SELECT SUM" +
-                " FROM " + TABLE_NAME +
-                " WHERE " + COL_1 + " = ?;";
-        SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
-    }
 }
 

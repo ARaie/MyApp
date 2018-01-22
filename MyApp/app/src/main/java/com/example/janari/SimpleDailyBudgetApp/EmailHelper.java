@@ -8,12 +8,13 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+// Database for set every user fixed ID
 public class EmailHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Email";
     public static final String TABLE_NAME = "Emails";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "EMAIL";
-
 
 
     public EmailHelper(Context context) {

@@ -61,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
                // AddData();
                 expences.setText(null);
 
-                // TODO not very useful code I think
-                Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
-                        .setAction("Actaion", null).show();
+
             }
         });
 */

@@ -14,8 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String TABLE_NAME = "Money";
         public static final String COL_1 = "ID";
         public static final String COL_2 = "DAILY_SUM";
-
-
+        public static final String COL_3 = "SUM";
 
 
         public DBHelper(Context context) {
@@ -24,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,DAILY_SUM TEXT)");
+            db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,DAILY_SUM TEXT,SUM TEXT)");
         }
 
         @Override
@@ -33,11 +32,12 @@ public class DBHelper extends SQLiteOpenHelper {
             onCreate(db);
         }
 
-    public boolean insertDaily(String id,String daily_sum) {
+    public boolean insertDaily(String id,String daily_sum,String sum) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,id);
         contentValues.put(COL_2,daily_sum);
+        contentValues.put(COL_3,sum);
         long result = db.insert(TABLE_NAME,null ,contentValues);
         if(result == -1)
             return false;
@@ -67,11 +67,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateSum(String id,String daily_sum) {
+    public boolean updateSum(String id,String daily_sum, String sum) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,id);
         contentValues.put(COL_2,daily_sum);
+        contentValues.put(COL_3,sum);
         db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
         return true;
     }
@@ -99,4 +100,22 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from " + TABLE_NAME);
     }
+    public Cursor AllSum(String id){
+
+        String query = "SELECT SUM" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ id });
+        return res;
+
     }
+    public String Sum(String id){
+
+        String query = "SELECT SUM" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_1 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
+    }
+}

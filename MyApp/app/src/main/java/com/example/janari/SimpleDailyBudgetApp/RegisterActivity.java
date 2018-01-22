@@ -38,36 +38,28 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
+                // Check that EditText fields are not empty
                 CheckEditTextStatus();
+                // If fields are not empty
                 if(EditTextEmptyHolder) {
 
                     // Add new user to database
                     UpdateData();
-                    //DeleteData();
 
+                    // Starts login activity
                     Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
 
                 }else{
+                    // When fields are not filled
                     Toast.makeText(getApplicationContext(), "Enter email and password", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
     }
 
-    // May be useful method, but not in use at the moment
-    public void DeleteData() {
-
-        Integer deletedRows = myDb.deleteData(id);
-        if(deletedRows > 0)
-            Toast.makeText(RegisterActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(RegisterActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
-    }
-
-    // Updates data in user info database
+    // Adds and updates data in user info database
     public void UpdateData() {
 
         long i = myDb.insertData(Name.getText().toString(),
@@ -83,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
                    }
 
+  // Checks that fields are not empty
     public void CheckEditTextStatus() {
 
         // Getting value from All EditText and storing into String Variables.
@@ -115,9 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //TODO Menu is missing some functions...
-        //noinspection SimplifiableIfStatement
+        // TODO ...
         if (id == R.id.action_settings) {
             return true;
         }

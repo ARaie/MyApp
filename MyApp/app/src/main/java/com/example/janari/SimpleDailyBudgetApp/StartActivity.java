@@ -5,10 +5,11 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+
+// Activity that checks if user is logged in or not and starts right activity
 public class StartActivity extends AppCompatActivity {
 
 
-//TODO miks ma saan koguaeg et tal on olemas see sharedpreference
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
