@@ -20,8 +20,8 @@ import java.util.Locale;
 
 // TODO Should be deleted activity. NavigationDrawerActivity in now my main activity.
 public class MainActivity extends AppCompatActivity {
-/*
-    DBHelper budgetDB;
+
+    /*DBHelper budgetDB;
     String dailySum = "", ID, email;
 
     @Override
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Display the current date
         TextView dateView = (TextView)findViewById(R.id.date_today);
-        setDate(dateView);
+        dateView.setText("Kena!");
 
         // Get calculated daily sum and displays it in Daily sum field
         String value = getIntent().getStringExtra("key");
@@ -58,19 +58,17 @@ public class MainActivity extends AppCompatActivity {
                 double newValue = CalculateDailySumClass.calculateSum(originalValue, expencesValue);
                 textValue.setText(Double.toString(newValue));
                 dailySum = Double.toString(newValue);
-                AddData();
+               // AddData();
                 expences.setText(null);
 
-                // TODO not very useful code I think
-                Snackbar.make(view, "Calculate your daily sum ", Snackbar.LENGTH_LONG)
-                        .setAction("Actaion", null).show();
+
             }
         });
-
+*/
         // Calling method for get daily sum data from user budget database and show it to main page
-        viewAll();
+        //viewAll();
     }
-    // This method is for get current date
+/*    // This method is for get current date
     public void setDate (TextView view){
         String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
         view.setText(date);
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public  void AddData() {
 
-        boolean isInserted = budgetDB.insertDaily(dailySum.toString());
+       boolean isInserted = budgetDB.insertDaily(dailySum.toString());
         RefreshData();
     }*/
-}
+

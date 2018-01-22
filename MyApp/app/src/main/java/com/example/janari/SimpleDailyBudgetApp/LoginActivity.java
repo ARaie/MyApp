@@ -1,8 +1,8 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,10 +17,14 @@ public class LoginActivity extends AppCompatActivity {
 
     Button btnviewAll;
     DatabaseHelper myDb;
-    Button LogInButton, RegisterButton;
+    Button LogInButton, RegisterButton, emails;
     EditText Email, Password;
-    String EmailHolder, PasswordHolder;
+    String EmailHolder, PasswordHolder, id;
     Boolean EditTextEmptyHolder;
+    public static final String PREFS_NAME = "MyPrefsFile";
+    EmailHelper emailDB;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         Password = (EditText) findViewById(R.id.editPassword);
 
         myDb = new DatabaseHelper(this);
+        emailDB = new EmailHelper(this);
+
 
         //Adding click listener to log in button.
         LogInButton.setOnClickListener(new View.OnClickListener() {
@@ -43,8 +49,18 @@ public class LoginActivity extends AppCompatActivity {
                 CheckEditTextStatus();
                 // Calling login method.
                 LoginFunction();
+                // Adds logged in user email to email database to identify user with ID
+                AddEmail();
+                // Removes data from EditText fields
                 Email.setText(null);
                 Password.setText(null);
+                // Saving data for logged in session
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("key", "olemas");
+                editor.commit();
+
+
             }
         });
 
@@ -65,7 +81,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                //myDb.delete();
                 viewAll();
+
+            }
+        });
+
+        //TODO Temporary button for check logged in user email
+        emails = (Button) findViewById(R.id.aa);
+        emails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                viewEmails();
 
             }
         });
@@ -93,6 +121,26 @@ public class LoginActivity extends AppCompatActivity {
         // Show all data
         showMessage("Data", buffer.toString());
     }
+    // TODO Temporary two functions to check data in database
+    public void viewEmails() {
+
+        Cursor res = emailDB.getAllData();
+        if (res.getCount() == 0) {
+            // show message
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id :" + res.getString(0) + "\n");
+            buffer.append("Name :" + res.getString(1) + "\n");
+
+        }
+
+        // Show all data
+        showMessage("Data", buffer.toString());
+    }
 
     public void showMessage(String title, String Message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -112,8 +160,6 @@ public class LoginActivity extends AppCompatActivity {
             if(recordExists == true){
                 Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 Toast.makeText(getApplicationContext(), "Login successful.", Toast.LENGTH_LONG).show();
-                String stringEmail = Email.getText().toString();
-                intentSignIn.putExtra("userEmail", stringEmail);
                 startActivity(intentSignIn);
             } else {
                 Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
@@ -141,4 +187,22 @@ public class LoginActivity extends AppCompatActivity {
             EditTextEmptyHolder = true;
         }
     }
+
+    // Refreshes and saves over the user email
+    public void RefreshEmail() {
+
+
+        boolean isUpdate = emailDB.updateEmail("1",
+                Email.getText().toString());
+
+    }
+
+    // Saves logged in user email
+    public void AddEmail() {
+
+
+        boolean isInserted = emailDB.insertEmail("1", Email.getText().toString());
+        RefreshEmail();
+    }
+
 }

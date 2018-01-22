@@ -3,13 +3,12 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
-import android.widget.Toast;
 
 
-//My database class
+//User database class
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "UserData";
     public static final String TABLE_NAME = "User";
@@ -17,6 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2 = "NAME";
     public static final String COL_3 = "EMAIL";
     public static final String COL_4 = "PASSWORD";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -33,18 +33,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String name,String email,String password) {
+    public long insertData(String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2,name);
         contentValues.put(COL_3,email);
         contentValues.put(COL_4,password);
-        long result = db.insert(TABLE_NAME,null ,contentValues);
-        if(result == -1)
-            return false;
-        else
-            return true;
+        long id = db.insert(TABLE_NAME,null ,contentValues);
+
+        return id;
     }
+    public long id(String email){
+
+        String query = "SELECT ID" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ email });
+    }
+    public String name(String email){
+
+        String query = "SELECT NAME" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ email });
+        }
 
     public boolean updateData(String id,String name,String email,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -85,7 +99,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return exist;
     }
+    public void delete(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_NAME);
+    }
 
-    // Uus meetod samasugune kus emaili järgi võtab välja selle ID ja saadab tagasi
 
+    public Cursor AllID(String email){
+
+        String query = "SELECT ID" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ email });
+        return res;
+
+    }
+    public long ID(String email){
+
+        String query = "SELECT ID" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.longForQuery(db, query, new String[]{ email });
+    }
+    public Cursor AllName(String email){
+
+        String query = "SELECT NAME" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(query, new String[]{ email });
+        return res;
+
+    }
+    public String Name(String email){
+
+        String query = "SELECT NAME" +
+                " FROM " + TABLE_NAME +
+                " WHERE " + COL_3 + " = ?;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ email });
+    }
 }

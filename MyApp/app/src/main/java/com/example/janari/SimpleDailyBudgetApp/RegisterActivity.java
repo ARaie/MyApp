@@ -4,6 +4,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,12 +14,11 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    //TODO Kõik lahtrid peavad olema täidetud
-
     DatabaseHelper myDb;
     EditText Name, Email, Password;
     Button btnAddData;
-    String ID;
+    String EmailHolder, PasswordHolder, NameHolder, id;
+    Boolean EditTextEmptyHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,60 +27,46 @@ public class RegisterActivity extends AppCompatActivity {
         myDb = new DatabaseHelper(this);
 
 
-        //TODO Muuda ära nimetused
-        Name = (EditText)findViewById(R.id.editText_name);
-        Email = (EditText)findViewById(R.id.editText_surname);
-        Password = (EditText)findViewById(R.id.editText_Marks);
+        Name = (EditText) findViewById(R.id.enter_name);
+        Email = (EditText) findViewById(R.id.enter_email);
+        Password = (EditText) findViewById(R.id.enter_password);
 
-        ID = "1";
-        btnAddData = (Button)findViewById(R.id.button_add);
+        btnAddData = (Button) findViewById(R.id.button_add);
+        btnAddData.setOnClickListener(new View.OnClickListener() {
 
-        // calling method for add data to user info database
-        AddData();
+            @Override
+            public void onClick(View view) {
 
-    }
 
-    // Adding data to user info database
-    public  void AddData() {
-        btnAddData.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean isInserted = myDb.insertData(Name.getText().toString(),
-                                Email.getText().toString(),
-                                Password.getText().toString() );
-                                UpdateData();
-                                //DeleteData();
+                // Check that EditText fields are not empty
+                CheckEditTextStatus();
+                // If fields are not empty
+                if(EditTextEmptyHolder) {
 
-                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        
-                        if(isInserted == true)
-                            Toast.makeText(RegisterActivity.this,"Data Inserted",Toast.LENGTH_LONG).show();
+                    // Add new user to database
+                    UpdateData();
 
-                        else
-                            Toast.makeText(RegisterActivity.this,"Data not Inserted",Toast.LENGTH_LONG).show();
-                    }
+                    // Starts login activity
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
 
+                }else{
+                    // When fields are not filled
+                    Toast.makeText(getApplicationContext(), "Enter email and password", Toast.LENGTH_LONG).show();
                 }
-
-        );
+            }
+        });
 
     }
 
-    // May be useful method, but not in use at the moment
-    public void DeleteData() {
-
-        Integer deletedRows = myDb.deleteData(ID);
-        if(deletedRows > 0)
-            Toast.makeText(RegisterActivity.this,"Data Deleted",Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(RegisterActivity.this,"Data not Deleted",Toast.LENGTH_LONG).show();
-    }
-
-    // Updates data in user info database
+    // Adds and updates data in user info database
     public void UpdateData() {
-        boolean isUpdate = myDb.updateData(ID,
+
+        long i = myDb.insertData(Name.getText().toString(),
+                Email.getText().toString(),
+                Password.getText().toString());
+        id = String.valueOf(i);
+        boolean isUpdate = myDb.updateData(id,
                 Name.getText().toString(),
                 Email.getText().toString(),Password.getText().toString());
         if(isUpdate == true)
@@ -88,6 +74,26 @@ public class RegisterActivity extends AppCompatActivity {
         else
             Toast.makeText(RegisterActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
                    }
+
+  // Checks that fields are not empty
+    public void CheckEditTextStatus() {
+
+        // Getting value from All EditText and storing into String Variables.
+        NameHolder = Name.getText().toString();
+        EmailHolder = Email.getText().toString();
+        PasswordHolder = Password.getText().toString();
+
+        // Checking EditText is empty or no using TextUtils.
+        if (TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)) {
+
+            EditTextEmptyHolder = false;
+
+        } else {
+
+            EditTextEmptyHolder = true;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,8 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
+        // TODO ...
         if (id == R.id.action_settings) {
             return true;
         }
