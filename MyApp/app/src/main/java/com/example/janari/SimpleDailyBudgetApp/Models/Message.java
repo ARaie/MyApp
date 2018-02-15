@@ -9,25 +9,22 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Message {
 
-    public String author;
-    public String body;
+    public String userBudget;
     public String time;
 
     public Message() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Message(String author, String body, String time) {
-        this.author = author;
-        this.body = body;
+    public Message(String userBudget,String time) {
+        this.userBudget = userBudget;
         this.time = time;
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("author", author);
-        result.put("body", body);
+        result.put("author", userBudget);
         result.put("time", time);
 
         return result;

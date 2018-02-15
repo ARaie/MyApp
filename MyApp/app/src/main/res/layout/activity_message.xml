@@ -9,7 +9,13 @@
             android:text="Pere eelarve"
             android:textSize="28sp" />
 
-    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:gravity="center" android:textSize="18sp" android:text="Messages"/>
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Messages"
+            android:textSize="18sp" />
 
 </LinearLayout>
 
@@ -32,12 +38,17 @@
 
     <LinearLayout android:orientation="vertical" android:layout_height="0dp" android:layout_width="fill_parent" android:gravity="center" android:layout_weight="1" android:paddingRight="16dp" android:paddingLeft="16dp" android:background="#E0E0E0">
 
-    <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/edt_sent_text" android:inputType="text"/>
 
+        <LinearLayout android:weightSum="2" android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="right" android:id="@+id/layout_signed_in_buttons" android:layout_centerInParent="true">
 
-    <LinearLayout android:weightSum="2" android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="right" android:id="@+id/layout_signed_in_buttons" android:layout_centerInParent="true">
+            <TextView
+                android:id="@+id/edt_sent_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="TextView" />
 
-    <Button android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="0.5" android:text="Back" android:id="@+id/btn_back"/>
+            <Button android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="0.5" android:text="Back" android:id="@+id/btn_back"/>
 
     <Button android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="0.5" android:text="Send" android:id="@+id/btn_send"/>
 

@@ -10,13 +10,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.janari.SimpleDailyBudgetApp.Models.User;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.example.janari.SimpleDailyBudgetApp.Models.User;
+import com.google.firebase.database.ValueEventListener;
 
 public class FamilyLoginActivity extends AppCompatActivity implements
         View.OnClickListener {
@@ -72,7 +77,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements
     }
 
     private void createAccount(String email, String password) {
-        Log.e(TAG, "createAccount:" + email);
+
         if (!validateForm(email, password)) {
             return;
         }
@@ -82,16 +87,12 @@ public class FamilyLoginActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.e(TAG, "createAccount: Success!");
-
-                            // update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                            writeNewUser(user.getUid(), getUsernameFromEmail(user.getEmail()), user.getEmail());
+                            //writeNewUser(user.getUid(), edtEmail.getText().toString(), edtPassword.getText().toString());
                         } else {
-                            Log.e(TAG, "createAccount: Fail!", task.getException());
-                            Toast.makeText(FamilyLoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //zwriteNewUser(user.getUid(), edtEmail.getText().toString(), edtPassword.getText().toString());
+
                         }
                     }
                 });
@@ -129,12 +130,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements
     private void signOut() {
         mAuth.signOut();
         updateUI(null);
-    }
 
-    private void writeNewUser(String userId, String username, String email) {
-        User user = new User(username, email);
-
-        FirebaseDatabase.getInstance().getReference().child("users").child(userId).setValue(user);
     }
 
     private boolean validateForm(String email, String password) {
@@ -148,12 +144,6 @@ public class FamilyLoginActivity extends AppCompatActivity implements
             Toast.makeText(FamilyLoginActivity.this, "Enter password!", Toast.LENGTH_SHORT).show();
             return false;
         }
-
-        if (password.length() < 6) {
-            Toast.makeText(FamilyLoginActivity.this, "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         return true;
     }
 
