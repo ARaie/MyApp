@@ -225,6 +225,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
             intent.putExtra("id", string);
             startActivity(intent);
+        } else if (id == R.id.nav_family) {
+            TextView start = (TextView) findViewById(R.id.oo);
+            String string = start.getText().toString();
+            Intent anIntent = new Intent(getApplicationContext(), MessageActivity.class);
+            anIntent.putExtra("id", string);
+            startActivity(anIntent);
         } else if (id == R.id.nav_fb) {
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(anIntent);
