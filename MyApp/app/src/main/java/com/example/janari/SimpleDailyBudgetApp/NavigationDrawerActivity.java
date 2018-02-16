@@ -20,6 +20,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.janari.SimpleDailyBudgetApp.Models.Message;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -228,7 +231,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_family) {
             TextView start = (TextView) findViewById(R.id.oo);
             String string = start.getText().toString();
-            Intent anIntent = new Intent(getApplicationContext(), MessageActivity.class);
+            Intent anIntent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
             anIntent.putExtra("id", string);
             startActivity(anIntent);
         } else if (id == R.id.nav_fb) {
