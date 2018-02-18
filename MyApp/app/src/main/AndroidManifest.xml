@@ -58,7 +58,7 @@
         <activity android:name=".MessageActivity" />
         <activity android:name=".FamilyLoginActivity" />
         <activity android:name=".Login.LoginA" />
-        <activity android:name=".SignUpActivity"></activity>
+        <activity android:name=".SignUpActivity" />
     </application>
 
 </manifest>

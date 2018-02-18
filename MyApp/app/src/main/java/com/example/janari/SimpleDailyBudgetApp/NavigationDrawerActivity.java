@@ -21,7 +21,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.janari.SimpleDailyBudgetApp.Models.Message;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -202,6 +203,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             SharedPreferences.Editor editor = settings.edit();
             editor.remove("key");
             editor.commit();
+            FirebaseAuth.getInstance().signOut();
             finish();
             startActivity(intent);
             return true;
@@ -275,34 +277,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
     }
 
-    /*public void yesturdaysLeft() {
-
-        TextView id = (TextView) findViewById(R.id.oo);
-        String ID = id.getText().toString();
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String strDate = sdf.format(c.getTime());
-        if (strDate == "00:00:00") {
-            Cursor res = budgetDB.budget(ID);
-            if (res.getCount() == 0) {
-                TextView value = (TextView) findViewById(R.id.daily_sum);
-                value.setText(null);
-                return;
-            }else{
-
-                double left = budgetDB.bud(ID);
-                String daily = getIntent().getStringExtra("dailySum");
-                double Daily = Double.parseDouble(daily);
-                double sum = left + Daily;
-                String sumToString = String.valueOf(sum);
-
-                TextView textValue = (TextView) findViewById(R.id.daily_sum);
-                textValue.setText(sumToString);
-
-            }
-        }
-    }
-*/
     // Two methods for after every "-" button click add new daily sum in the budget database
     public void RefreshData() {
 
