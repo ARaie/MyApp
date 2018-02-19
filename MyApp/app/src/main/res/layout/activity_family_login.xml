@@ -22,6 +22,9 @@
         android:id="@+id/id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/original"
+        android:layout_alignStart="@+id/layout_buttons"
+        android:layout_marginBottom="15dp"
         android:text="TextView"
         android:visibility="invisible" />
 
@@ -77,6 +80,28 @@
             android:text="sign_up" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/original"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/layout_buttons"
+        android:layout_below="@+id/layout_buttons"
+        android:layout_marginEnd="35dp"
+        android:layout_marginTop="40dp"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/exe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/id"
+        android:layout_below="@+id/original"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="51dp"
+        android:text="TextView"
+        android:visibility="invisible" />
 
 
 </RelativeLayout>

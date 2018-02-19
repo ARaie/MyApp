@@ -54,11 +54,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FamilyActivity" />
-        <activity android:name=".MessageActivity" />
+        <activity android:name=".MessageActivity"
+            android:label="Family budget"/>
         <activity android:name=".FamilyLoginActivity" />
-        <activity android:name=".Login.LoginA" />
-        <activity android:name=".SignUpActivity" />
     </application>
 
 </manifest>

@@ -47,6 +47,9 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         TextView start = (TextView) findViewById(R.id.o);
         start.setText(ID);
 
+        String all = view_sum();
+        TextView setUserName = (TextView) findViewById(R.id.all);
+        setUserName.setText(all);
 
 // Calendar activity code
         final EditText startDate = (EditText) findViewById(R.id.start_date);
@@ -219,12 +222,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             double rounded2 = Math.round(days);
             Days = String.valueOf(rounded2);
             double sumDouble = incomeValue - fixedExpensesValue;
-            double rounded3 = Math.round(sumDouble);
-            sum = String.valueOf(rounded3);
+            sum = String.valueOf(sumDouble);
 
             double value = (incomeValue - fixedExpensesValue) / days;
-            double rounded = Math.round(value);
-            String calculated = String.valueOf(rounded);
+            String calculated = String.valueOf(value);
 
             // I use Indent to send calculated value to NavigationDrawerActivity
             Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
@@ -363,6 +364,19 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             String end_date = InputDB.End(ID);
             TextView textValue = (TextView) findViewById(R.id.end_date);
             textValue.setText(end_date);
+        }
+    }
+    public String view_sum() {
+
+        Cursor res = budgetDB.AllSum(ID);
+        if (res.getCount() == 0) {
+
+            String calculatedSum = "0";
+            return calculatedSum;
+        }else{
+
+            String calculatedSum = budgetDB.Sum(ID);
+            return calculatedSum;
         }
     }
 }

@@ -28,7 +28,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    String ID;
+    String ID, originalBudget, exp;
 
     private EditText mEmailField;
     private EditText mPasswordField;
@@ -52,9 +52,18 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         // Click listeners
         mSignInButton.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
-        ID = getIntent().getStringExtra("id");
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        ID = extras.getString("id");
+        originalBudget = extras.getString("original");
+        exp = extras.getString("exe");
+
         TextView start = (TextView) findViewById(R.id.id);
         start.setText(ID);
+        TextView original = (TextView) findViewById(R.id.original);
+        original.setText(originalBudget);
+        TextView exe = (TextView) findViewById(R.id.exe);
+        exe.setText(exp);
     }
     @Override
     public void onStart() {
@@ -67,7 +76,6 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void signIn() {
-        Log.d(TAG, "signIn");
         if (!validateForm()) {
             return;
         }
@@ -78,7 +86,6 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
 
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
@@ -119,11 +126,18 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         // Write new user
         writeNewUser(user.getUid(), user.getEmail(), user.getEmail());
 
-        // Go to MainActivity
         TextView start = (TextView) findViewById(R.id.id);
         String string = start.getText().toString();
+        TextView original = (TextView) findViewById(R.id.original);
+        String string2 = original.getText().toString();
+        TextView exp = (TextView) findViewById(R.id.exe);
+        String string3 = exp.getText().toString();
         Intent intent = new Intent(FamilyLoginActivity.this, MessageActivity.class);
-        intent.putExtra("id", string);
+        Bundle extras = new Bundle();
+        extras.putString("id", string);
+        extras.putString("original", string2);
+        extras.putString("exe", string3);
+        intent.putExtras(extras);
         startActivity(intent);
         finish();
     }

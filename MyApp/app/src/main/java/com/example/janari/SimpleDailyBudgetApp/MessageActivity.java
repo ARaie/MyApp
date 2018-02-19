@@ -28,11 +28,11 @@ public class MessageActivity extends AppCompatActivity {
     private Button btnBack;
     private Button btnSend, btnLogout;
     private TextView tvAuthor;
-    private TextView tvTime;
+    private TextView tvTime, sum;
     private DatabaseReference mDatabase;
     private DatabaseReference mMessageReference;
     DBHelper budgetDB;
-    String ID;
+    String ID, originalBudget, exp;
     private FirebaseAuth mAuth;
 
 
@@ -45,11 +45,16 @@ public class MessageActivity extends AppCompatActivity {
         btnLogout = (Button) findViewById(R.id.log_out);
         btnBack = (Button) findViewById(R.id.btn_back);
         tvAuthor = (TextView) findViewById(R.id.tv_author);
+        tvAuthor.setText("0");
         tvTime = (TextView) findViewById(R.id.tv_time);
-        ID = getIntent().getStringExtra("id");
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        ID = extras.getString("id");
+        originalBudget = extras.getString("original");
+        exp = extras.getString("exe");
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mMessageReference = FirebaseDatabase.getInstance().getReference("users");
+        mMessageReference = FirebaseDatabase.getInstance().getReference("user");
         budgetDB = new DBHelper(this);
         mAuth = FirebaseAuth.getInstance();
 
@@ -57,6 +62,23 @@ public class MessageActivity extends AppCompatActivity {
         setDate(dateView);
 
         viewAll();
+        expences();
+
+        mDatabase.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                        tvAuthor.setText(dataSnapshot.child("userBudget").getValue().toString());
+                        tvTime.setText(dataSnapshot.child("time").getValue().toString());
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +101,7 @@ public class MessageActivity extends AppCompatActivity {
                 String s = e.getText().toString();
                 String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                 Message message = new Message(s, time);
-                mMessageReference.child("users").child(userId).setValue(message);
+                mMessageReference.child(userId).setValue(message);
             }
         });
 
@@ -90,40 +112,42 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        ValueEventListener messageListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Message message = dataSnapshot.getValue(Message.class);
-                    tvAuthor.setText(message.userBudget);
-                    tvTime.setText(message.time);
-                }
-            }
+    }
+    public void expences(){
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Failed to read value
-            }
-        };
+        tvAuthor = (TextView) findViewById(R.id.tv_author);
+        double familyBudget = Double.parseDouble(tvAuthor.getText().toString());
+        double budget = viewAll();
+        sum = (TextView) findViewById(R.id.tv_body);
 
-        mMessageReference.addValueEventListener(messageListener);
+        if (originalBudget == (String.valueOf(viewAll()))){
+
+            //String family = String.valueOf(budget + familyBudget);
+            //sum.setText(String.valueOf(viewAll()));
+        }else{
+
+           // String expenses = String.valueOf(familyBudget - Double.parseDouble(exp));
+            sum.setText(exp);
+        }
     }
 
-    public void viewAll() {
+    public double viewAll() {
+
+        TextView e = (TextView) findViewById(R.id.edt_sent_text);
 
         Cursor res = budgetDB.budget(ID);
         if (res.getCount() == 0) {
 
-            TextView textValue = (TextView) findViewById(R.id.edt_sent_text);
-            textValue.setText("0");
-            return;
+            double budget = 0;
+            String a = String.valueOf(budget);
+            e.setText(a);
+            return budget;
         } else {
 
             double budget = budgetDB.bud(ID);
-            double rounded = Math.round(budget);
-            String budgetToString = String.valueOf(rounded);
-            TextView textValue = (TextView) findViewById(R.id.edt_sent_text);
-            textValue.setText(budgetToString);
+            String a = String.valueOf(budget);
+            e.setText(a);
+            return budget;
         }
     }
     public void setDate(TextView view) {

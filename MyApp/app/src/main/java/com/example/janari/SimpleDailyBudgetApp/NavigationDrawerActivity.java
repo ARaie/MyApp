@@ -38,6 +38,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     String dailySum = "", id, days, sum;
     EmailHelper emailDB;
     DataHelper daysDB;
+    DataHelper InputDB;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -49,13 +50,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         budgetDB = new DBHelper(this);
         myDb = new DatabaseHelper(this);
+        InputDB = new DataHelper(this);
         emailDB = new EmailHelper(this);
         daysDB = new DataHelper(this);
-
-
-        // TODO another method for calculate daily sum
-        //Method for add yesturdays left sum when time is 00:00:00
-        // yesturdaysLeft ();
 
         // Get user email and name and save them to navigation drawer header view
         view_email();
@@ -83,6 +80,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
             // Shows user daily budget
             viewAll();
 
+            // When selected period is over then system clears period data
+            end();
+
             // This is the "-" button, that calculates daily expenses
             final Button button = (Button) findViewById(R.id.button);
             button.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +94,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
 
                     dailySum = getIntent().getStringExtra("dailySum");
+
+                    TextView originalBudget = (TextView) findViewById(R.id.original);
+                    originalBudget.setText(dailySum);
+
                     String getDays = viewDays();
                     double doubleDays = Double.parseDouble(getDays);
                     String originalValue = view_sum();
@@ -103,13 +107,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     String stringValue2 = expences.getText().toString();
                     double expencesValue = Double.parseDouble(stringValue2);
                     double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
-                    double rounded = Math.round(newValue);
-                    textValue.setText(Double.toString(rounded));
+                    textValue.setText(Double.toString(newValue));
                     dailySum = Double.toString(newValue);
                     double sumDouble = originalValueDouble - expencesValue;
                     sum = Double.toString(sumDouble);
                     // Adds calculated daily sum back to budget database
                     AddData();
+
+                    TextView exp = (TextView) findViewById(R.id.exp);
+                    exp.setText(stringValue2);
                     // Empty the EditText field
                     expences.setText(null);
                     // Method that updates widget view
@@ -233,8 +239,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_family) {
             TextView start = (TextView) findViewById(R.id.oo);
             String string = start.getText().toString();
+            TextView originalBudget = (TextView) findViewById(R.id.original);
+            String original = originalBudget.getText().toString();
+            TextView exp = (TextView) findViewById(R.id.exp);
+            String exe = exp.getText().toString();
             Intent anIntent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
-            anIntent.putExtra("id", string);
+            Bundle extras = new Bundle();
+            extras.putString("id", string);
+            extras.putString("original", original);
+            extras.putString("exe", exe);
+            anIntent.putExtras(extras);
             startActivity(anIntent);
         } else if (id == R.id.nav_fb) {
             Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -270,8 +284,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else {
 
             double budget = budgetDB.bud(ID);
-            double rounded = Math.round(budget);
-            String budgetToString = String.valueOf(rounded);
+            String budgetToString = String.valueOf(budget);
             TextView textValue = (TextView) findViewById(R.id.daily_sum);
             textValue.setText(budgetToString);
         }
@@ -414,6 +427,33 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             String calculatedSum = budgetDB.Sum(ID);
             return calculatedSum;
+        }
+    }
+    public void end(){
+
+        String periodEndDate = viewEnd();
+        TextView textValue = (TextView) findViewById(R.id.date_today);
+        String today = textValue.getText().toString();
+        if (periodEndDate == today){
+
+            budgetDB.delete();
+            InputDB.delete();
+        }
+    }
+    public String viewEnd() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = InputDB.AllEnd(ID);
+        if (res.getCount() == 0) {
+
+            String date = "01.01.2800";
+            return date;
+        }else{
+
+            String date = InputDB.End(ID);
+            return date;
         }
     }
 }
