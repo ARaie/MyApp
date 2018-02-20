@@ -83,6 +83,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
             // When selected period is over then system clears period data
             end();
 
+            dataX();
+            dataY();
+
             // This is the "-" button, that calculates daily expenses
             final Button button = (Button) findViewById(R.id.button);
             button.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +102,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     originalBudget.setText(dailySum);
 
                     String getDays = viewDays();
-                    double doubleDays = Double.parseDouble(getDays);
+                    int doubleDays = Integer.parseInt(getDays);
                     String originalValue = view_sum();
                     double originalValueDouble = Double.parseDouble(originalValue);
                     TextView textValue = (TextView) findViewById(R.id.daily_sum);
@@ -114,8 +117,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     // Adds calculated daily sum back to budget database
                     AddData();
 
+                    String stringExpenses = String.valueOf(expencesValue);
                     TextView exp = (TextView) findViewById(R.id.exp);
-                    exp.setText(stringValue2);
+                    exp.setText(stringExpenses);
                     // Empty the EditText field
                     expences.setText(null);
                     // Method that updates widget view
@@ -454,6 +458,37 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             String date = InputDB.End(ID);
             return date;
+        }
+    }
+    public void dataX(){
+
+        dailySum = getIntent().getStringExtra("dailySum");
+        TextView originalBudget = (TextView) findViewById(R.id.original);
+
+        if(dailySum == null){
+
+            originalBudget.setText("0");
+        }else{
+
+            String sum = dailySum;
+            String days = viewDays();
+            double send = Double.parseDouble(sum) * Double.parseDouble(days);
+            String done = String.valueOf(send);
+            originalBudget.setText(done);
+        }
+    }
+    public void dataY(){
+
+        EditText expences = (EditText) findViewById(R.id.expences);
+        String stringExpenses = expences.getText().toString();
+        TextView exp = (TextView) findViewById(R.id.exp);
+
+        if (stringExpenses.matches("")){
+
+            exp.setText("0");
+        }else{
+
+            exp.setText(stringExpenses);
         }
     }
 }

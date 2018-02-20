@@ -96,11 +96,12 @@
 
         <EditText
             android:id="@+id/oo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="106dp"
+            android:layout_height="42dp"
             android:ems="10"
             android:inputType="textPersonName"
             android:text="ID"
+            android:visibility="invisible"
             tools:layout_editor_absoluteX="26dp"
             tools:layout_editor_absoluteY="374dp" />
 
@@ -126,12 +127,18 @@
 
         <TextView
             android:id="@+id/exp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="58dp"
+            android:layout_height="19dp"
+            android:layout_marginBottom="43dp"
+            android:layout_marginEnd="124dp"
+            android:layout_marginStart="33dp"
+            android:layout_marginTop="8dp"
             android:text="TextView"
             android:visibility="invisible"
-            tools:layout_editor_absoluteX="202dp"
-            tools:layout_editor_absoluteY="449dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ooo"
+            app:layout_constraintTop_toBottomOf="@+id/button" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -81,7 +81,8 @@
             android:id="@+id/o"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ID" />
+            android:text="ID"
+            android:visibility="invisible" />
 
     </LinearLayout>
 

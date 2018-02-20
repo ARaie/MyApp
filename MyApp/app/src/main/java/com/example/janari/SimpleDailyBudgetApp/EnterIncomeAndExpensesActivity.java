@@ -61,6 +61,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
+
                 // date picker dialog
                 datePickerDialog = new DatePickerDialog(EnterIncomeAndExpensesActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
@@ -87,9 +88,11 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
+
                 // date picker dialog
                 datePickerDialog = new DatePickerDialog(EnterIncomeAndExpensesActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
+
 
                             @Override
                             public void onDateSet(DatePicker view, int year,
@@ -159,7 +162,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
 
 // Method for get the days between user selected period
-    public double Daybetween(String date1, String date2, String pattern) {
+    public int Daybetween(String date1, String date2, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date Date1 = null, Date2 = null;
         try {
@@ -168,7 +171,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return (double) (Date2.getTime() - Date1.getTime()) / (24 * 60 * 60 * 1000);
+        return (int) (Date2.getTime() - Date1.getTime()) / (24 * 60 * 60 * 1000);
     }
 
     // Checking EditText is empty or not.
@@ -218,9 +221,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
             // Days and sum are saved also separately to database for using them in further calculations
-            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
-            double rounded2 = Math.round(days);
-            Days = String.valueOf(rounded2);
+            int days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
+            Days = String.valueOf(days);
             double sumDouble = incomeValue - fixedExpensesValue;
             sum = String.valueOf(sumDouble);
 
