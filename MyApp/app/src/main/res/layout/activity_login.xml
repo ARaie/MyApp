@@ -11,26 +11,25 @@
     tools:context="com.example.janari.SimpleDailyBudgetApp.LoginActivity">
 
     <TextView
-        android:text="SQLite User Login Screen"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:textColor="#000"
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/text" />
+        android:gravity="center"
+        android:text="Login to Daily Budget"
+        android:textColor="#000"
+        android:textSize="20dp" />
 
     <EditText
         android:id="@+id/editEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/text"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="Enter Email"
+        android:hint="Email"
         android:inputType="textEmailAddress"
         android:textAlignment="center" />
 
@@ -43,7 +42,7 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="Enter Password"
+        android:hint="Password"
         android:inputType="textPassword"
         android:textColor="#000" />
 

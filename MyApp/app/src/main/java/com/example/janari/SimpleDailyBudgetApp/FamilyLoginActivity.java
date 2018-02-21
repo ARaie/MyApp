@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.janari.SimpleDailyBudgetApp.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,16 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class FamilyLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "SignInActivity";
-
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    String ID, originalBudget, exp;
-
-    private EditText mEmailField;
-    private EditText mPasswordField;
-    private Button mSignInButton;
-    private Button mSignUpButton;
+    String ID, originalBudget, userExpenses;
+    private EditText emailField, passwordField;
+    private Button signInButton, signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +37,30 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        // Views
-        mEmailField = findViewById(R.id.field_email);
-        mPasswordField = findViewById(R.id.field_password);
-        mSignInButton = findViewById(R.id.button_sign_in);
-        mSignUpButton = findViewById(R.id.button_sign_up);
+        // Fields
+        emailField = findViewById(R.id.field_email);
+        passwordField = findViewById(R.id.field_password);
+        signInButton = findViewById(R.id.button_sign_in);
+        signUpButton = findViewById(R.id.button_sign_up);
 
         // Click listeners
-        mSignInButton.setOnClickListener(this);
-        mSignUpButton.setOnClickListener(this);
+        signInButton.setOnClickListener(this);
+        signUpButton.setOnClickListener(this);
+
+        // Intents from NavigationDrawerActivity
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         ID = extras.getString("id");
         originalBudget = extras.getString("original");
-        exp = extras.getString("exe");
+        userExpenses = extras.getString("exe");
 
-        TextView start = (TextView) findViewById(R.id.id);
-        start.setText(ID);
+        // Set data from intent to fields
+        TextView userID = (TextView) findViewById(R.id.id);
+        userID.setText(ID);
         TextView original = (TextView) findViewById(R.id.original);
         original.setText(originalBudget);
-        TextView exe = (TextView) findViewById(R.id.exe);
-        exe.setText(exp);
+        TextView exepenses = (TextView) findViewById(R.id.exe);
+        exepenses.setText(userExpenses);
     }
     @Override
     public void onStart() {
@@ -79,8 +76,8 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         if (!validateForm()) {
             return;
         }
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
+        String email = emailField.getText().toString();
+        String password = passwordField.getText().toString();
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -98,19 +95,18 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void signUp() {
-        Log.d(TAG, "signUp");
+
         if (!validateForm()) {
             return;
         }
 
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
+        String email = emailField.getText().toString();
+        String password = passwordField.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
                         } else {
@@ -126,48 +122,57 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         // Write new user
         writeNewUser(user.getUid(), user.getEmail(), user.getEmail());
 
-        TextView start = (TextView) findViewById(R.id.id);
-        String string = start.getText().toString();
+        // When login is successful, all important data are sent with intent to MessageActivity class
+        TextView userId = (TextView) findViewById(R.id.id);
+        String string = userId.getText().toString();
         TextView original = (TextView) findViewById(R.id.original);
         String string2 = original.getText().toString();
-        TextView exp = (TextView) findViewById(R.id.exe);
-        String string3 = exp.getText().toString();
+        TextView userExpenses = (TextView) findViewById(R.id.exe);
+        String string3 = userExpenses.getText().toString();
+        TextView email = (TextView) findViewById(R.id.field_email);
+        String string4 = email.getText().toString();
+        TextView password = (TextView) findViewById(R.id.field_password);
+        String string5 = password.getText().toString();
         Intent intent = new Intent(FamilyLoginActivity.this, MessageActivity.class);
         Bundle extras = new Bundle();
         extras.putString("id", string);
         extras.putString("original", string2);
         extras.putString("exe", string3);
+        extras.putString("email", string4);
+        extras.putString("password", string5);
         intent.putExtras(extras);
         startActivity(intent);
         finish();
     }
 
+    // Method to check that fields are filled
     private boolean validateForm() {
         boolean result = true;
-        if (TextUtils.isEmpty(mEmailField.getText().toString())) {
-            mEmailField.setError("Required");
+        if (TextUtils.isEmpty(emailField.getText().toString())) {
+            emailField.setError("Required");
             result = false;
         } else {
-            mEmailField.setError(null);
+            emailField.setError(null);
         }
 
-        if (TextUtils.isEmpty(mPasswordField.getText().toString())) {
-            mPasswordField.setError("Required");
+        if (TextUtils.isEmpty(passwordField.getText().toString())) {
+            passwordField.setError("Required");
             result = false;
         } else {
-            mPasswordField.setError(null);
+            passwordField.setError(null);
         }
 
         return result;
     }
 
+    // Method to write new user to Firebase database
     private void writeNewUser(String userId, String email, String password) {
         User user = new User(email, password);
 
         mDatabase.child("users").child(userId).setValue(user);
     }
 
-
+    // Sign in and Sign up buttons click
     @Override
     public void onClick(View v) {
         int i = v.getId();

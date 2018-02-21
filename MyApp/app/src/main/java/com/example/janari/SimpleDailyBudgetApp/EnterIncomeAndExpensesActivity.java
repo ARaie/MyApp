@@ -42,16 +42,16 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         budgetDB = new DBHelper(this);
         InputDB = new DataHelper(this);
         ID = getIntent().getStringExtra("id");
-
-        //TODO temporary. For check user ID
         TextView start = (TextView) findViewById(R.id.o);
         start.setText(ID);
 
+
+        // View all user money that is left for selected period
         String all = view_sum();
         TextView setUserName = (TextView) findViewById(R.id.all);
         setUserName.setText(all);
 
-// Calendar activity code
+        // Calendar activity code
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +107,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             }
         });
 
-        // This button helps to send calculated sum to Daily sum field
+        // This button helps to send calculated sum to main activity
         Button calculate = (Button) findViewById(R.id.calculate);
         calculate.setOnClickListener(new View.OnClickListener() {
 
@@ -142,7 +142,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     });
 
 
-    // Back "button"
+        // Back "button", may be same like in familyActivity page
         ImageView back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
 
@@ -161,7 +161,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         viewEnd();
     }
 
-// Method for get the days between user selected period
+    // Method for get the days between user selected period
     public int Daybetween(String date1, String date2, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date Date1 = null, Date2 = null;
@@ -220,17 +220,18 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             EditText end = (EditText) findViewById(R.id.end_date);
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
+
             // Days and sum are saved also separately to database for using them in further calculations
             int days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
             Days = String.valueOf(days);
             double sumDouble = incomeValue - fixedExpensesValue;
             sum = String.valueOf(sumDouble);
-
             double value = (incomeValue - fixedExpensesValue) / days;
             String calculated = String.valueOf(value);
 
             // I use Indent to send calculated value to NavigationDrawerActivity
             Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
+
             // Here I get calculated dailySum from this method to use this value to addData() method
             dailySum = calculated;
             intent.putExtra("dailySum", dailySum);
@@ -243,17 +244,17 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         }
     }
 
-    // Method for adding data to budget database. ID and Daily sum.
+    // Method for adding data to budget database. ID and Daily sum and all sum.
     public  void AddDaily() {
 
-        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString(), sum);
+        budgetDB.insertDaily(ID, dailySum.toString(), sum);
         UpdateData();
 
     }
     // Refreshing data in database
     public void UpdateData() {
 
-        boolean isUpdate = budgetDB.updateSum(ID,
+        budgetDB.updateSum(ID,
                 dailySum.toString(), sum);
     }
 
@@ -293,14 +294,14 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // Add and update data for user entered period, income and expenses
     public  void AddData() {
 
-        boolean isInserted = InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days);
+        InputDB.insertData(ID, mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days);
         UpdateInput();
 
     }
     // Refreshing data in database
     public void UpdateInput() {
 
-            boolean isUpdate = InputDB.updateData(ID,
+        InputDB.updateData(ID,
                     mIncome.toString(), mExpenses.toString(), mStart.toString(), mEnd.toString(), Days);
 
         }
@@ -368,6 +369,8 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             textValue.setText(end_date);
         }
     }
+
+    // Method to show user all money that is left for selected period
     public String view_sum() {
 
         Cursor res = budgetDB.AllSum(ID);

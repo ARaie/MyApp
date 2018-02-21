@@ -24,13 +24,16 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // Local database
         myDb = new DatabaseHelper(this);
 
-
+        // Fields
         Name = (EditText) findViewById(R.id.enter_name);
         Email = (EditText) findViewById(R.id.enter_email);
         Password = (EditText) findViewById(R.id.enter_password);
 
+        // Button
         btnAddData = (Button) findViewById(R.id.button_add);
         btnAddData.setOnClickListener(new View.OnClickListener() {
 
@@ -69,9 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isUpdate = myDb.updateData(id,
                 Name.getText().toString(),
                 Email.getText().toString(),Password.getText().toString());
-        if(isUpdate == true)
-            Toast.makeText(RegisterActivity.this,"Data Update",Toast.LENGTH_LONG).show();
-        else
+        if(isUpdate != true)
             Toast.makeText(RegisterActivity.this,"Data not Updated",Toast.LENGTH_LONG).show();
                    }
 
@@ -92,27 +93,5 @@ public class RegisterActivity extends AppCompatActivity {
 
             EditTextEmptyHolder = true;
         }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        // TODO ...
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

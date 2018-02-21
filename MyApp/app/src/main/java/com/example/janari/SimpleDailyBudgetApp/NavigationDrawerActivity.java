@@ -20,13 +20,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 
 public class NavigationDrawerActivity extends AppCompatActivity
@@ -35,10 +35,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     DBHelper budgetDB;
     DatabaseHelper myDb;
-    String dailySum = "", id, days, sum;
-    EmailHelper emailDB;
     DataHelper daysDB;
     DataHelper InputDB;
+    String dailySum = "", id, days, sum;
+    EmailHelper emailDB;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -48,6 +48,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        AppCenter.start(getApplication(), "26b6dcaf-b14d-43a5-866e-ae2a994c4d8f",
+                Analytics.class, Crashes.class);
+
+        // Local databases
         budgetDB = new DBHelper(this);
         myDb = new DatabaseHelper(this);
         InputDB = new DataHelper(this);
@@ -74,17 +79,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView dateView = (TextView) findViewById(R.id.date_today);
             setDate(dateView);
 
-            // TODO temporary fields. To view user ID
+            // Save user ID
             viewID();
 
             // Shows user daily budget
             viewAll();
 
             // When selected period is over then system clears period data
+        //TODO more thinking and testing needed
             end();
 
-            dataX();
-            dataY();
+            // Methods to send info to Family database
+            dataBudget();
+            dataExpenses();
 
             // This is the "-" button, that calculates daily expenses
             final Button button = (Button) findViewById(R.id.button);
@@ -97,7 +104,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
 
                     dailySum = getIntent().getStringExtra("dailySum");
-
                     TextView originalBudget = (TextView) findViewById(R.id.original);
                     originalBudget.setText(dailySum);
 
@@ -128,7 +134,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 }
             });
 
-            // TODO Temporary. Calling method for get daily sum data from user budget database
+            // TODO Temporary button. Calling method for get daily sum data from user budget database
 
             Button be = (Button) findViewById(R.id.ooo);
             be.setOnClickListener(new View.OnClickListener() {
@@ -222,7 +228,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO Navigation drawer menu items. The Share part is not connected to right pages yet.
+    // Navigation drawer menu selection
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
 
@@ -253,12 +259,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
             extras.putString("original", original);
             extras.putString("exe", exe);
             anIntent.putExtras(extras);
-            startActivity(anIntent);
-        } else if (id == R.id.nav_fb) {
-            Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(anIntent);
-        } else if (id == R.id.nav_send) {
-            Intent anIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(anIntent);
         }
 
@@ -299,7 +299,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
-        boolean isUpdate = budgetDB.updateSum(ID,
+        budgetDB.updateSum(ID,
                 dailySum.toString(), sum);
 
     }
@@ -307,7 +307,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
-        boolean isInserted = budgetDB.insertDaily(ID, dailySum.toString(), sum);
+        budgetDB.insertDaily(ID, dailySum.toString(), sum);
         RefreshData();
     }
 
@@ -433,6 +433,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return calculatedSum;
         }
     }
+
+    // Method to handle the end of user selected period
     public void end(){
 
         String periodEndDate = viewEnd();
@@ -444,6 +446,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             InputDB.delete();
         }
     }
+
+    // Method to get period end date from local database
     public String viewEnd() {
 
         TextView id = (TextView) findViewById(R.id.oo);
@@ -460,7 +464,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return date;
         }
     }
-    public void dataX(){
+
+    // Method for send info to Family database
+    public void dataBudget(){
 
         dailySum = getIntent().getStringExtra("dailySum");
         TextView originalBudget = (TextView) findViewById(R.id.original);
@@ -477,7 +483,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
             originalBudget.setText(done);
         }
     }
-    public void dataY(){
+
+    // Method for send info to Family database
+    public void dataExpenses(){
 
         EditText expences = (EditText) findViewById(R.id.expences);
         String stringExpenses = expences.getText().toString();

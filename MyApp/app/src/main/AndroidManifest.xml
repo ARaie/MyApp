@@ -56,7 +56,8 @@
         </activity>
         <activity android:name=".MessageActivity"
             android:label="Family budget"/>
-        <activity android:name=".FamilyLoginActivity" />
+        <activity android:name=".FamilyLoginActivity"
+            android:label="Family budget login"/>
     </application>
 
 </manifest>

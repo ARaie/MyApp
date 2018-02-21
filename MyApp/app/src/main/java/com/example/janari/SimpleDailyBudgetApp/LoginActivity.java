@@ -15,15 +15,13 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button btnviewAll;
     DatabaseHelper myDb;
-    Button LogInButton, RegisterButton, emails;
+    EmailHelper emailDB;
+    Button LogInButton, RegisterButton, emails, btnviewAll;
     EditText Email, Password;
     String EmailHolder, PasswordHolder, id;
     Boolean EditTextEmptyHolder;
     public static final String PREFS_NAME = "MyPrefsFile";
-    EmailHelper emailDB;
-
 
 
     @Override
@@ -57,9 +55,8 @@ public class LoginActivity extends AppCompatActivity {
                 // Saving data for logged in session
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("key", "olemas");
+                editor.putString("key", "olemas"); //TODO kuhu see läheb?
                 editor.commit();
-
 
             }
         });
@@ -159,7 +156,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if(recordExists == true){
                 Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
-                Toast.makeText(getApplicationContext(), "Login successful.", Toast.LENGTH_LONG).show();
                 startActivity(intentSignIn);
             } else {
                 Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
@@ -191,8 +187,7 @@ public class LoginActivity extends AppCompatActivity {
     // Refreshes and saves over the user email
     public void RefreshEmail() {
 
-
-        boolean isUpdate = emailDB.updateEmail("1",
+        emailDB.updateEmail("1",
                 Email.getText().toString());
 
     }
@@ -200,8 +195,7 @@ public class LoginActivity extends AppCompatActivity {
     // Saves logged in user email
     public void AddEmail() {
 
-
-        boolean isInserted = emailDB.insertEmail("1", Email.getText().toString());
+        emailDB.insertEmail("1", Email.getText().toString());
         RefreshEmail();
     }
 

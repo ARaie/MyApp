@@ -12,10 +12,6 @@ public class Message {
     public String userBudget;
     public String time;
 
-    public Message() {
-        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
-    }
-
     public Message(String userBudget,String time) {
         this.userBudget = userBudget;
         this.time = time;
@@ -24,7 +20,7 @@ public class Message {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("author", userBudget);
+        result.put("budget", userBudget);
         result.put("time", time);
 
         return result;
