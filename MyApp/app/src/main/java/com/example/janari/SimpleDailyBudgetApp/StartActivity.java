@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.distribute.Distribute;
+
 
 // Activity that checks if user is logged in or not and starts right activity
 public class StartActivity extends AppCompatActivity {
@@ -14,6 +17,9 @@ public class StartActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_start);
+
+            AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Distribute.class);
+
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
 
             String string = settings.getString("key", null);

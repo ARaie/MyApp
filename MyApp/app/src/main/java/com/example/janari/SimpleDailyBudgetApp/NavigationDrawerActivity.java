@@ -47,8 +47,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Distribute.class);
-
         // Local databases
         budgetDB = new DBHelper(this);
         myDb = new DatabaseHelper(this);
