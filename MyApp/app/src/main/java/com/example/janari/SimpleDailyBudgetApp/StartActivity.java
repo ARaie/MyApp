@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.distribute.Distribute;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 
 // Activity that checks if user is logged in or not and starts right activity
@@ -18,6 +20,7 @@ public class StartActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_start);
 
+            AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Analytics.class, Crashes.class);
             AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Distribute.class);
 
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
