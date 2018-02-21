@@ -25,9 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
-
+import com.microsoft.appcenter.distribute.Distribute;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,8 +47,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        AppCenter.start(getApplication(), "26b6dcaf-b14d-43a5-866e-ae2a994c4d8f",
-                Analytics.class, Crashes.class);
+        AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Distribute.class);
 
         // Local databases
         budgetDB = new DBHelper(this);
