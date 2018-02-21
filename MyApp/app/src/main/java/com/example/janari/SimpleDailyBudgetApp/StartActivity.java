@@ -20,8 +20,8 @@ public class StartActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_start);
 
-            AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Analytics.class, Crashes.class);
-            AppCenter.start(getApplication(), "{26b6dcaf-b14d-43a5-866e-ae2a994c4d8f}", Distribute.class);
+            AppCenter.start(getApplication(), "{370f7910-3208-45fd-b03e-918e898b1c6e}", Analytics.class, Crashes.class);
+            AppCenter.start(getApplication(), "{370f7910-3208-45fd-b03e-918e898b1c6e}", Distribute.class);
 
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
 
