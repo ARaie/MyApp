@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // TODO Temporary button for checking data in user info database
+        /*// TODO Temporary button for checking data in user info database
         btnviewAll = (Button) findViewById(R.id.view_data);
         btnviewAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                 viewEmails();
 
             }
-        });
+        });*/
     }
 
     // TODO Temporary two functions to check data in database

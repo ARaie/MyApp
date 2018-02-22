@@ -71,11 +71,11 @@
             android:text="Calculate"
             android:textSize="18sp" />
 
-        <Button
+        <!--<Button
             android:id="@+id/i"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Button" />-->
 
         <TextView
             android:id="@+id/o"

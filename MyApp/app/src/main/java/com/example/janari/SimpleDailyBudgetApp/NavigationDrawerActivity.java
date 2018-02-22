@@ -131,7 +131,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             // TODO Temporary button. Calling method for get daily sum data from user budget database
 
-            Button be = (Button) findViewById(R.id.ooo);
+            /*Button be = (Button) findViewById(R.id.ooo);
             be.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -141,7 +141,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     //emailDB.delete();
                     viewData();
                 }
-            });
+            });*/
+
+            
             // Method that updates widget view
             updateWidget();
         }

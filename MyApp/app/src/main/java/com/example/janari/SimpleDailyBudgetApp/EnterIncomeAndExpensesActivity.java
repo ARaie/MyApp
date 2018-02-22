@@ -130,7 +130,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         });
 
         //TODO Temporary. Checking input database
-        Button i = (Button) findViewById(R.id.i);
+        /*Button i = (Button) findViewById(R.id.i);
         i.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -139,7 +139,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 //InputDB.delete();
                 viewData();
         }
-    });
+    });*/
 
 
         // Back "button", may be same like in familyActivity page
