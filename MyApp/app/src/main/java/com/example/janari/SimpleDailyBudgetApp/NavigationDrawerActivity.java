@@ -103,7 +103,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     originalBudget.setText(dailySum);
 
                     String getDays = viewDays();
-                    int doubleDays = Integer.parseInt(getDays);
+                    double doubleDays = Double.parseDouble(getDays);
                     String originalValue = view_sum();
                     double originalValueDouble = Double.parseDouble(originalValue);
                     TextView textValue = (TextView) findViewById(R.id.daily_sum);
@@ -129,9 +129,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 }
             });
 
-            // TODO Temporary button. Calling method for get daily sum data from user budget database
+            /*// TODO Temporary button. Calling method for get daily sum data from user budget database
 
-            /*Button be = (Button) findViewById(R.id.ooo);
+            Button be = (Button) findViewById(R.id.ooo);
             be.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -143,7 +143,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 }
             });*/
 
-            
+
             // Method that updates widget view
             updateWidget();
         }
@@ -315,8 +315,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         Intent i = new Intent(this, Widget.class);
         i.setAction("yourpackage.TEXT_CHANGED");
-        Toast.makeText(getApplicationContext(),budget.getText().toString()+"from the activity",
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),budget.getText().toString()+"from the activity",
+               // Toast.LENGTH_SHORT).show();
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), Widget.class));
         i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
         i.putExtra("title", budget.getText().toString());

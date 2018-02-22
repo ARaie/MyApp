@@ -40,7 +40,7 @@ public class Widget extends AppWidgetProvider {
         String action = intent.getAction();
         Bundle extras = intent.getExtras();
         String title1 = extras.getString("title");
-        Toast.makeText(context, title1,Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, title1,Toast.LENGTH_LONG).show();
 
         if (action != null && action.equals(APPWIDGET_UPDATE)) {
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

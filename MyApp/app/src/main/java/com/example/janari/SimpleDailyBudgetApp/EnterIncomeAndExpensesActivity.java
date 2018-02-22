@@ -162,7 +162,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     }
 
     // Method for get the days between user selected period
-    public int Daybetween(String date1, String date2, String pattern) {
+    public double Daybetween(String date1, String date2, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date Date1 = null, Date2 = null;
         try {
@@ -171,7 +171,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return (int) (Date2.getTime() - Date1.getTime()) / (24 * 60 * 60 * 1000);
+        return (double) (Date2.getTime() - Date1.getTime()) / (24 * 60 * 60 * 1000);
     }
 
     // Checking EditText is empty or not.
@@ -222,7 +222,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             mEnd = stringEnd;
 
             // Days and sum are saved also separately to database for using them in further calculations
-            int days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
+            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
             Days = String.valueOf(days);
             double sumDouble = incomeValue - fixedExpensesValue;
             sum = String.valueOf(sumDouble);
