@@ -141,7 +141,7 @@ public class MessageActivity extends AppCompatActivity {
                 String budget = e.getText().toString();
                 String w = expences();
 
-                // When one familymember's period is over then others can get some notice
+               /* // When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())){
                     if (originalBudget.matches(budget)){
 
@@ -159,7 +159,7 @@ public class MessageActivity extends AppCompatActivity {
 
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
-                }else{
+                }else{*/
                     if (originalBudget.matches(budget)){
 
                         String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
@@ -176,7 +176,7 @@ public class MessageActivity extends AppCompatActivity {
                         userExpenses = "0";
                     }
                 }
-            }
+            
         });
 
         // Back to main page
