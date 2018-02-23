@@ -133,18 +133,18 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                TextView dateView = (TextView) findViewById(R.id.date);
-                String timesUp = dateView.getText().toString();
+                //TextView dateView = (TextView) findViewById(R.id.date);
+                //String timesUp = dateView.getText().toString();
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
                 TextView e = (TextView) findViewById(R.id.all_budget);
                 String budget = e.getText().toString();
-                String w = expences();
+               // String w = expences();
 
 
                 String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                Message message = new Message(budget, time);
+                Message message = new Message("12", time);
                 mMessageReference.child(userId).setValue(message);
 
                 /*// When one familymember's period is over then others can get some notice
