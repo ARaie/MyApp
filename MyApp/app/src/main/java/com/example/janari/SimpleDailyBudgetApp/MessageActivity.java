@@ -142,7 +142,12 @@ public class MessageActivity extends AppCompatActivity {
                 String budget = e.getText().toString();
                 String w = expences();
 
-                // When one familymember's period is over then others can get some notice
+
+                String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                Message message = new Message(budget, time);
+                mMessageReference.child(userId).setValue(message);
+
+                /*// When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
                     if (originalBudget.matches(budget)) {
 
@@ -176,9 +181,9 @@ public class MessageActivity extends AppCompatActivity {
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
                     }
-                }
+                }*/
+
             }
-            
         });
 
         // Back to main page
