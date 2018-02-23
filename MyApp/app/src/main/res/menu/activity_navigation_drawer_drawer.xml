@@ -9,23 +9,15 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="Daily view" />
         <item
-            android:id="@+id/nav_data"
+        android:id="@+id/nav_data"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title="Your data" />
+
+        <item
+            android:id="@+id/nav_family"
             android:icon="@drawable/ic_assignment_black_24dp"
-            android:title="Your data" />
+            android:title="Family data" />
 
     </group>
-
-    <item android:title="Social">
-        <menu>
-            <item
-                android:id="@+id/nav_fb"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share in Facebook" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
 
 </menu>

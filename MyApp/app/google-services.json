@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "534595919397",
+    "firebase_url": "https://familydb-f8f20.firebaseio.com",
+    "project_id": "familydb-f8f20",
+    "storage_bucket": "familydb-f8f20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534595919397:android:5d4f7c328bae25d5",
+        "android_client_info": {
+          "package_name": "com.example.janari.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534595919397-sq5jltn3ksajqfhim1d0hrcf43d8aan1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.janari.myapp",
+            "certificate_hash": "b25c5d855daf8e0e72a20a399f7ee346688e330e"
+          }
+        },
+        {
+          "client_id": "534595919397-42rte0mkmj1959i6tupuvuiakfqibgsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF0jhYydRcuWvNI2IvemyP6i_foC6x3IM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534595919397-42rte0mkmj1959i6tupuvuiakfqibgsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
