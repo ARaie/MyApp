@@ -10,14 +10,6 @@
     tools:context="com.example.janari.SimpleDailyBudgetApp.FamilyLoginActivity">
 
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        />
-
     <TextView
         android:id="@+id/id"
         android:layout_width="wrap_content"
@@ -102,6 +94,15 @@
         android:layout_marginTop="51dp"
         android:text="TextView"
         android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/id"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="12dp"
+        android:text="To register family account you can use your email address and think out new password for only this application and this family account that you can share to other family member to access to the same account" />
 
 
 </RelativeLayout>

@@ -20,12 +20,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.distribute.Distribute;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,7 +77,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
             viewID();
 
             // Shows user daily budget
-            viewAll();
+            String dailyBudget =  viewAll();
+            double budget = Double.parseDouble(dailyBudget);
+            TextView setUserName = (TextView) findViewById(R.id.daily_sum);
+            setUserName.setText( String.format( "%.2f", budget) );
+
 
             // When selected period is over then system clears period data
         //TODO more thinking and testing needed
@@ -97,39 +100,45 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                     // Here I take data from fields and parse them to doubles and then use the
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
-
-                    dailySum = getIntent().getStringExtra("dailySum");
-                    TextView originalBudget = (TextView) findViewById(R.id.original);
-                    originalBudget.setText(dailySum);
-
-                    String getDays = viewDays();
-                    double doubleDays = Double.parseDouble(getDays);
-                    String originalValue = view_sum();
-                    double originalValueDouble = Double.parseDouble(originalValue);
-                    TextView textValue = (TextView) findViewById(R.id.daily_sum);
                     EditText expences = (EditText) findViewById(R.id.expences);
                     String stringValue2 = expences.getText().toString();
-                    double expencesValue = Double.parseDouble(stringValue2);
-                    double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
-                    textValue.setText(Double.toString(newValue));
-                    dailySum = Double.toString(newValue);
-                    double sumDouble = originalValueDouble - expencesValue;
-                    sum = Double.toString(sumDouble);
-                    // Adds calculated daily sum back to budget database
-                    AddData();
 
-                    String stringExpenses = String.valueOf(expencesValue);
-                    TextView exp = (TextView) findViewById(R.id.exp);
-                    exp.setText(stringExpenses);
-                    // Empty the EditText field
-                    expences.setText(null);
-                    // Method that updates widget view
-                    updateWidget();
+                    if (stringValue2.matches("")) {
+
+                        Toast.makeText(getApplicationContext(), "Enter expenses", Toast.LENGTH_LONG).show();
+                    }else{
+                        dailySum = getIntent().getStringExtra("dailySum");
+                        TextView originalBudget = (TextView) findViewById(R.id.original);
+                        originalBudget.setText(dailySum);
+
+                        String getDays = viewDays();
+                        double doubleDays = Double.parseDouble(getDays);
+                        String originalValue = view_sum();
+                        double originalValueDouble = Double.parseDouble(originalValue);
+                        TextView textValue = (TextView) findViewById(R.id.daily_sum);
+                        double expencesValue = Double.parseDouble(stringValue2);
+                        double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
+                        //textValue.setText(Double.toString(newValue));
+                        textValue.setText( String.format( "%.2f", newValue) );
+                        dailySum = Double.toString(newValue);
+                        double sumDouble = originalValueDouble - expencesValue;
+                        sum = Double.toString(sumDouble);
+                        // Adds calculated daily sum back to budget database
+                        AddData();
+
+                        String stringExpenses = String.valueOf(expencesValue);
+                        TextView exp = (TextView) findViewById(R.id.exp);
+                        exp.setText(stringExpenses);
+                        // Empty the EditText field
+                        expences.setText(null);
+                        // Method that updates widget view
+                        updateWidget();
+                    }
 
                 }
             });
 
-            /*// TODO Temporary button. Calling method for get daily sum data from user budget database
+           /* // TODO Temporary button. Calling method for get daily sum data from user budget database
 
             Button be = (Button) findViewById(R.id.ooo);
             be.setOnClickListener(new View.OnClickListener() {
@@ -271,7 +280,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     }
 
     // Method for get data from user budget database
-    public void viewAll() {
+    public String viewAll() {
 
         TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
@@ -279,15 +288,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Cursor res = budgetDB.budget(ID);
         if (res.getCount() == 0) {
 
-            TextView textValue = (TextView) findViewById(R.id.daily_sum);
-            textValue.setText(null);
-            return;
+            String calculatedSum = "0";
+            return calculatedSum;
         } else {
 
-            double budget = budgetDB.bud(ID);
-            String budgetToString = String.valueOf(budget);
-            TextView textValue = (TextView) findViewById(R.id.daily_sum);
-            textValue.setText(budgetToString);
+            String budgetToString = budgetDB.bud(ID);
+            return budgetToString;
         }
     }
 
@@ -437,10 +443,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         String periodEndDate = viewEnd();
         TextView textValue = (TextView) findViewById(R.id.date_today);
         String today = textValue.getText().toString();
-        if (periodEndDate == today){
+        if (periodEndDate.matches(today)) {
 
-            budgetDB.delete();
-            InputDB.delete();
+            // TODO databases could be emptied to start new period
+            //budgetDB.delete();
+            //InputDB.delete();
+            TextView over = (TextView) findViewById(R.id.daily_sum);
+            over.setText("Period is over");
         }
     }
 
@@ -457,6 +466,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return date;
         }else{
 
+            // TODO works with todays date but better could be tomorrows date
             String date = InputDB.End(ID);
             return date;
         }
@@ -477,7 +487,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             String days = viewDays();
             double send = Double.parseDouble(sum) * Double.parseDouble(days);
             String done = String.valueOf(send);
-            originalBudget.setText(done);
+            originalBudget.setText( String.format( "%.2f", send) );
         }
     }
 

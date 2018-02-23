@@ -91,7 +91,9 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists())
                 {
-                        familyBudget.setText(dataSnapshot.child("userBudget").getValue().toString());
+                        String budget = dataSnapshot.child("userBudget").getValue().toString();
+                        double Budget = Double.parseDouble(budget);
+                        familyBudget.setText( String.format( "%.2f", Budget) );
                         updateTime.setText(dataSnapshot.child("time").getValue().toString());
                 }
             }
@@ -132,7 +134,6 @@ public class MessageActivity extends AppCompatActivity {
 
                 TextView dateView = (TextView) findViewById(R.id.date);
                 String timesUp = dateView.getText().toString();
-                String periodsEnd = viewEnd();
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
@@ -140,9 +141,8 @@ public class MessageActivity extends AppCompatActivity {
                 String budget = e.getText().toString();
                 String w = expences();
 
-                //TODO sellepärast ei mätsi et 22.02.2018 ja 22.2.2018
                 // When one familymember's period is over then others can get some notice
-                if (timesUp.matches(periodsEnd)){
+                if (timesUp.matches(viewEnd())){
                     if (originalBudget.matches(budget)){
 
                         String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
@@ -219,7 +219,7 @@ public class MessageActivity extends AppCompatActivity {
         } else {
             String budget = budgetDB.Sum(ID);
             double doubleFromBudget = Double.parseDouble(budget);
-            userMoney.setText(budget);
+            userMoney.setText( String.format( "%.2f", doubleFromBudget) );
             return doubleFromBudget;
         }
     }
@@ -235,8 +235,7 @@ public class MessageActivity extends AppCompatActivity {
 
         Cursor res = InputDB.AllEnd(ID);
         if (res.getCount() == 0) {
-
-            return "28.02.2800";
+            return "23.02.2800";
         }else{
 
             String end_date = InputDB.End(ID);

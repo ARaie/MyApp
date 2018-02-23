@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout android:weightSum="4" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:weightSum="4" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout android:orientation="vertical" android:layout_height="0dp" android:layout_width="match_parent" android:gravity="center_horizontal" android:layout_weight="1">
 
         <TextView
@@ -22,7 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="All money left for family"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            tools:textColor="@android:color/holo_blue_dark" />
 
         <TextView
             android:id="@+id/all_budget"
@@ -52,18 +54,18 @@
             android:text="TextView"
             android:visibility="invisible" />
 
+        <TextView
+            android:id="@+id/budget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
         <LinearLayout
             android:layout_width="348dp"
             android:layout_height="82dp"
             android:orientation="horizontal"
             android:weightSum="2">
-
-            <TextView
-                android:id="@+id/budget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
             <TextView
                 android:id="@+id/time"

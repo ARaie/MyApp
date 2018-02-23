@@ -72,6 +72,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
         return rec;
     }
+
     public boolean updateData(String id, String income, String expenses, String start_date, String end_date, String days) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -100,13 +101,13 @@ public class DataHelper extends SQLiteOpenHelper {
         return res;
 
     }
-    public long Income(String id){
+    public String Income(String id){
 
         String query = "SELECT INCOME" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
     public Cursor AllExpenses(String id){
 
@@ -118,13 +119,13 @@ public class DataHelper extends SQLiteOpenHelper {
         return res;
 
     }
-    public long Expenses(String id){
+    public String Expenses(String id){
 
         String query = "SELECT EXPENSES" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
     public Cursor AllStart(String id){
 

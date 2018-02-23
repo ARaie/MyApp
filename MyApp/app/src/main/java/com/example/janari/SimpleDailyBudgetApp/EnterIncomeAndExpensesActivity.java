@@ -48,8 +48,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
         // View all user money that is left for selected period
         String all = view_sum();
+        double leftSum = Double.parseDouble(all);
         TextView setUserName = (TextView) findViewById(R.id.all);
-        setUserName.setText(all);
+        setUserName.setText( String.format( "%.2f", leftSum) );
+
 
         // Calendar activity code
         final EditText startDate = (EditText) findViewById(R.id.start_date);
@@ -69,9 +71,17 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                // set day of month , month and year value in the edit text
-                                startDate.setText(dayOfMonth + "."
-                                        + (monthOfYear + 1) + "." + year);
+                                if (dayOfMonth < 10 && monthOfYear < 10){
+                                    startDate.setText("0" + dayOfMonth + "." + "0" + (monthOfYear + 1) + "." + year);
+                                }else if (monthOfYear < 9){
+                                    startDate.setText(dayOfMonth + "." + "0"
+                                            + (monthOfYear + 1) + "." + year);
+                                }else if (dayOfMonth < 10) {
+                                    startDate.setText("0" + dayOfMonth + "." + (monthOfYear + 1) + "." + year);
+                                }else{
+                                    startDate.setText(dayOfMonth + "."
+                                            + (monthOfYear + 1) + "." + year);
+                                }
 
                             }
                         }, mYear, mMonth, mDay);
@@ -97,10 +107,18 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                // set day of month , month and year value in the edit text
-                                endDate.setText(dayOfMonth + "."
-                                        + (monthOfYear + 1) + "." + year);
 
+                            if (dayOfMonth < 10 && monthOfYear < 10){
+                                endDate.setText("0" + dayOfMonth + "." + "0" + (monthOfYear + 1) + "." + year);
+                            }else if (monthOfYear < 9){
+                                    endDate.setText(dayOfMonth + "." + "0"
+                                            + (monthOfYear + 1) + "." + year);
+                                }else if (dayOfMonth < 10) {
+                                    endDate.setText("0" + dayOfMonth + "." + (monthOfYear + 1) + "." + year);
+                                }else{
+                                    endDate.setText(dayOfMonth + "."
+                                            + (monthOfYear + 1) + "." + year);
+                                }
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -247,7 +265,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     // Method for adding data to budget database. ID and Daily sum and all sum.
     public  void AddDaily() {
 
-        budgetDB.insertDaily(ID, dailySum.toString(), sum);
+        budgetDB.insertDaily(ID, dailySum, sum);
         UpdateData();
 
     }
@@ -255,7 +273,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     public void UpdateData() {
 
         budgetDB.updateSum(ID,
-                dailySum.toString(), sum);
+                dailySum, sum);
     }
 
     // TODO Temporary for checking input database
@@ -317,10 +335,9 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             return;
         }else{
 
-            long input = InputDB.Income(ID);
-            String inputToString = String.valueOf(input);
+            String input = InputDB.Income(ID);
             TextView textValue = (TextView) findViewById(R.id.incomes);
-            textValue.setText(inputToString);
+            textValue.setText(input);
         }
     }
     public void viewStart() {
@@ -348,10 +365,9 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             return;
         }else{
 
-            long expenses = InputDB.Expenses(ID);
-            String expensesToString = String.valueOf(expenses);
+            String expenses = InputDB.Expenses(ID);
             TextView textValue = (TextView) findViewById(R.id.fixed_expenses);
-            textValue.setText(expensesToString);
+            textValue.setText(expenses);
         }
     }
     public void viewEnd() {

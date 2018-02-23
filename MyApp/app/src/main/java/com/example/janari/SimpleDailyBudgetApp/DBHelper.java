@@ -87,13 +87,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
 
     }
-    public double bud(String id){
+    public String bud(String id){
 
         String query = "SELECT DAILY_SUM" +
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_1 + " = ?;";
         SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.longForQuery(db, query, new String[]{ id });
+        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
 
     public void delete(){
