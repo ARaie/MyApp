@@ -27,7 +27,7 @@ import java.util.Locale;
 public class MessageActivity extends AppCompatActivity {
 
     private Button btnSend, btnLogout, btnRefresh, btnBack;
-    private TextView updateTime, email, password, familyBudget;
+    private TextView updateTime, email, password, familyBudget, rf;
     private DatabaseReference mDatabase;
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
@@ -62,6 +62,8 @@ public class MessageActivity extends AppCompatActivity {
         userExpenses = extras.getString("exe");
         emailCopy = extras.getString("email");
         passwordCopy = extras.getString("password");
+        rf = (TextView) findViewById(R.id.rf);
+        rf.setText(originalBudget);
 
         // Set email and password to fields for refreshing user
         email.setText(emailCopy);
