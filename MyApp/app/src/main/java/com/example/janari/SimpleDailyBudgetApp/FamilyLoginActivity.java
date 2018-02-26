@@ -25,7 +25,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    String ID, originalBudget, userExpenses;
+    String ID, originalBudget, userExpenses, family;
     private EditText emailField, passwordField;
     private Button signInButton, signUpButton;
 
@@ -53,6 +53,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         ID = extras.getString("id");
         originalBudget = extras.getString("original");
         userExpenses = extras.getString("exe");
+        family = extras.getString("family");
 
         // Set data from intent to fields
         TextView userID = (TextView) findViewById(R.id.id);
@@ -61,6 +62,8 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         original.setText(originalBudget);
         TextView exepenses = (TextView) findViewById(R.id.exe);
         exepenses.setText(userExpenses);
+        TextView familyB = (TextView) findViewById(R.id.fam);
+        familyB.setText(family);
     }
     @Override
     public void onStart() {
@@ -133,6 +136,8 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         String string4 = email.getText().toString();
         TextView password = (TextView) findViewById(R.id.field_password);
         String string5 = password.getText().toString();
+        TextView fam = (TextView) findViewById(R.id.fam);
+        String string6 = fam.getText().toString();
         Intent intent = new Intent(FamilyLoginActivity.this, MessageActivity.class);
         Bundle extras = new Bundle();
         extras.putString("id", string);
@@ -140,6 +145,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         extras.putString("exe", string3);
         extras.putString("email", string4);
         extras.putString("password", string5);
+        extras.putString("family", string6);
         intent.putExtras(extras);
         startActivity(intent);
         finish();

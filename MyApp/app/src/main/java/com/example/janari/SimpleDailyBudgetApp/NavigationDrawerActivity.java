@@ -259,11 +259,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
             String original = originalBudget.getText().toString();
             TextView exp = (TextView) findViewById(R.id.exp);
             String exe = exp.getText().toString();
+            String family = family();
             Intent anIntent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
             Bundle extras = new Bundle();
             extras.putString("id", string);
             extras.putString("original", original);
             extras.putString("exe", exe);
+            extras.putString("family", family);
             anIntent.putExtras(extras);
             startActivity(anIntent);
         }
@@ -293,6 +295,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else {
 
             String budgetToString = budgetDB.bud(ID);
+            return budgetToString;
+        }
+    }
+    public String family() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = budgetDB.AllSum(ID);
+        if (res.getCount() == 0) {
+
+            String calculatedSum = "0";
+            return calculatedSum;
+        } else {
+
+            String budgetToString = budgetDB.Sum(ID);
             return budgetToString;
         }
     }
