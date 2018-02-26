@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class MessageActivity extends AppCompatActivity {
+public class  MessageActivity extends AppCompatActivity {
 
     private Button btnSend, btnLogout, btnRefresh, btnBack;
     private TextView updateTime, email, password, familyBudget;
