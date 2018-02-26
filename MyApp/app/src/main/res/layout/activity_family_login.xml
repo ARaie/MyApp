@@ -88,10 +88,9 @@
         android:id="@+id/exe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/id"
-        android:layout_below="@+id/original"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="51dp"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="61dp"
         android:text="TextView"
         android:visibility="invisible" />
 

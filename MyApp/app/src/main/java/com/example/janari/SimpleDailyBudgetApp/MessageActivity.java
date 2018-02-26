@@ -109,7 +109,8 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MessageActivity.this, FamilyLoginActivity.class));
+                Intent intent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
+                startActivity(intent);
             }
 
 
@@ -142,14 +143,14 @@ public class MessageActivity extends AppCompatActivity {
                 String w = expences();
 
                 // When one familymember's period is over then others can get some notice
-                if (timesUp.matches(viewEnd())){
-                    if (originalBudget.matches(budget)){
+                if (timesUp.matches(viewEnd())) {
+                    if (originalBudget.matches(budget)) {
 
                         String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
                         String time = "One of Your family member has time period over";
                         Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
-                    }else{
+                    } else {
                         String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
                         String time = "One of Your family member has time period over";
                         Message message = new Message(expenses, time);
@@ -159,15 +160,15 @@ public class MessageActivity extends AppCompatActivity {
 
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
-                }else{
-                    if (originalBudget.matches(budget)){
+                } else {
+                    if (originalBudget.matches(budget)) {
 
                         String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
-                    }else{
+                    } else {
 
                         String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -177,6 +178,7 @@ public class MessageActivity extends AppCompatActivity {
                     }
                 }
             }
+
         });
 
         // Back to main page
