@@ -140,8 +140,8 @@ public class  MessageActivity extends AppCompatActivity {
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
-                //double fam = Double.parseDouble(family);
-                //String familyBudgets = String.format( "%.2f", family);
+                double fam = Double.parseDouble(family);
+                String familyBudgets = String.format( "%.2f", fam);
 
                 //String w = expences();
 
@@ -164,7 +164,7 @@ public class  MessageActivity extends AppCompatActivity {
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
 
-                    if (originalBudget.matches(family)) {
+                    if (originalBudget.matches(familyBudgets)) {
 
                         double Family = Double.parseDouble(family);
                         double exp = Double.parseDouble(expences());
