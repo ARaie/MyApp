@@ -167,7 +167,7 @@ public class MessageActivity extends AppCompatActivity {
 
                         String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(family, time);
+                        Message message = new Message("korras", time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
                     } else {
