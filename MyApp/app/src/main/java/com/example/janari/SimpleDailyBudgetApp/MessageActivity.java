@@ -133,7 +133,13 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                TextView dateView = (TextView) findViewById(R.id.date);
+                FirebaseUser user = mAuth.getCurrentUser();
+                String userId = user.getUid();
+
+                Message message = new Message("56", "hakkama sai");
+                mMessageReference.child(userId).setValue(message);
+
+               /* TextView dateView = (TextView) findViewById(R.id.date);
                 String timesUp = dateView.getText().toString();
 
                 FirebaseUser user = mAuth.getCurrentUser();
@@ -178,7 +184,7 @@ public class MessageActivity extends AppCompatActivity {
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
                     }
-                }
+                }*/
             }
 
         });
