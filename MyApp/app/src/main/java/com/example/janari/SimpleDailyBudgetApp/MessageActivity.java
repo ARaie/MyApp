@@ -33,7 +33,7 @@ public class  MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, familyB, family, familys;
+    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, familyB, family;
 
 // TODO
     //TODO muidu on timmu aga kui uus family member tahab liituda pärast seda kui ta on juba natuke toimetanud siis on jama majas
@@ -78,12 +78,6 @@ public class  MessageActivity extends AppCompatActivity {
         tt.setText(originalBudget);
         ttt = (TextView) findViewById(R.id.ttt);
         ttt.setText(family);
-
-        double Family = Double.parseDouble(family);
-        String other = familyBudget.getText().toString();
-        double exp = Double.parseDouble(other);
-        double sum = Family + exp;
-        familys = String.valueOf(sum);
 
         // Set current date
         TextView dateView = (TextView) findViewById(R.id.date);
@@ -170,6 +164,11 @@ public class  MessageActivity extends AppCompatActivity {
 
                     if (originalBudget.matches(family)) {
 
+                        double Family = Double.parseDouble(family);
+                        //String other = familyBudget.getText().toString();
+                       // double exp = Double.parseDouble(other);
+                        double sum = Family + 0.44;
+                        String familys = String.valueOf(sum);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(familys, time);
                         mMessageReference.child(userId).setValue(message);
