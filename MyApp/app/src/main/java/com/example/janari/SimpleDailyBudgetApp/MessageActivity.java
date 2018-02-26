@@ -163,14 +163,14 @@ public class MessageActivity extends AppCompatActivity {
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
                 } else {
-                    if (originalBudget.matches(budget)) {
+                    //if (originalBudget.matches(budget)) {
 
                         String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message("korras", time);
+                        Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
-                    } else {
+                   /* } else {
 
                         // TODO ta paneb mul miinuse sest esimest budgetit ta ei saa kätte. Kui peaks liitma esimese korraga siis ta jookseb kokku ja teise arvutuse teeb 0 - kulutus
                         String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
@@ -178,7 +178,7 @@ public class MessageActivity extends AppCompatActivity {
                         Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
-                    }
+                    }*/
                 }
             }
 
