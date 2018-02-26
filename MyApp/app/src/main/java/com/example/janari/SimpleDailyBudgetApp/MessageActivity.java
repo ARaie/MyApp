@@ -138,12 +138,12 @@ public class  MessageActivity extends AppCompatActivity {
                 //TextView dateView = (TextView) findViewById(R.id.date);
                //String timesUp = dateView.getText().toString();
 
-                FirebaseUser user = mAuth.getCurrentUser();
+               FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
-                double fam = Double.parseDouble(family);
+               /*  double fam = Double.parseDouble(family);
                 String Family = String.format( "%.2f", fam);
 
-                String w = expences();
+                String w = expences();*/
 
                 /*// When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
@@ -164,21 +164,21 @@ public class  MessageActivity extends AppCompatActivity {
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
 
-                    if (originalBudget.matches(Family)) {
+                   // if (originalBudget.matches(Family)) {
 
-                        String familys = String.valueOf(fam + Double.parseDouble(w));
-                        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(familys, time);
+                        //String familys = String.valueOf(fam + Double.parseDouble(w));
+                       // String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                        Message message = new Message("56", "87");
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
-                    } else {
+                    /*} else {
 
                         String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
-                   }
+                   }*/
 
             }
 
