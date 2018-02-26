@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="TextView"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -73,20 +73,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAppearance="@android:style/TextAppearance.Material.Large" />
-
-            <TextView
-                android:id="@+id/rf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/s"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:layout_weight="1"
-                android:text="TextView" />
 
         </LinearLayout>
 

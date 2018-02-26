@@ -27,13 +27,13 @@ import java.util.Locale;
 public class MessageActivity extends AppCompatActivity {
 
     private Button btnSend, btnLogout, btnRefresh, btnBack;
-    private TextView updateTime, email, password, familyBudget, rf;
+    private TextView updateTime, email, password, familyBudget;
     private DatabaseReference mDatabase;
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String ID, originalBudget, userExpenses, emailCopy, passwordCopy;
+    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, budgetOrigin;
 
 // TODO
     //TODO muidu on timmu aga kui uus family member tahab liituda pärast seda kui ta on juba natuke toimetanud siis on jama majas
@@ -62,8 +62,6 @@ public class MessageActivity extends AppCompatActivity {
         userExpenses = extras.getString("exe");
         emailCopy = extras.getString("email");
         passwordCopy = extras.getString("password");
-        rf = (TextView) findViewById(R.id.rf);
-        rf.setText(originalBudget);
 
         // Set email and password to fields for refreshing user
         email.setText(emailCopy);
@@ -140,9 +138,11 @@ public class MessageActivity extends AppCompatActivity {
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
-                TextView e = (TextView) findViewById(R.id.all_budget);
-                String budget = e.getText().toString();
+                double bud = viewAll();
+                String budget = String.format( "%.2f", bud);
                 String w = expences();
+                double origin = Double.parseDouble(originalBudget);
+                budgetOrigin = String.format( "%.2f", origin);
 
                 // When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
@@ -163,22 +163,21 @@ public class MessageActivity extends AppCompatActivity {
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
                 } else {
-                    //if (originalBudget.matches(budget)) {
+                    if (budgetOrigin.matches(budget)) {
 
-                        String family = String.valueOf(Double.parseDouble(budget) /*+ Double.parseDouble(w))*/);
+                        String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
-                        //originalBudget = "0";
-                   /* } else {
+                        budgetOrigin = "0";
+                    } else {
 
-                        // TODO ta paneb mul miinuse sest esimest budgetit ta ei saa kätte. Kui peaks liitma esimese korraga siis ta jookseb kokku ja teise arvutuse teeb 0 - kulutus
                         String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
-                    }*/
+                    }
                 }
             }
 
