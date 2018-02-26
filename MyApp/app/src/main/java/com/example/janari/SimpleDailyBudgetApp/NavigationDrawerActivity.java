@@ -313,7 +313,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             String budgetToString = budgetDB.Sum(ID);
             double budget = Double.parseDouble(budgetToString);
             String family = String.format( "%.2f", budget);
-            return budgetToString;
+            return family;
         }
     }
 
