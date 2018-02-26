@@ -137,9 +137,10 @@ public class MessageActivity extends AppCompatActivity {
                 String userId = user.getUid();
 
                 double bud = viewAll();
-                String budget = String.format( "%.2f", bud);
+                String budget = String.valueOf(bud);
 
-                Message message = new Message(budget, "hakkama sai");
+                String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                Message message = new Message(budget, time);
                 mMessageReference.child(userId).setValue(message);
 
                /* TextView dateView = (TextView) findViewById(R.id.date);
