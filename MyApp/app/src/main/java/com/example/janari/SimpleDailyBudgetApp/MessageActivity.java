@@ -136,7 +136,10 @@ public class MessageActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
 
-                Message message = new Message("56", "hakkama sai");
+                double bud = viewAll();
+                String budget = String.format( "%.2f", bud);
+
+                Message message = new Message(budget, "hakkama sai");
                 mMessageReference.child(userId).setValue(message);
 
                /* TextView dateView = (TextView) findViewById(R.id.date);
