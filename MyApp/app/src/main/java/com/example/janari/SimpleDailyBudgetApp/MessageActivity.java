@@ -140,10 +140,10 @@ public class  MessageActivity extends AppCompatActivity {
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
-                double fam = Double.parseDouble(family);
-                String Family = String.format( "%.2f", fam);
+                //double fam = Double.parseDouble(family);
+               // String Family = String.format( "%.2f", fam);
 
-                String w = expences();
+                //String w = expences();
 
                 /*// When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
@@ -166,9 +166,9 @@ public class  MessageActivity extends AppCompatActivity {
 
                    // if (originalBudget.matches(Family)) {
 
-                        String familys = String.valueOf(fam + Double.parseDouble(w));
+                        //String familys = String.valueOf(fam + Double.parseDouble(w));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(familys, "25");
+                        Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
                     /*} else {
