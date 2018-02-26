@@ -27,13 +27,13 @@ import java.util.Locale;
 public class  MessageActivity extends AppCompatActivity {
 
     private Button btnSend, btnLogout, btnRefresh, btnBack;
-    private TextView updateTime, email, password, familyBudget;
+    private TextView updateTime, email, password, familyBudget, tt, ttt;
     private DatabaseReference mDatabase;
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String ID, originalBudget, userExpenses, emailCopy, passwordCopy;
+    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, familyB;
 
 // TODO
     //TODO muidu on timmu aga kui uus family member tahab liituda pärast seda kui ta on juba natuke toimetanud siis on jama majas
@@ -73,6 +73,10 @@ public class  MessageActivity extends AppCompatActivity {
 
         budgetDB = new DBHelper(this);
         InputDB = new DataHelper(this);
+        tt = (TextView) findViewById(R.id.tt);
+        tt.setText(originalBudget);
+        ttt = (TextView) findViewById(R.id.ttt);
+        ttt.setText(viewAll());
 
         // Set current date
         TextView dateView = (TextView) findViewById(R.id.date);
@@ -192,7 +196,7 @@ public class  MessageActivity extends AppCompatActivity {
     // Method for check when Family database is empty
     public String expences(){
 
-        String familyB = familyBudget.getText().toString();
+        familyB = familyBudget.getText().toString();
 
         if (familyB.matches("")) {
 
