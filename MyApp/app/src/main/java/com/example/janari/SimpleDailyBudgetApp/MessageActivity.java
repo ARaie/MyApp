@@ -139,8 +139,13 @@ public class  MessageActivity extends AppCompatActivity {
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
-                double bud = Double.parseDouble(viewAll());
-                String budget = String.format( "%.2f", bud);
+
+                Message message = new Message("tere", "kena");
+                mMessageReference.child(userId).setValue(message);
+
+
+                /*double bud = Double.parseDouble(viewAll());
+                String budget = String.format("%.2f", bud);
                 String w = expences();
 
                 // When one familymember's period is over then others can get some notice
@@ -164,7 +169,7 @@ public class  MessageActivity extends AppCompatActivity {
                 } else {
                     if (originalBudget.matches(budget)) {
 
-                        String family = String.valueOf(Double.parseDouble(budget) +  Double.parseDouble(w));
+                        String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
@@ -177,7 +182,7 @@ public class  MessageActivity extends AppCompatActivity {
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
                     }
-                }
+                }*/
             }
 
         });
