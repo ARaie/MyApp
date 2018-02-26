@@ -81,10 +81,7 @@ public class MessageActivity extends AppCompatActivity {
 
         // TODO when some familymember period is over then it is shown. Needs thinking
         String timesUp = dateView.getText().toString();
-
-        // Get user daily budget and save it to field
-        viewAll();
-
+        
         // Get data from Firebase DB and display it
         mDatabase.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -133,17 +130,8 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                String userId = user.getUid();
 
-                double bud = viewAll();
-                String budget = String.valueOf(bud);
-
-                String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                Message message = new Message(budget, time);
-                mMessageReference.child(userId).setValue(message);
-
-               /* TextView dateView = (TextView) findViewById(R.id.date);
+                TextView dateView = (TextView) findViewById(R.id.date);
                 String timesUp = dateView.getText().toString();
 
                 FirebaseUser user = mAuth.getCurrentUser();
@@ -188,7 +176,7 @@ public class MessageActivity extends AppCompatActivity {
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
                     }
-                }*/
+                }
             }
 
         });
@@ -220,20 +208,15 @@ public class MessageActivity extends AppCompatActivity {
     // Method for get current user current allSum from local database and display it
     public double viewAll() {
 
-        TextView userMoney = (TextView) findViewById(R.id.all_budget);
-
         Cursor res = budgetDB.AllSum(ID);
         if (res.getCount() == 0) {
 
             double budget = 0;
-            String stringOfBudget = String.valueOf(budget);
-            userMoney.setText(stringOfBudget);
             return budget;
 
         } else {
             String budget = budgetDB.Sum(ID);
             double doubleFromBudget = Double.parseDouble(budget);
-            userMoney.setText( String.format( "%.2f", doubleFromBudget) );
             return doubleFromBudget;
         }
     }
