@@ -165,7 +165,8 @@ public class  MessageActivity extends AppCompatActivity {
                     if (originalBudget.matches(family)) {
 
                         double Family = Double.parseDouble(family);
-                        double exp = Double.parseDouble(expences());
+                        String other = familyBudget.getText().toString();
+                        double exp = Double.parseDouble(other);
                         double sum = Family + exp;
                         String familys = String.valueOf(sum);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
