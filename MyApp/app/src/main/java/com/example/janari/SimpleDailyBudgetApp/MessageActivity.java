@@ -170,6 +170,7 @@ public class MessageActivity extends AppCompatActivity {
                         originalBudget = "0";
                     } else {
 
+                        // TODO ta paneb mul miinuse sest esimest budgetit ta ei saa kätte. Kui peaks liitma esimese korraga siis ta jookseb kokku ja teise arvutuse teeb 0 - kulutus
                         String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(expenses, time);
@@ -195,13 +196,13 @@ public class MessageActivity extends AppCompatActivity {
     // Method for check when Family database is empty
     public String expences(){
 
-        String familyBudget = this.familyBudget.getText().toString();
+        String familyB = familyBudget.getText().toString();
 
-        if (familyBudget.matches("")) {
+        if (familyB.matches("")) {
 
             return "0";
         }else{
-            return familyBudget;
+            return familyB;
         }
     }
 
