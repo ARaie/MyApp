@@ -306,11 +306,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Cursor res = budgetDB.AllSum(ID);
         if (res.getCount() == 0) {
 
-            String calculatedSum = "0";
+            String calculatedSum = "0.00";
             return calculatedSum;
         } else {
 
             String budgetToString = budgetDB.Sum(ID);
+            double budget = Double.parseDouble(budgetToString);
+            String family = String.format( "%.2f", budget);
             return budgetToString;
         }
     }
