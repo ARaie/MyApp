@@ -141,7 +141,7 @@ public class  MessageActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
                 //double fam = Double.parseDouble(family);
-               // String Family = String.format( "%.2f", fam);
+                //String familyBudgets = String.format( "%.2f", family);
 
                 //String w = expences();
 
@@ -164,22 +164,25 @@ public class  MessageActivity extends AppCompatActivity {
                     // TODO saving needs more thinking and testing
                     // Normal workflow to save data to Firebase database
 
-                   // if (originalBudget.matches(Family)) {
+                    if (originalBudget.matches(family)) {
 
-                        //String familys = String.valueOf(fam + Double.parseDouble(w));
+                        double Family = Double.parseDouble(family);
+                        double exp = Double.parseDouble(expences());
+                        double sum = Family + exp;
+                        String familys = String.valueOf(sum);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(family, time);
+                        Message message = new Message(familys, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
-                    /*} else {
+                    } else {
 
-                        String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
+                        //String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(expenses, time);
+                        Message message = new Message("22", time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
-                   }*/
 
+                    }
             }
 
         });
