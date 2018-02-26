@@ -165,11 +165,11 @@ public class MessageActivity extends AppCompatActivity {
                 } else {
                     //if (originalBudget.matches(budget)) {
 
-                        String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
+                        String family = String.valueOf(Double.parseDouble(budget) /*+ Double.parseDouble(w))*/);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
-                        originalBudget = "0";
+                        //originalBudget = "0";
                    /* } else {
 
                         // TODO ta paneb mul miinuse sest esimest budgetit ta ei saa kätte. Kui peaks liitma esimese korraga siis ta jookseb kokku ja teise arvutuse teeb 0 - kulutus
