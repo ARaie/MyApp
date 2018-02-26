@@ -74,20 +74,6 @@
                 android:layout_weight="1"
                 android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
-            <TextView
-                android:id="@+id/tt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/ttt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
-
         </LinearLayout>
 
     </LinearLayout>

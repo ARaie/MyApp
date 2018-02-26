@@ -74,10 +74,6 @@ public class  MessageActivity extends AppCompatActivity {
 
         budgetDB = new DBHelper(this);
         InputDB = new DataHelper(this);
-        tt = (TextView) findViewById(R.id.tt);
-        tt.setText(originalBudget);
-        ttt = (TextView) findViewById(R.id.ttt);
-        ttt.setText(family);
 
         // Set current date
         TextView dateView = (TextView) findViewById(R.id.date);
@@ -104,7 +100,7 @@ public class  MessageActivity extends AppCompatActivity {
             }
         });
 
-//TODO miks logout äpi kokku jooksuyab?
+//TODO Logout btn fails
         // Logout from family database
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,18 +155,18 @@ public class  MessageActivity extends AppCompatActivity {
                         userExpenses = "0";
                     }*/
 
-                    // TODO saving needs more thinking and testing
+                    // TODO saving needs more thinking and testing. I can't make calculations here
                     // Normal workflow to save data to Firebase database
 
                     if (originalBudget.matches(family)) {
 
-                        double Family = Double.parseDouble(family);
+                        //double Family = Double.parseDouble(family);
                         //String other = familyBudget.getText().toString();
-                       // double exp = Double.parseDouble(other);
-                        double sum = Family + 0.44;
-                        String familys = String.valueOf(sum);
+                        // double exp = Double.parseDouble(other);
+                        //double sum = Family + exp;
+                        //String familys = String.valueOf(sum);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(familys, time);
+                        Message message = new Message(family, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
                     } else {
