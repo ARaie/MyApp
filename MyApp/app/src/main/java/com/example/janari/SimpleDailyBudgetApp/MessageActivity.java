@@ -1,6 +1,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.janari.SimpleDailyBudgetApp.Models.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +36,7 @@ public class  MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, familyB, family;
+    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, family;
     double sum = 0.00, Family, exp, sumExpenses = 0.00, expenses, Fam;
 
 // TODO
@@ -41,7 +44,15 @@ public class  MessageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+
+        Locale locale = Locale.US;
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+        this.setContentView(R.layout.activity_message);
+
 
         // Buttons
         btnSend = (Button) findViewById(R.id.btn_send);
@@ -132,50 +143,54 @@ public class  MessageActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                //TextView dateView = (TextView) findViewById(R.id.date);
-               //String timesUp = dateView.getText().toString();
+                TextView dateView = (TextView) findViewById(R.id.date);
+                String timesUp = dateView.getText().toString();
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
 
-                //String w = expences();
-
-                /*// When one familymember's period is over then others can get some notice
+                // When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
-                    if (originalBudget.matches(budget)) {
-
-                        String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
-                        String time = "One of Your family member has time period over";
-                        Message message = new Message(family, time);
-                        mMessageReference.child(userId).setValue(message);
-                    } else {
-                        String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
-                        String time = "One of Your family member has time period over";
-                        Message message = new Message(expenses, time);
-                        mMessageReference.child(userId).setValue(message);
-                        userExpenses = "0";
-                    }*/
-
-                    // TODO saving needs more thinking and testing. I can't make calculations here
-                    // Normal workflow to save data to Firebase database
-
                     if (originalBudget.matches(family)) {
 
                         calculateSum();
                         String familys = String.format(Locale.US,"%.2f",sum);
-                        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                        String time = new SimpleDateFormat("One family members budget period is done").format(Calendar.getInstance().getTime());
                         Message message = new Message(familys, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
                     } else {
 
                         calculateExpenses();
-                        String expenses = String.format(Locale.US,"%.2f",sumExpenses);
-                        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                        String expenses = String.format(Locale.US, "%.2f", sumExpenses);
+                        String time = new SimpleDateFormat("One family members budget period is done").format(Calendar.getInstance().getTime());
                         Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
+                    }
+                    }else{
 
+                        // TODO saving needs more thinking and testing. I can't make calculations here
+                        // Normal workflow to save data to Firebase database
+
+                        if (originalBudget.matches(family)) {
+
+                            calculateSum();
+                            String familys = String.format(Locale.US, "%.2f", sum);
+                            String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                            Message message = new Message(familys, time);
+                            mMessageReference.child(userId).setValue(message);
+                            originalBudget = "0";
+                        } else {
+
+                            calculateExpenses();
+                            String expenses = String.format(Locale.US, "%.2f", sumExpenses);
+                            String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                            Message message = new Message(expenses, time);
+                            mMessageReference.child(userId).setValue(message);
+                            userExpenses = "0";
+
+                        }
                     }
             }
 
@@ -194,27 +209,23 @@ public class  MessageActivity extends AppCompatActivity {
 
     public void calculateSum(){
 
-        Family = Double.parseDouble(familyBudget.getText().toString());
-        exp = Double.parseDouble(originalBudget);
-        sum = Family + exp;
+        if((familyBudget.getText().toString()).matches("") ){
+            sum = exp;
+        }else{
+            Family = Double.parseDouble(familyBudget.getText().toString());
+            exp = Double.parseDouble(originalBudget);
+            sum = Family + exp;
+        }
     }
     public void calculateExpenses(){
 
-        Fam = Double.parseDouble(familyBudget.getText().toString());
-        expenses = Double.parseDouble(userExpenses);
-        sumExpenses = Fam - expenses;
-    }
-
-    // Method for check when Family database is empty
-    public String expences(){
-
-        familyB = familyBudget.getText().toString();
-
-        if (familyB.matches("")) {
-
-            return "0";
+        if((familyBudget.getText().toString()).matches("") ){
+            sumExpenses = 0.00;
+            Toast.makeText(getApplicationContext(), "Pliis arvuta esmalt oma tulud-kulud ja siis tule otse siia sisestama sest süsteem on veel vigane", Toast.LENGTH_LONG).show();
         }else{
-            return familyB;
+            Fam = Double.parseDouble(familyBudget.getText().toString());
+            expenses = Double.parseDouble(userExpenses);
+            sumExpenses = Fam - expenses;
         }
     }
 

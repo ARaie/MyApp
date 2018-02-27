@@ -22,9 +22,7 @@ public class StartActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-
-            String languageToLoad  = "en";
-            Locale locale = new Locale(languageToLoad);
+            Locale locale = Locale.US;
             Locale.setDefault(locale);
             Configuration config = new Configuration();
             config.locale = locale;
