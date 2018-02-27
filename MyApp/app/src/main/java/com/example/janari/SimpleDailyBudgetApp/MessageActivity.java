@@ -27,13 +27,14 @@ import java.util.Locale;
 public class  MessageActivity extends AppCompatActivity {
 
     private Button btnSend, btnLogout, btnRefresh, btnBack;
-    private TextView updateTime, email, password, familyBudget, tt, ttt;
+    private TextView updateTime, email, password, familyBudget;
     private DatabaseReference mDatabase;
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
     String ID, originalBudget, userExpenses, emailCopy, passwordCopy, familyB, family;
+    double sum = 0.00, Family, exp, sumExpenses = 0.00, expenses, Fam;
 
 // TODO
     //TODO muidu on timmu aga kui uus family member tahab liituda pärast seda kui ta on juba natuke toimetanud siis on jama majas
@@ -160,20 +161,18 @@ public class  MessageActivity extends AppCompatActivity {
 
                     if (originalBudget.matches(family)) {
 
-                        //double Family = Double.parseDouble(family);
-                        //String other = familyBudget.getText().toString();
-                        // double exp = Double.parseDouble(other);
-                        //double sum = Family + exp;
-                        //String familys = String.valueOf(sum);
+                        calculateSum();
+                        String familys = String.valueOf(sum);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(family, time);
+                        Message message = new Message(familys, time);
                         mMessageReference.child(userId).setValue(message);
                         originalBudget = "0";
                     } else {
 
-                        //String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
+                        calculateExpenses();
+                        String expenses = String.valueOf(sumExpenses);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message("22", time);
+                        Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
 
@@ -191,6 +190,19 @@ public class  MessageActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void calculateSum(){
+
+        Family = Double.parseDouble(familyBudget.getText().toString());
+        exp = Double.parseDouble(originalBudget);
+        sum = Family + exp;
+    }
+    public void calculateExpenses(){
+
+        Fam = Double.parseDouble(familyBudget.getText().toString());
+        expenses = Double.parseDouble(userExpenses);
+        sumExpenses = Fam - expenses;
     }
 
     // Method for check when Family database is empty
