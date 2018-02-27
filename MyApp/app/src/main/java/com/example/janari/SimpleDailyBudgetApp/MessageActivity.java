@@ -162,7 +162,7 @@ public class  MessageActivity extends AppCompatActivity {
                     if (originalBudget.matches(family)) {
 
                         calculateSum();
-                        String familys = String.valueOf(sum);
+                        String familys = String.format(Locale.US,"%.2f",sum);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(familys, time);
                         mMessageReference.child(userId).setValue(message);
@@ -170,7 +170,7 @@ public class  MessageActivity extends AppCompatActivity {
                     } else {
 
                         calculateExpenses();
-                        String expenses = String.valueOf(sumExpenses);
+                        String expenses = String.format(Locale.US,"%.2f",sumExpenses);
                         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
