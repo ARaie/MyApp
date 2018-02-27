@@ -149,6 +149,7 @@ public class  MessageActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
 
+                //TODO not working yet
                 // When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
                     if (originalBudget.matches(family)) {
@@ -211,6 +212,7 @@ public class  MessageActivity extends AppCompatActivity {
 
         if((familyBudget.getText().toString()).matches("") ){
             sum = exp;
+            Toast.makeText(getApplicationContext(), "Pliis arvuta esmalt oma tulud-kulud ja siis tule otse siia sisestama sest süsteem on veel vigane", Toast.LENGTH_LONG).show();
         }else{
             Family = Double.parseDouble(familyBudget.getText().toString());
             exp = Double.parseDouble(originalBudget);
