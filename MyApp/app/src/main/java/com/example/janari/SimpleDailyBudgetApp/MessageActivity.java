@@ -1,6 +1,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.janari.SimpleDailyBudgetApp.Models.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,7 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class MessageActivity extends AppCompatActivity {
+public class  MessageActivity extends AppCompatActivity {
 
     private Button btnSend, btnLogout, btnRefresh, btnBack;
     private TextView updateTime, email, password, familyBudget;
@@ -33,14 +36,23 @@ public class MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, budgetOrigin;
+    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, family;
+    double sum = 0.00, Family, exp, sumExpenses = 0.00, expenses, Fam;
 
 // TODO
     //TODO muidu on timmu aga kui uus family member tahab liituda pärast seda kui ta on juba natuke toimetanud siis on jama majas
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+
+        Locale locale = Locale.US;
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+        this.setContentView(R.layout.activity_message);
+
 
         // Buttons
         btnSend = (Button) findViewById(R.id.btn_send);
@@ -61,7 +73,8 @@ public class MessageActivity extends AppCompatActivity {
         originalBudget = extras.getString("original");
         userExpenses = extras.getString("exe");
         emailCopy = extras.getString("email");
-        passwordCopy = extras.getString("password");
+        passwordCopy =extras.getString("password");
+        family = extras.getString("family");
 
         // Set email and password to fields for refreshing user
         email.setText(emailCopy);
@@ -74,16 +87,12 @@ public class MessageActivity extends AppCompatActivity {
         budgetDB = new DBHelper(this);
         InputDB = new DataHelper(this);
 
-
         // Set current date
         TextView dateView = (TextView) findViewById(R.id.date);
         setDate(dateView);
 
         // TODO when some familymember period is over then it is shown. Needs thinking
         String timesUp = dateView.getText().toString();
-
-        // Get user daily budget and save it to field
-        viewAll();
 
         // Get data from Firebase DB and display it
         mDatabase.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
@@ -93,7 +102,7 @@ public class MessageActivity extends AppCompatActivity {
                 {
                         String budget = dataSnapshot.child("userBudget").getValue().toString();
                         double Budget = Double.parseDouble(budget);
-                        familyBudget.setText( String.format( "%.2f", Budget) );
+                        familyBudget.setText( String.format(Locale.US, "%.2f", Budget) );
                         updateTime.setText(dataSnapshot.child("time").getValue().toString());
                 }
             }
@@ -103,7 +112,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-//TODO miks logout äpi kokku jooksuyab?
+//TODO Logout btn fails
         // Logout from family database
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,58 +142,57 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                String userId = user.getUid();
 
-                Message message = new Message("56", "hakkama sai");
-                mMessageReference.child(userId).setValue(message);
-
-               /* TextView dateView = (TextView) findViewById(R.id.date);
+                TextView dateView = (TextView) findViewById(R.id.date);
                 String timesUp = dateView.getText().toString();
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
-                double bud = viewAll();
-                String budget = String.format( "%.2f", bud);
-                String w = expences();
-                double origin = Double.parseDouble(originalBudget);
-                budgetOrigin = String.format( "%.2f", origin);
 
+                //TODO not working yet
                 // When one familymember's period is over then others can get some notice
                 if (timesUp.matches(viewEnd())) {
-                    if (originalBudget.matches(budget)) {
+                    if (originalBudget.matches(family)) {
 
-                        String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
-                        String time = "One of Your family member has time period over";
-                        Message message = new Message(family, time);
+                        calculateSum();
+                        String familys = String.format(Locale.US,"%.2f",sum);
+                        String time = new SimpleDateFormat("One family members budget period is done").format(Calendar.getInstance().getTime());
+                        Message message = new Message(familys, time);
                         mMessageReference.child(userId).setValue(message);
+                        originalBudget = "0";
                     } else {
-                        String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
-                        String time = "One of Your family member has time period over";
+
+                        calculateExpenses();
+                        String expenses = String.format(Locale.US, "%.2f", sumExpenses);
+                        String time = new SimpleDateFormat("One family members budget period is done").format(Calendar.getInstance().getTime());
                         Message message = new Message(expenses, time);
                         mMessageReference.child(userId).setValue(message);
                         userExpenses = "0";
                     }
+                    }else{
 
-                    // TODO saving needs more thinking and testing
-                    // Normal workflow to save data to Firebase database
-                } else {
-                    if (budgetOrigin.matches(budget)) {
+                        // TODO saving needs more thinking and testing. I can't make calculations here
+                        // Normal workflow to save data to Firebase database
 
-                        String family = String.valueOf(Double.parseDouble(budget) + Double.parseDouble(w));
-                        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(family, time);
-                        mMessageReference.child(userId).setValue(message);
-                        budgetOrigin = "0";
-                    } else {
+                        if (originalBudget.matches(family)) {
 
-                        String expenses = String.valueOf(Double.parseDouble(w) - Double.parseDouble(userExpenses));
-                        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        Message message = new Message(expenses, time);
-                        mMessageReference.child(userId).setValue(message);
-                        userExpenses = "0";
+                            calculateSum();
+                            String familys = String.format(Locale.US, "%.2f", sum);
+                            String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                            Message message = new Message(familys, time);
+                            mMessageReference.child(userId).setValue(message);
+                            originalBudget = "0";
+                        } else {
+
+                            calculateExpenses();
+                            String expenses = String.format(Locale.US, "%.2f", sumExpenses);
+                            String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                            Message message = new Message(expenses, time);
+                            mMessageReference.child(userId).setValue(message);
+                            userExpenses = "0";
+
+                        }
                     }
-                }*/
             }
 
         });
@@ -200,37 +208,26 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    // Method for check when Family database is empty
-    public String expences(){
+    public void calculateSum(){
 
-        String familyB = familyBudget.getText().toString();
-
-        if (familyB.matches("")) {
-
-            return "0";
+        if((familyBudget.getText().toString()).matches("") ){
+            sum = exp;
+            Toast.makeText(getApplicationContext(), "Pliis arvuta esmalt oma tulud-kulud ja siis tule otse siia sisestama sest süsteem on veel vigane", Toast.LENGTH_LONG).show();
         }else{
-            return familyB;
+            Family = Double.parseDouble(familyBudget.getText().toString());
+            exp = Double.parseDouble(originalBudget);
+            sum = Family + exp;
         }
     }
+    public void calculateExpenses(){
 
-    // Method for get current user current allSum from local database and display it
-    public double viewAll() {
-
-        TextView userMoney = (TextView) findViewById(R.id.all_budget);
-
-        Cursor res = budgetDB.AllSum(ID);
-        if (res.getCount() == 0) {
-
-            double budget = 0;
-            String stringOfBudget = String.valueOf(budget);
-            userMoney.setText(stringOfBudget);
-            return budget;
-
-        } else {
-            String budget = budgetDB.Sum(ID);
-            double doubleFromBudget = Double.parseDouble(budget);
-            userMoney.setText( String.format( "%.2f", doubleFromBudget) );
-            return doubleFromBudget;
+        if((familyBudget.getText().toString()).matches("") ){
+            sumExpenses = 0.00;
+            Toast.makeText(getApplicationContext(), "Pliis arvuta esmalt oma tulud-kulud ja siis tule otse siia sisestama sest süsteem on veel vigane", Toast.LENGTH_LONG).show();
+        }else{
+            Fam = Double.parseDouble(familyBudget.getText().toString());
+            expenses = Double.parseDouble(userExpenses);
+            sumExpenses = Fam - expenses;
         }
     }
 

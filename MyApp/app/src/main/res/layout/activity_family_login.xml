@@ -103,5 +103,12 @@
         android:layout_marginStart="12dp"
         android:text="To register family account you can use your email address and think out new password for only this application and this family account that you can share to other family member to access to the same account" />
 
+    <TextView
+        android:id="@+id/fam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="invisible" />
+
 
 </RelativeLayout>

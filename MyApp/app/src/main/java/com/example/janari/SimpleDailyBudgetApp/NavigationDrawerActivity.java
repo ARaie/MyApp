@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -42,7 +43,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation_drawer);
+
+        Locale locale = Locale.US;
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+        this. setContentView(R.layout.activity_navigation_drawer);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -259,11 +268,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
             String original = originalBudget.getText().toString();
             TextView exp = (TextView) findViewById(R.id.exp);
             String exe = exp.getText().toString();
+            String family = family();
             Intent anIntent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
             Bundle extras = new Bundle();
             extras.putString("id", string);
             extras.putString("original", original);
             extras.putString("exe", exe);
+            extras.putString("family", family);
             anIntent.putExtras(extras);
             startActivity(anIntent);
         }
@@ -294,6 +305,24 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             String budgetToString = budgetDB.bud(ID);
             return budgetToString;
+        }
+    }
+    public String family() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = budgetDB.AllSum(ID);
+        if (res.getCount() == 0) {
+
+            String calculatedSum = "0.00";
+            return calculatedSum;
+        } else {
+
+            String budgetToString = budgetDB.Sum(ID);
+            double budget = Double.parseDouble(budgetToString);
+            String family = String.format( "%.2f", budget);
+            return family;
         }
     }
 

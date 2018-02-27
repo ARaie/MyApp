@@ -2,6 +2,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,18 +22,27 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Locale;
+
 public class FamilyLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    String ID, originalBudget, userExpenses;
+    String ID, originalBudget, userExpenses, family;
     private EditText emailField, passwordField;
     private Button signInButton, signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_family_login);
+
+        Locale locale = Locale.US;
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+        this.setContentView(R.layout.activity_family_login);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
@@ -53,6 +63,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         ID = extras.getString("id");
         originalBudget = extras.getString("original");
         userExpenses = extras.getString("exe");
+        family = extras.getString("family");
 
         // Set data from intent to fields
         TextView userID = (TextView) findViewById(R.id.id);
@@ -61,6 +72,8 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         original.setText(originalBudget);
         TextView exepenses = (TextView) findViewById(R.id.exe);
         exepenses.setText(userExpenses);
+        TextView familyB = (TextView) findViewById(R.id.fam);
+        familyB.setText(family);
     }
     @Override
     public void onStart() {
@@ -133,6 +146,8 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         String string4 = email.getText().toString();
         TextView password = (TextView) findViewById(R.id.field_password);
         String string5 = password.getText().toString();
+        TextView fam = (TextView) findViewById(R.id.fam);
+        String string6 = fam.getText().toString();
         Intent intent = new Intent(FamilyLoginActivity.this, MessageActivity.class);
         Bundle extras = new Bundle();
         extras.putString("id", string);
@@ -140,6 +155,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         extras.putString("exe", string3);
         extras.putString("email", string4);
         extras.putString("password", string5);
+        extras.putString("family", string6);
         intent.putExtras(extras);
         startActivity(intent);
         finish();
