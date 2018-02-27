@@ -59,11 +59,11 @@ public class  MessageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         ID = extras.getString("id");
-        originalBudget = String.format(Locale.US, extras.getString("original"));
-        userExpenses = String.format(Locale.US, extras.getString("exe"));
+        originalBudget = extras.getString("original");
+        userExpenses = extras.getString("exe");
         emailCopy = extras.getString("email");
         passwordCopy =extras.getString("password");
-        family = String.format(Locale.US, extras.getString("family"));
+        family = extras.getString("family");
 
         // Set email and password to fields for refreshing user
         email.setText(emailCopy);
@@ -194,14 +194,14 @@ public class  MessageActivity extends AppCompatActivity {
 
     public void calculateSum(){
 
-        Family = Double.parseDouble(String.format(Locale.US, familyBudget.getText().toString()));
-        exp = Double.parseDouble(String.format(Locale.US, originalBudget));
+        Family = Double.parseDouble(familyBudget.getText().toString());
+        exp = Double.parseDouble(originalBudget);
         sum = Family + exp;
     }
     public void calculateExpenses(){
 
-        Fam = Double.parseDouble(String.format(Locale.US, familyBudget.getText().toString()));
-        expenses = Double.parseDouble(String.format(Locale.US, userExpenses));
+        Fam = Double.parseDouble(familyBudget.getText().toString());
+        expenses = Double.parseDouble(userExpenses);
         sumExpenses = Fam - expenses;
     }
 
