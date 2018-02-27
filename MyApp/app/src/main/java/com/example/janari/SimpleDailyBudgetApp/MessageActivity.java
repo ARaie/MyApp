@@ -91,7 +91,7 @@ public class  MessageActivity extends AppCompatActivity {
                 {
                         String budget = dataSnapshot.child("userBudget").getValue().toString();
                         double Budget = Double.parseDouble(budget);
-                        familyBudget.setText( String.format( "%.2f", Budget) );
+                        familyBudget.setText( String.format(Locale.US, "%.2f", Budget) );
                         updateTime.setText(dataSnapshot.child("time").getValue().toString());
                 }
             }
