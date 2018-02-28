@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.janari.SimpleDailyBudgetApp.Models.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,8 +38,8 @@ public class  MessageActivity extends AppCompatActivity {
     String ID, originalBudget, userExpenses, emailCopy, passwordCopy, family;
     double sum = 0.00, Family, exp, sumExpenses = 0.00, expenses, Fam;
 
-// TODO
-    //TODO muidu on timmu aga kui uus family member tahab liituda pärast seda kui ta on juba natuke toimetanud siis on jama majas
+// TODO Overall user can share budget with family members. But sharing could be automated and with better logic
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +90,6 @@ public class  MessageActivity extends AppCompatActivity {
         TextView dateView = (TextView) findViewById(R.id.date);
         setDate(dateView);
 
-        // TODO when some familymember period is over then it is shown. Needs thinking
-        String timesUp = dateView.getText().toString();
-
         // Get data from Firebase DB and display it
         mDatabase.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -120,23 +116,25 @@ public class  MessageActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
                 startActivity(intent);
+                finish();
             }
 
 
     });
 
         // Refresh to logged in user
-        // TODO needs testing
+        // TODO btn fails
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
+                finish();
             }
 
 
         });
 
-        //TODO it should be automated, but at the moment it is easier to handle
+        //TODO it should be automated, but at the moment it is easier to handle with buttons
         // Send data to Firebase database
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +169,7 @@ public class  MessageActivity extends AppCompatActivity {
                     }
                     }else{
 
-                        // TODO saving needs more thinking and testing. I can't make calculations here
+                        // TODO saving needs more thinking and testing.
                         // Normal workflow to save data to Firebase database
 
                         if (originalBudget.matches(family)) {
