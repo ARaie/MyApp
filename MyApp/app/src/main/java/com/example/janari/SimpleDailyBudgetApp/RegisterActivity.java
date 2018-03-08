@@ -2,6 +2,7 @@ package com.example.janari.SimpleDailyBudgetApp;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,10 +19,12 @@ import java.util.Locale;
 public class RegisterActivity extends AppCompatActivity {
 
     DatabaseHelper myDb;
+    EmailHelper emailDB;
     EditText Name, Email, Password;
     Button btnAddData;
     String EmailHolder, PasswordHolder, NameHolder, id;
     Boolean EditTextEmptyHolder;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Local database
         myDb = new DatabaseHelper(this);
+        emailDB = new EmailHelper(this);
 
         // Fields
         Name = (EditText) findViewById(R.id.enter_name);
@@ -59,14 +63,27 @@ public class RegisterActivity extends AppCompatActivity {
 
                     // Add new user to database
                     UpdateData();
+                    // Calling login method.
+                    LoginFunction();
+                    // Adds logged in user email to email database to identify user with ID
+                    AddEmail();
+                    // Removes data from EditText fields
+                    Email.setText(null);
+                    Password.setText(null);
+                    Name.setText(null);
+                    // Saving data for logged in session
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("key", "olemas"); //TODO kuhu see läheb?
+                    editor.commit();
 
                     // Starts login activity
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, NavigationDrawerActivity.class);
                     startActivity(intent);
 
                 }else{
                     // When fields are not filled
-                    Toast.makeText(getApplicationContext(), "Enter email and password", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Enter username and password", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -104,5 +121,37 @@ public class RegisterActivity extends AppCompatActivity {
 
             EditTextEmptyHolder = true;
         }
+    }
+    // Login function starts from here.
+    public void LoginFunction(){
+
+        if(EditTextEmptyHolder) {
+
+            boolean recordExists = myDb.hasObject(Email.getText().toString(), Password.getText().toString());
+
+            if(recordExists == true){
+                Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
+                startActivity(intentSignIn);
+            } else {
+                Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
+            }
+
+        }else{
+            Toast.makeText(getApplicationContext(), "Enter username and password", Toast.LENGTH_LONG).show();
+        }
+    }
+    // Refreshes and saves over the user email
+    public void RefreshEmail() {
+
+        emailDB.updateEmail("1",
+                Email.getText().toString());
+
+    }
+
+    // Saves logged in user email
+    public void AddEmail() {
+
+        emailDB.insertEmail("1", Email.getText().toString());
+        RefreshEmail();
     }
 }

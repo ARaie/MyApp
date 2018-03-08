@@ -172,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         }else{
-            Toast.makeText(getApplicationContext(), "Enter email and password", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Enter username and password", Toast.LENGTH_LONG).show();
         }
     }
 

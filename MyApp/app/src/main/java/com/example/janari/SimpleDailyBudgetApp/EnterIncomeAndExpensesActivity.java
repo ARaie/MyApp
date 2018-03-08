@@ -148,11 +148,14 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
                 // Daily sum calculating method
                 CalculateDataFunction();
 
-                // Method that adds data do user budget database
-                AddDaily();
+                if (EmptyField == true){
 
-                //Method that adds data to input database and refresh it
-                AddData();
+                    // Method that adds data do user budget database
+                     AddDaily();
+
+                    //Method that adds data to input database and refresh it
+                     AddData();
+                }
 
             }
         });
@@ -245,12 +248,13 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             EditText start = (EditText) findViewById(R.id.start_date);
             String stringStart = start.getText().toString();
             mStart = stringStart;
+            String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
             EditText end = (EditText) findViewById(R.id.end_date);
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
 
             // Days and sum are saved also separately to database for using them in further calculations
-            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
+            double days = Daybetween(today, stringEnd, "dd.MM.yyyy") + 1;
             Days = String.valueOf(days);
             double sumDouble = incomeValue - fixedExpensesValue;
             sum = String.valueOf(sumDouble);

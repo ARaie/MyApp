@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.example.janari.SimpleDailyBudgetApp.Models.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,10 +34,8 @@ public class  MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DBHelper budgetDB;
     DataHelper InputDB;
-    String ID, originalBudget, userExpenses, emailCopy, passwordCopy, family;
-    double sum = 0.00, Family, exp, sumExpenses = 0.00, expenses, Fam;
-
-// TODO Overall user can share budget with family members. But sharing could be automated and with better logic
+    String ID, emailCopy, passwordCopy, familys;
+    double sum = 0.00, Family, exp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +66,8 @@ public class  MessageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         ID = extras.getString("id");
-        originalBudget = extras.getString("original");
-        userExpenses = extras.getString("exe");
         emailCopy = extras.getString("email");
         passwordCopy =extras.getString("password");
-        family = extras.getString("family");
 
         // Set email and password to fields for refreshing user
         email.setText(emailCopy);
@@ -89,6 +83,7 @@ public class  MessageActivity extends AppCompatActivity {
         // Set current date
         TextView dateView = (TextView) findViewById(R.id.date);
         setDate(dateView);
+
 
         // Get data from Firebase DB and display it
         mDatabase.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
@@ -116,81 +111,39 @@ public class  MessageActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
                 startActivity(intent);
-                finish();
             }
 
 
     });
 
         // Refresh to logged in user
-        // TODO btn fails
+        // TODO needs testing
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
-                finish();
             }
 
 
         });
 
-        //TODO it should be automated, but at the moment it is easier to handle with buttons
+        //TODO it should be automated, but at the moment it is easier to handle
         // Send data to Firebase database
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                TextView dateView = (TextView) findViewById(R.id.date);
-                String timesUp = dateView.getText().toString();
-
                 FirebaseUser user = mAuth.getCurrentUser();
                 String userId = user.getUid();
 
-                //TODO not working yet
-                // When one familymember's period is over then others can get some notice
-                if (timesUp.matches(viewEnd())) {
-                    if (originalBudget.matches(family)) {
+                    //TODO peaks tegema lollikindlaks niiet teist korda vajutades enam ei liidaks summat
+                    calculateSum();
+                    familys = String.format(Locale.US,"%.2f",sum);
+                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                    Message message = new Message(familys, time);
+                    mMessageReference.child(userId).setValue(message);
 
-                        calculateSum();
-                        String familys = String.format(Locale.US,"%.2f",sum);
-                        String time = new SimpleDateFormat("One family members budget period is done").format(Calendar.getInstance().getTime());
-                        Message message = new Message(familys, time);
-                        mMessageReference.child(userId).setValue(message);
-                        originalBudget = "0";
-                    } else {
 
-                        calculateExpenses();
-                        String expenses = String.format(Locale.US, "%.2f", sumExpenses);
-                        String time = new SimpleDateFormat("One family members budget period is done").format(Calendar.getInstance().getTime());
-                        Message message = new Message(expenses, time);
-                        mMessageReference.child(userId).setValue(message);
-                        userExpenses = "0";
-                    }
-                    }else{
-
-                        // TODO saving needs more thinking and testing.
-                        // Normal workflow to save data to Firebase database
-
-                        if (originalBudget.matches(family)) {
-
-                            calculateSum();
-                            String familys = String.format(Locale.US, "%.2f", sum);
-                            String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                            Message message = new Message(familys, time);
-                            mMessageReference.child(userId).setValue(message);
-                            originalBudget = "0";
-                        } else {
-
-                            calculateExpenses();
-                            String expenses = String.format(Locale.US, "%.2f", sumExpenses);
-                            String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                            Message message = new Message(expenses, time);
-                            mMessageReference.child(userId).setValue(message);
-                            userExpenses = "0";
-
-                        }
-                    }
             }
 
         });
@@ -209,23 +162,11 @@ public class  MessageActivity extends AppCompatActivity {
     public void calculateSum(){
 
         if((familyBudget.getText().toString()).matches("") ){
-            sum = exp;
-            Toast.makeText(getApplicationContext(), "Pliis arvuta esmalt oma tulud-kulud ja siis tule otse siia sisestama sest süsteem on veel vigane", Toast.LENGTH_LONG).show();
+            sum = Double.parseDouble(view_sum());
         }else{
             Family = Double.parseDouble(familyBudget.getText().toString());
-            exp = Double.parseDouble(originalBudget);
+            exp = Double.parseDouble(view_sum());
             sum = Family + exp;
-        }
-    }
-    public void calculateExpenses(){
-
-        if((familyBudget.getText().toString()).matches("") ){
-            sumExpenses = 0.00;
-            Toast.makeText(getApplicationContext(), "Pliis arvuta esmalt oma tulud-kulud ja siis tule otse siia sisestama sest süsteem on veel vigane", Toast.LENGTH_LONG).show();
-        }else{
-            Fam = Double.parseDouble(familyBudget.getText().toString());
-            expenses = Double.parseDouble(userExpenses);
-            sumExpenses = Fam - expenses;
         }
     }
 
@@ -233,19 +174,6 @@ public class  MessageActivity extends AppCompatActivity {
     public void setDate(TextView view) {
         String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
         view.setText(date);
-    }
-
-    // Method that gives period end date from local database
-    public String viewEnd() {
-
-        Cursor res = InputDB.AllEnd(ID);
-        if (res.getCount() == 0) {
-            return "23.02.2800";
-        }else{
-
-            String end_date = InputDB.End(ID);
-            return end_date;
-        }
     }
 
     // Method for refresh Firebase user
@@ -264,5 +192,18 @@ public class  MessageActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    public String view_sum() {
+
+        Cursor res = budgetDB.AllSum(ID);
+        if (res.getCount() == 0) {
+
+            String calculatedSum = "0";
+            return calculatedSum;
+        }else{
+
+            String calculatedSum = budgetDB.Sum(ID);
+            return calculatedSum;
+        }
     }
 }

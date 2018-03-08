@@ -21,9 +21,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.example.janari.SimpleDailyBudgetApp.Models.Message;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,8 +43,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
     DatabaseHelper myDb;
     DataHelper daysDB;
     DataHelper InputDB;
-    String dailySum = "", id, days, sum;
+    String dailySum = "", id, sum, familys;
     EmailHelper emailDB;
+    private TextView familyBudget, time;
+    private DatabaseReference mDatabase;
+    private DatabaseReference mMessageReference;
+    private FirebaseAuth mAuth;
+    double Family, sumExpenses, Fam, expencesValue;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -82,23 +95,52 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView dateView = (TextView) findViewById(R.id.date_today);
             setDate(dateView);
 
-            // Save user ID
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mMessageReference = FirebaseDatabase.getInstance().getReference("user");
+        mAuth = FirebaseAuth.getInstance();
+
+        familyBudget = (TextView) findViewById(R.id.original);
+        time = (TextView) findViewById(R.id.exp);
+
+        if (mAuth.getCurrentUser() != null) {
+            // Get data from Firebase DB
+            mDatabase.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists())
+                    {
+                        familyBudget.setText(dataSnapshot.child("userBudget").getValue().toString());
+                        time.setText(dataSnapshot.child("time").getValue().toString());
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        // Save user ID
             viewID();
 
             // Shows user daily budget
             String dailyBudget =  viewAll();
-            double budget = Double.parseDouble(dailyBudget);
-            TextView setUserName = (TextView) findViewById(R.id.daily_sum);
-            setUserName.setText( String.format( "%.2f", budget) );
-
+            if (dailyBudget.matches("Enter your data first")){
+                TextView setUserName = (TextView) findViewById(R.id.daily_sum);
+                setUserName.setText("Enter your data first");
+                TextView start = (TextView) findViewById(R.id.oo);
+                String string = start.getText().toString();
+                Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
+                intent.putExtra("id", string);
+                startActivity(intent);
+            }else{
+                double budget = Double.parseDouble(dailyBudget);
+                TextView setUserName = (TextView) findViewById(R.id.daily_sum);
+                setUserName.setText( String.format( "%.2f", budget) );
+            }
 
             // When selected period is over then system clears period data
-        //TODO more thinking and testing needed
             end();
-
-            // Methods to send info to Family database
-            dataBudget();
-            dataExpenses();
 
             // This is the "-" button, that calculates daily expenses
             final Button button = (Button) findViewById(R.id.button);
@@ -117,31 +159,54 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "Enter expenses", Toast.LENGTH_LONG).show();
                     }else{
                         dailySum = getIntent().getStringExtra("dailySum");
-                        TextView originalBudget = (TextView) findViewById(R.id.original);
-                        originalBudget.setText(dailySum);
 
-                        String getDays = viewDays();
-                        double doubleDays = Double.parseDouble(getDays);
+                        double doubleDays  = viewDays();
                         String originalValue = view_sum();
                         double originalValueDouble = Double.parseDouble(originalValue);
                         TextView textValue = (TextView) findViewById(R.id.daily_sum);
-                        double expencesValue = Double.parseDouble(stringValue2);
-                        double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
-                        //textValue.setText(Double.toString(newValue));
-                        textValue.setText( String.format( "%.2f", newValue) );
-                        dailySum = Double.toString(newValue);
-                        double sumDouble = originalValueDouble - expencesValue;
-                        sum = Double.toString(sumDouble);
-                        // Adds calculated daily sum back to budget database
-                        AddData();
+                        String check = textValue.getText().toString();
+                        if (check.matches("Enter your data first")){
+                            Toast.makeText(getApplicationContext(), "Enter your calculation period first", Toast.LENGTH_LONG).show();
+                        }else{
+                            expencesValue = Double.parseDouble(stringValue2);
+                            double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
+                            //textValue.setText(Double.toString(newValue));
+                            textValue.setText( String.format( "%.2f", newValue) );
+                            dailySum = Double.toString(newValue);
+                            double sumDouble = originalValueDouble - expencesValue;
+                            sum = Double.toString(sumDouble);
+                            // Adds calculated daily sum back to budget database
+                            AddData();
+                            // Empty the EditText field
+                            expences.setText(null);
+                            // Method that updates widget view
+                            updateWidget();
 
-                        String stringExpenses = String.valueOf(expencesValue);
-                        TextView exp = (TextView) findViewById(R.id.exp);
-                        exp.setText(stringExpenses);
-                        // Empty the EditText field
-                        expences.setText(null);
-                        // Method that updates widget view
-                        updateWidget();
+
+                            //TODO Toimib aga miks ta famili summa daily viewle alles pärast "calculate" t saab?
+                            // Family budget refreshing
+                            if (mAuth.getCurrentUser() != null) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String userId = user.getUid();
+
+                                //TODO see osa peaks olema automaatne sest klikates teeb töö ära aga näitab infinityt
+                                if (check.matches("Period is over")) {
+
+                                Family = Double.parseDouble(familyBudget.getText().toString());
+                                double fam = Family + 0.00;
+                                familys = String.format(Locale.US, "%.2f", fam);
+                                String time = "Family member period is over";
+                                Message message = new Message(familys, time);
+                                mMessageReference.child(userId).setValue(message);
+                            }else{
+                                calculateExpenses();
+                                String expenses = String.format(Locale.US, "%.2f", sumExpenses);
+                                String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                                Message message = new Message(expenses, time);
+                                mMessageReference.child(userId).setValue(message);
+                            }
+                            }
+                        }
                     }
 
                 }
@@ -219,12 +284,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }
         if (id == R.id.action_logout) {
 //TODO Logout is OK. Only widget holds data. And when you logout and click widget button
 // TODO it opens last users budget activity. It doesn' t care that user was already logged out.
@@ -264,17 +323,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_family) {
             TextView start = (TextView) findViewById(R.id.oo);
             String string = start.getText().toString();
-            TextView originalBudget = (TextView) findViewById(R.id.original);
-            String original = originalBudget.getText().toString();
-            TextView exp = (TextView) findViewById(R.id.exp);
-            String exe = exp.getText().toString();
-            String family = family();
             Intent anIntent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
             Bundle extras = new Bundle();
             extras.putString("id", string);
-            extras.putString("original", original);
-            extras.putString("exe", exe);
-            extras.putString("family", family);
             anIntent.putExtras(extras);
             startActivity(anIntent);
         }
@@ -299,30 +350,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Cursor res = budgetDB.budget(ID);
         if (res.getCount() == 0) {
 
-            String calculatedSum = "0";
+            String calculatedSum = "Enter your data first";
             return calculatedSum;
         } else {
 
             String budgetToString = budgetDB.bud(ID);
             return budgetToString;
-        }
-    }
-    public String family() {
-
-        TextView id = (TextView) findViewById(R.id.oo);
-        String ID = id.getText().toString();
-
-        Cursor res = budgetDB.AllSum(ID);
-        if (res.getCount() == 0) {
-
-            String calculatedSum = "0.00";
-            return calculatedSum;
-        } else {
-
-            String budgetToString = budgetDB.Sum(ID);
-            double budget = Double.parseDouble(budgetToString);
-            String family = String.format( "%.2f", budget);
-            return family;
         }
     }
 
@@ -407,7 +440,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
     }
 
-    // Takes user email from user database and show it in navigation drawer menu field. Based on email database.
+    // Takes user username from user database and show it in navigation drawer menu field. Based on email database.
     public void view_email() {
 
         Cursor res = emailDB.viewEmail();
@@ -430,9 +463,34 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     // Takes days between user entered start and end dates from input database. Based on user ID.
     // Method is for calculating new daily sum when new expenses are entered.
-    public String viewDays() {
+    public double viewDays() {
 
         TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = InputDB.AllEnd(ID);
+        if (res.getCount() == 0) {
+
+            double days = 0;
+            return days;
+        }else{
+
+            String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+            String end = InputDB.End(ID);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            Date Today = null;
+            Date End = null;
+            try {
+                Today = sdf.parse(today);
+                End = sdf.parse(end);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return (double) (End.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000)+1;
+        }
+
+       /* TextView id = (TextView) findViewById(R.id.oo);
         String ID = id.getText().toString();
 
         Cursor res = daysDB.AllDays(ID);
@@ -444,7 +502,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             days = daysDB.Days(ID);
             return days;
-        }
+        }*/
     }
 
     // Takes sum from input database that is calculated based on user incomes and fixed expenses. Based on user ID.
@@ -470,9 +528,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public void end(){
 
         String periodEndDate = viewEnd();
-        TextView textValue = (TextView) findViewById(R.id.date_today);
-        String today = textValue.getText().toString();
-        if (periodEndDate.matches(today)) {
+        String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Date Today = null;
+        Date Tomorrow = null;
+        try {
+            Today = sdf.parse(today);
+            Tomorrow = sdf.parse(periodEndDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        double endDate = (Tomorrow.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000);
+        if (endDate < 0) {
 
             // TODO databases could be emptied to start new period
             //budgetDB.delete();
@@ -495,44 +562,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return date;
         }else{
 
-            // TODO works with todays date but better could be tomorrows date
             String date = InputDB.End(ID);
             return date;
         }
     }
+    public void calculateExpenses() {
 
-    // Method for send info to Family database
-    public void dataBudget(){
-
-        dailySum = getIntent().getStringExtra("dailySum");
-        TextView originalBudget = (TextView) findViewById(R.id.original);
-
-        if(dailySum == null){
-
-            originalBudget.setText("0");
-        }else{
-
-            String sum = dailySum;
-            String days = viewDays();
-            double send = Double.parseDouble(sum) * Double.parseDouble(days);
-            String done = String.valueOf(send);
-            originalBudget.setText( String.format( "%.2f", send) );
-        }
-    }
-
-    // Method for send info to Family database
-    public void dataExpenses(){
-
-        EditText expences = (EditText) findViewById(R.id.expences);
-        String stringExpenses = expences.getText().toString();
-        TextView exp = (TextView) findViewById(R.id.exp);
-
-        if (stringExpenses.matches("")){
-
-            exp.setText("0");
-        }else{
-
-            exp.setText(stringExpenses);
+        String family = familyBudget.getText().toString();
+        if (family.matches("")) {
+            sumExpenses = 0;
+        } else {
+            Fam = Double.parseDouble(family);
+            sumExpenses = Fam - expencesValue;
         }
     }
 }
