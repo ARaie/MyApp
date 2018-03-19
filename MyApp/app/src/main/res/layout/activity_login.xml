@@ -19,7 +19,9 @@
         android:gravity="center"
         android:text="Login to Daily Budget"
         android:textColor="#000"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="97dp"
+        tools:layout_editor_absoluteY="16dp" />
 
     <EditText
         android:id="@+id/editEmail"
@@ -27,11 +29,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/text"
-        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Username"
         android:inputType="textEmailAddress"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="64dp" />
 
     <EditText
         android:id="@+id/editPassword"
@@ -39,30 +42,33 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/editEmail"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:ems="10"
         android:gravity="center"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textColor="#000" />
+        android:textColor="#000"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="127dp" />
 
     <Button
+        android:id="@+id/buttonLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonLogin"
         android:layout_below="@+id/editPassword"
-        android:layout_marginTop="20dp"
-        android:text="Log IN "/>
+        android:text="Log IN "
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="197dp" />
 
     <Button
         android:id="@+id/buttonRegister"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonLogin"
-        android:layout_marginTop="20dp"
-        android:text="Register" />
+        android:text="Register"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="272dp" />
 
-   <!-- <Button
+    <!-- <Button
         android:id="@+id/view_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,43 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    android:weightSum="4" android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout android:orientation="vertical" android:layout_height="0dp" android:layout_width="match_parent" android:gravity="center_horizontal" android:layout_weight="1">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.janari.SimpleDailyBudgetApp.MessageActivity">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Family budget"
-            android:textSize="28sp" />
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="Family budget"
+        tools:layout_editor_absoluteX="97dp"
+        tools:layout_editor_absoluteY="16dp" />
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Messages"
-            android:textSize="18sp" />
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        tools:layout_editor_absoluteX="97dp"
+        tools:layout_editor_absoluteY="16dp" />
 
-        <TextView
-            android:id="@+id/tv_body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All money left for family"
-            android:textAppearance="@android:style/TextAppearance.Material.Large"
-            tools:textColor="@android:color/holo_blue_dark" />
+    <TextView
+        android:id="@+id/tv_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="All money left for family"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        tools:textColor="@android:color/holo_blue_dark"
+        android:gravity="center"
+        tools:layout_editor_absoluteX="97dp"
+        tools:layout_editor_absoluteY="16dp" />
 
-        <TextView
-            android:id="@+id/all_budget"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="TextView"
-            android:visibility="invisible" />
-
-    </LinearLayout>
-
-
-    <LinearLayout android:orientation="vertical" android:layout_height="0dp" android:layout_width="match_parent" android:layout_weight="2" android:padding="16dp">
+    <TextView
+        android:id="@+id/budget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_body"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        tools:layout_editor_absoluteX="97dp"
+        tools:layout_editor_absoluteY="16dp" />
 
 
         <TextView
@@ -54,59 +71,58 @@
             android:text="TextView"
             android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/budget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
-        <LinearLayout
-            android:layout_width="348dp"
-            android:layout_height="82dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+    <TextView
+        android:id="@+id/all_budget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/date"
+        android:layout_toEndOf="@+id/time"
+        android:layout_weight="1"
+        android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="@android:style/TextAppearance.Material.Large" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/budget"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        tools:layout_editor_absoluteX="97dp"
+        tools:layout_editor_absoluteY="16dp" />
 
 
-    <LinearLayout android:orientation="vertical" android:layout_height="0dp" android:layout_width="fill_parent" android:gravity="center" android:layout_weight="1" android:paddingRight="16dp" android:paddingLeft="16dp" android:background="#E0E0E0">
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/log_out"
+        android:layout_alignBottom="@+id/log_out"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="11dp"
+        android:layout_weight="0.5"
+        android:text="Back" />
 
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/log_out"
+        android:layout_alignBottom="@+id/log_out"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_weight="0.5"
+        android:text="Conect" />
 
-        <LinearLayout android:weightSum="2" android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="right" android:id="@+id/layout_signed_in_buttons" android:layout_centerInParent="true">
+    <Button
+        android:id="@+id/log_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="21dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="0.5"
+        android:text="Log out" />
 
-            <Button
-                android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="Back" />
-
-            <Button
-                android:id="@+id/btn_send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="Conect" />
-
-            <Button
-                android:id="@+id/log_out"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="Log out" />
-
-        </LinearLayout>
-
-</LinearLayout>
-
-</LinearLayout>
+    </RelativeLayout>

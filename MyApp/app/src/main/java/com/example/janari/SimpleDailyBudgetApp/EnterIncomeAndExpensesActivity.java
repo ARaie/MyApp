@@ -203,6 +203,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -289,6 +290,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             dailySum = calculated;
             intent.putExtra("dailySum", dailySum);
             startActivity(intent);
+            finish();
 
 
         }else {

@@ -134,6 +134,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 Intent intent = new Intent(getApplicationContext(), EnterIncomeAndExpensesActivity.class);
                 intent.putExtra("id", string);
                 startActivity(intent);
+                finish();
             }else{
                 double budget = Double.parseDouble(dailyBudget);
                 TextView setUserName = (TextView) findViewById(R.id.daily_sum);
@@ -263,6 +264,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -297,6 +299,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             finish();
             startActivity(intent);
+            finish();
             return true;
         }
 
@@ -314,6 +317,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if (id == R.id.nav_main) {
             Intent anIntent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
             startActivity(anIntent);
+            finish();
         } else if (id == R.id.nav_data) {
             // Starts the input entering activity and also gives logged in user ID
             TextView start = (TextView) findViewById(R.id.oo);

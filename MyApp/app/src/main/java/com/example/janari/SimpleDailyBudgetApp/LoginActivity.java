@@ -167,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
             if(recordExists == true){
                 Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 startActivity(intentSignIn);
+                finish();
             } else {
                 Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
             }

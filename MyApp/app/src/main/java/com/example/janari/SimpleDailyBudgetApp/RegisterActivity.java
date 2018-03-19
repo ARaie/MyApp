@@ -104,6 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
             if(recordExists == true){
                 Intent intentSignIn = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 startActivity(intentSignIn);
+                finish();
             } else {
                 Toast.makeText(getApplicationContext(), "UserName or Password is Wrong, Please Try Again.", Toast.LENGTH_LONG).show();
             }
@@ -160,6 +161,7 @@ public class RegisterActivity extends AppCompatActivity {
             // Starts login activity
             Intent intent = new Intent(RegisterActivity.this, NavigationDrawerActivity.class);
             startActivity(intent);
+            finish();
         }else{
 
             Toast.makeText(getApplicationContext(), "This username is already taken, please choose another one", Toast.LENGTH_LONG).show();
