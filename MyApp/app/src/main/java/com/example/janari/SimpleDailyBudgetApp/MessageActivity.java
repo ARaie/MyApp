@@ -1,9 +1,11 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +38,7 @@ public class  MessageActivity extends AppCompatActivity {
     DataHelper InputDB;
     String ID, emailCopy, passwordCopy, familys;
     double sum = 0.00, Family, exp;
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,6 @@ public class  MessageActivity extends AppCompatActivity {
         // Buttons
         btnSend = (Button) findViewById(R.id.btn_send);
         btnLogout = (Button) findViewById(R.id.log_out);
-        btnRefresh = (Button) findViewById(R.id.refresh);
         btnBack = (Button) findViewById(R.id.btn_back);
 
         // Fields
@@ -103,46 +105,53 @@ public class  MessageActivity extends AppCompatActivity {
             }
         });
 
-//TODO Logout btn fails
         // Logout from family database
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), FamilyLoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 startActivity(intent);
+                finish();
             }
 
 
     });
 
-        // Refresh to logged in user
-        // TODO needs testing
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
 
-
-        });
-
-        //TODO it should be automated, but at the moment it is easier to handle
         // Send data to Firebase database
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                String userId = user.getUid();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MessageActivity.this);
+                dialog.setCancelable(false);
+                dialog.setTitle("Connect to family budget");
+                dialog.setMessage("Do not connect double" );
+                dialog.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-                    //TODO peaks tegema lollikindlaks niiet teist korda vajutades enam ei liidaks summat
-                    calculateSum();
-                    familys = String.format(Locale.US,"%.2f",sum);
-                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                    Message message = new Message(familys, time);
-                    mMessageReference.child(userId).setValue(message);
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String userId = user.getUid();
 
+                        calculateSum();
+                        familys = String.format(Locale.US,"%.2f",sum);
+                        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                        Message message = new Message(familys, time);
+                        mMessageReference.child(userId).setValue(message);
+                        flag = true;
+                    }
+                })
+                        .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Action for "Cancel".
+                            }
+                        });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
 
             }
 
@@ -153,6 +162,9 @@ public class  MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
+                intent.putExtra("flag", flag);
+                startActivity(intent);
                 finish();
             }
         });

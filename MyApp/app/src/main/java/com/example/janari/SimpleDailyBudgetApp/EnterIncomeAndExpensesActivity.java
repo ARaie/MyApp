@@ -5,6 +5,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
@@ -142,20 +143,40 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Check that all fields are filled
-                CheckFieldsAreFilled();
+                // Dialog window to remind user to not recalculate existing data.
+                AlertDialog.Builder dialog = new AlertDialog.Builder(EnterIncomeAndExpensesActivity.this);
+                dialog.setCancelable(false);
+                dialog.setTitle("Calculating daily sum");
+                dialog.setMessage("When daily sum is already calculated then recalculating deletes your existing data" );
+                dialog.setPositiveButton("Calculate", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Check that all fields are filled
+                        CheckFieldsAreFilled();
 
-                // Daily sum calculating method
-                CalculateDataFunction();
+                        // Daily sum calculating method
+                        CalculateDataFunction();
 
-                if (EmptyField == true){
+                        if (EmptyField == true){
 
-                    // Method that adds data do user budget database
-                     AddDaily();
+                            // Method that adds data do user budget database
+                            AddDaily();
 
-                    //Method that adds data to input database and refresh it
-                     AddData();
-                }
+                            //Method that adds data to input database and refresh it
+                            AddData();
+                        }
+                    }
+                })
+                        .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Action for "Cancel".
+                            }
+                        });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
+
 
             }
         });

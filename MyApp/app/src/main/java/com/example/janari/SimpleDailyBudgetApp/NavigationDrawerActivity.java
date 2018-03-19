@@ -50,6 +50,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
     double Family, sumExpenses, Fam, expencesValue;
+    boolean flag = false;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -167,6 +168,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         String check = textValue.getText().toString();
                         if (check.matches("Enter your data first")){
                             Toast.makeText(getApplicationContext(), "Enter your calculation period first", Toast.LENGTH_LONG).show();
+                        }else if(check.matches("Period is over")){
+
+                            Toast.makeText(getApplicationContext(), "Make new calculation period", Toast.LENGTH_LONG).show();
                         }else{
                             expencesValue = Double.parseDouble(stringValue2);
                             double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
@@ -182,14 +186,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             // Method that updates widget view
                             updateWidget();
 
-
-                            //TODO Toimib aga miks ta famili summa daily viewle alles pärast "calculate" t saab?
                             // Family budget refreshing
                             if (mAuth.getCurrentUser() != null) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 String userId = user.getUid();
 
-                                //TODO see osa peaks olema automaatne sest klikates teeb töö ära aga näitab infinityt
                                 if (check.matches("Period is over")) {
 
                                 Family = Double.parseDouble(familyBudget.getText().toString());
