@@ -35,6 +35,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     DBHelper budgetDB;
     DataHelper InputDB;
     String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd, Days, sum;
+    double periodDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,11 +277,17 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             mEnd = stringEnd;
 
             // Days and sum are saved also separately to database for using them in further calculations
-            double days = Daybetween(today, stringEnd, "dd.MM.yyyy") + 1;
-            Days = String.valueOf(days);
+            periodDays = Daybetween(today, stringEnd, "dd.MM.yyyy") + 1;
+
+            //TODO Mingi kala on sees ümardamisega
+            // When period is in future
+            start();
+
+            Days = String.format( "%.0f", periodDays);
+            double roundedDays = Double.parseDouble(Days);
             double sumDouble = incomeValue - fixedExpensesValue;
             sum = String.valueOf(sumDouble);
-            double value = (incomeValue - fixedExpensesValue) / days;
+            double value = (incomeValue - fixedExpensesValue) / roundedDays;
             String calculated = String.valueOf(value);
 
             // I use Indent to send calculated value to NavigationDrawerActivity
@@ -435,6 +442,25 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
             String calculatedSum = budgetDB.Sum(ID);
             return calculatedSum;
+        }
+    }
+    // Method to handle the end of user selected period
+    public void start(){
+
+        String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Date Today = null;
+        Date Tomorrow = null;
+        try {
+            Today = sdf.parse(today);
+            Tomorrow = sdf.parse(mStart);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        double startDate = (Tomorrow.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000);
+        if (startDate > 0) {
+
+            periodDays = Daybetween(mStart, mEnd, "dd.MM.yyyy") + 1;
         }
     }
 }

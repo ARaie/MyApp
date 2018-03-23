@@ -49,7 +49,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private DatabaseReference mDatabase;
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
-    double Family, sumExpenses, Fam, expencesValue;
+    double Family, sumExpenses, Fam, expencesValue, doubleDays;
     boolean flag = false;
     public static final String PREFS_NAME = "MyPrefsFile";
 
@@ -162,7 +162,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     }else{
                         dailySum = getIntent().getStringExtra("dailySum");
 
-                        double doubleDays  = viewDays();
+                        doubleDays  = viewDays();
+                        periodDays();
+                        String roundedDays = String.format( "%.0f", doubleDays);
+                        double day = Double.parseDouble(roundedDays);
                         String originalValue = view_sum();
                         double originalValueDouble = Double.parseDouble(originalValue);
                         TextView textValue = (TextView) findViewById(R.id.daily_sum);
@@ -174,7 +177,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             Toast.makeText(getApplicationContext(), "Make new calculation period", Toast.LENGTH_LONG).show();
                         }else{
                             expencesValue = Double.parseDouble(stringValue2);
-                            double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, doubleDays);
+                            double newValue = CalculateDailySumClass.calculateSum(originalValueDouble, expencesValue, day);
                             //textValue.setText(Double.toString(newValue));
                             textValue.setText( String.format( "%.2f", newValue) );
                             dailySum = Double.toString(newValue);
@@ -492,24 +495,39 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            return (double) (End.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000)+1;
+            return (double) (End.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000) + 1;
         }
-
-       /* TextView id = (TextView) findViewById(R.id.oo);
-        String ID = id.getText().toString();
-
-        Cursor res = daysDB.AllDays(ID);
-        if (res.getCount() == 0) {
-
-            days = "0";
-            return days;
-        }else{
-
-            days = daysDB.Days(ID);
-            return days;
-        }*/
     }
+    public void periodDays() {
 
+        String periodStartDate = viewStart();
+        String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Date Today = null;
+        Date Tomorrow = null;
+        try {
+            Today = sdf.parse(today);
+            Tomorrow = sdf.parse(periodStartDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        double startDate = (Tomorrow.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000);
+        if (startDate >= 0) {
+
+            String startD = viewStart();
+            String endD= viewEnd();
+            Date start = null;
+            Date end = null;
+            try {
+                start = sdf.parse(startD);
+                end = sdf.parse(endD);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            doubleDays = (end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000) + 1;
+        }
+    }
     // Takes sum from input database that is calculated based on user incomes and fixed expenses. Based on user ID.
     // Method is for calculating new daily sum when new expenses are entered.
     public String view_sum() {
@@ -568,6 +586,23 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }else{
 
             String date = InputDB.End(ID);
+            return date;
+        }
+    }
+    // Method to get period end date from local database
+    public String viewStart() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+
+        Cursor res = InputDB.AllStart(ID);
+        if (res.getCount() == 0) {
+
+            String date = "01.01.2800";
+            return date;
+        }else{
+
+            String date = InputDB.Start(ID);
             return date;
         }
     }
