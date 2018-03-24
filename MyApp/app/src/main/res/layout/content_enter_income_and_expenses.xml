@@ -73,6 +73,7 @@
             android:layout_below="@+id/fixed_expenses"
             android:layout_centerHorizontal="true"
             android:gravity="center"
+            android:textColor="@color/background"
             tools:layout_editor_absoluteX="97dp"
             tools:layout_editor_absoluteY="16dp"/>
 
@@ -95,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="All money for period"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:layout_below="@+id/calculate"
         android:layout_centerHorizontal="true"
         android:gravity="center"
@@ -107,11 +108,11 @@
         android:id="@+id/all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="32sp"
         android:layout_below="@+id/all_left"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         tools:layout_editor_absoluteX="97dp"
         tools:layout_editor_absoluteY="16dp"
          />

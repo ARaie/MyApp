@@ -17,6 +17,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:textSize="34sp"
+            android:layout_marginTop="56dp"
             tools:layout_editor_absoluteX="97dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -63,6 +64,7 @@
             android:layout_alignTop="@+id/expences"
             android:layout_toEndOf="@+id/oo"
             android:text="-"
+            android:textColor="@color/background"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

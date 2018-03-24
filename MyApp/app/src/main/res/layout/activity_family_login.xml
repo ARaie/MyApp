@@ -24,7 +24,6 @@
         android:id="@+id/layout_email_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/icon"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">
 
@@ -61,6 +60,7 @@
         <Button
             android:id="@+id/button_sign_in"
             android:layout_width="150dp"
+            android:textColor="@color/background"
             android:layout_height="wrap_content"
             android:text="sign in" />
 
@@ -68,6 +68,7 @@
         <Button
             android:id="@+id/button_sign_up"
             android:layout_width="150dp"
+            android:textColor="@color/background"
             android:layout_height="wrap_content"
             android:text="sign up" />
 
