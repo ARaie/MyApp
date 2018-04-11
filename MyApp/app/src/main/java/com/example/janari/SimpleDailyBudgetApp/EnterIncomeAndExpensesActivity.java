@@ -58,13 +58,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         start.setText(ID);
 
 
-        // View all user money that is left for selected period
-        String all = view_sum();
-        double leftSum = Double.parseDouble(all);
-        TextView setUserName = (TextView) findViewById(R.id.all);
-        setUserName.setText( String.format( "%.2f", leftSum) );
-
-
         // Calendar activity code
         final EditText startDate = (EditText) findViewById(R.id.start_date);
         startDate.setOnClickListener(new View.OnClickListener() {
@@ -430,20 +423,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         }
     }
 
-    // Method to show user all money that is left for selected period
-    public String view_sum() {
-
-        Cursor res = budgetDB.AllSum(ID);
-        if (res.getCount() == 0) {
-
-            String calculatedSum = "0";
-            return calculatedSum;
-        }else{
-
-            String calculatedSum = budgetDB.Sum(ID);
-            return calculatedSum;
-        }
-    }
     // Method to handle the end of user selected period
     public void start(){
 

@@ -91,29 +91,4 @@
             android:visibility="invisible" />
 
 
-    <TextView
-        android:id="@+id/all_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="All money for period"
-        android:textSize="24sp"
-        android:layout_below="@+id/calculate"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_marginTop="36dp"
-        tools:layout_editor_absoluteX="97dp"
-        tools:layout_editor_absoluteY="16dp"/>
-
-    <TextView
-        android:id="@+id/all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="32sp"
-        android:layout_below="@+id/all_left"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        tools:layout_editor_absoluteX="97dp"
-        tools:layout_editor_absoluteY="16dp"
-         />
 </RelativeLayout>

@@ -43,6 +43,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     DatabaseHelper myDb;
     DataHelper daysDB;
     DataHelper InputDB;
+    ExpenseHelper expenseDB;
     String dailySum = "", id, sum, familys;
     EmailHelper emailDB;
     private TextView familyBudget, time;
@@ -75,6 +76,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         InputDB = new DataHelper(this);
         emailDB = new EmailHelper(this);
         daysDB = new DataHelper(this);
+        expenseDB = new ExpenseHelper(this);
 
         // Get user email and name and save them to navigation drawer header view
         view_email();
@@ -95,6 +97,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             // Display the current date
             TextView dateView = (TextView) findViewById(R.id.date_today);
             setDate(dateView);
+
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mMessageReference = FirebaseDatabase.getInstance().getReference("user");
@@ -124,7 +127,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // Save user ID
             viewID();
 
-            // Shows user daily budget
+        // View all user money that is left for selected period
+        String all = view_sum();
+        double leftSum = Double.parseDouble(all);
+        TextView allSum = (TextView) findViewById(R.id.all);
+        allSum.setText( String.format( "%.2f", leftSum) );
+
+
+        // Shows user daily budget
             String dailyBudget =  viewAll();
             if (dailyBudget.matches("Enter your data first")){
                 TextView setUserName = (TextView) findViewById(R.id.daily_sum);
@@ -155,6 +165,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     // CalculateDailySumClass class to do the simple math and then display value back to Daily sum field.
                     EditText expences = (EditText) findViewById(R.id.expences);
                     String stringValue2 = expences.getText().toString();
+                    EditText notes = (EditText) findViewById(R.id.note);
 
                     if (stringValue2.matches("")) {
 
@@ -185,10 +196,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             sum = Double.toString(sumDouble);
                             // Adds calculated daily sum back to budget database
                             AddData();
+
+                            AddExpenses();
                             // Empty the EditText field
                             expences.setText(null);
+                            notes.setText(null);
                             // Method that updates widget view
                             updateWidget();
+
+
 
                             // Family budget refreshing
                             if (mAuth.getCurrentUser() != null) {
@@ -214,56 +230,27 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         }
                     }
 
+                    String all = view_sum();
+                    double leftSum = Double.parseDouble(all);
+                    TextView allSum = (TextView) findViewById(R.id.all);
+                    allSum.setText( String.format( "%.2f", leftSum) );
                 }
             });
 
-           /* // TODO Temporary button. Calling method for get daily sum data from user budget database
-
-            Button be = (Button) findViewById(R.id.ooo);
+            // Button to show expenses
+            Button be = (Button) findViewById(R.id.showExpenses);
             be.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
 
-                    //budgetDB.delete();
-                    //emailDB.delete();
                     viewData();
                 }
-            });*/
-
+            });
 
             // Method that updates widget view
             updateWidget();
         }
-
-    //TODO Temporary. For checking budget database
-    public void viewData() {
-
-        Cursor res = budgetDB.getAllData();
-        if (res.getCount() == 0) {
-            // show message
-            showMessage("Error", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
-            buffer.append("Id :" + res.getString(0) + "\n");
-            buffer.append("Daily :" + res.getString(1) + "\n");
-            buffer.append("CalculatedSum :" + res.getString(2) + "\n\n");
-        }
-
-        // Show all data
-        showMessage("Data", buffer.toString());
-    }
-
-    public void showMessage(String title, String Message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
-    }
 
     @Override
     public void onBackPressed() {
@@ -569,6 +556,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             //InputDB.delete();
             TextView over = (TextView) findViewById(R.id.daily_sum);
             over.setText("Period is over");
+            expenseDB.delete();
         }
     }
 
@@ -615,5 +603,58 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Fam = Double.parseDouble(family);
             sumExpenses = Fam - expencesValue;
         }
+    }
+    // Add and update data for user entered period, income and expenses
+    public  void AddExpenses() {
+
+        EditText exps = (EditText) findViewById(R.id.expences);
+        String expenses = exps.getText().toString();
+        EditText notes = (EditText) findViewById(R.id.note);
+        String note = notes.getText().toString();
+
+        expenseDB.insertExpenses(expenses, note);
+        //UpdateExpenses();
+
+    }
+    // Refreshing data in database
+    public void UpdateExpenses() {
+
+        TextView id = (TextView) findViewById(R.id.oo);
+        String ID = id.getText().toString();
+        EditText exps = (EditText) findViewById(R.id.expences);
+        String expenses = exps.getText().toString();
+        EditText notes = (EditText) findViewById(R.id.note);
+        String note = notes.getText().toString();
+
+        expenseDB.updateExpenses(ID,
+                expenses, note);
+
+    }
+
+    public void viewData() {
+
+        Cursor res = expenseDB.getAllData();
+        if (res.getCount() == 0) {
+            // show message
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Sum :" + res.getString(1) + "\n");
+            buffer.append("Note :" + res.getString(2) + "\n");
+        }
+
+        // Show all data
+        showMessage("Expenses", buffer.toString());
+    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 }
