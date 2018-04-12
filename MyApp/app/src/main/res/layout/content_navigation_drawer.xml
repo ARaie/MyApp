@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,92 +7,107 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.janari.SimpleDailyBudgetApp.NavigationDrawerActivity"
     tools:showIn="@layout/app_bar_navigation_drawer">
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/for_navigation_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.example.janari.SimpleDailyBudgetApp.MainActivity"
-        tools:showIn="@layout/activity_main">
+
 
         <TextView
             android:id="@+id/daily_sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.464"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.258" />
+            android:layout_below="@+id/date_today"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textSize="34sp"
+            android:layout_marginTop="56dp"
+            tools:layout_editor_absoluteX="97dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <EditText
             android:id="@+id/expences"
-            android:layout_width="134dp"
-            android:layout_height="93dp"
-            android:layout_marginBottom="200dp"
-            android:layout_marginEnd="138dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="110dp"
-            android:ems="10"
-            android:hint="enter expenses "
-            android:inputType="numberDecimal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.259"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/daily_sum"
-            app:layout_constraintVertical_bias="0.716" />
+            android:layout_width="112dp"
+            android:layout_height="105dp"
+            android:layout_below="@+id/daily_sum"
+            android:layout_marginTop="37dp"
+            android:layout_toStartOf="@+id/daily_sum"
+            android:gravity="center"
+            android:inputType="number"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="97dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <TextView
             android:id="@+id/HelloText"
             android:layout_width="147dp"
             android:layout_height="28dp"
-            android:layout_marginBottom="45dp"
-            android:layout_marginEnd="132dp"
             android:layout_marginStart="105dp"
-            android:layout_marginTop="49dp"
+            android:layout_marginTop="60dp"
             android:text="Today's budget"
-            android:textAlignment="center"
-            android:textSize="14sp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/daily_sum"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            tools:layout_editor_absoluteX="97dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <TextView
             android:id="@+id/date_today"
-            android:layout_width="145dp"
-            android:layout_height="41dp"
-            android:layout_marginEnd="134dp"
-            android:layout_marginStart="105dp"
-            android:layout_marginTop="4dp"
-            android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            app:layout_constraintBottom_toTopOf="@+id/daily_sum"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/HelloText" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/HelloText"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textSize="14sp"
+            tools:layout_editor_absoluteX="97dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <Button
             android:id="@+id/button"
             android:layout_width="112dp"
             android:layout_height="105dp"
-            android:layout_marginBottom="199dp"
-            android:layout_marginEnd="45dp"
-            android:layout_marginStart="58dp"
-            android:layout_marginTop="85dp"
+            android:layout_alignTop="@+id/expences"
+            android:layout_toEndOf="@+id/oo"
             android:text="-"
+            android:textColor="@color/background"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/expences"
             app:layout_constraintTop_toBottomOf="@+id/date_today" />
+
+        <TextView
+            android:id="@+id/all_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/expences"
+            android:layout_below="@+id/expences"
+            android:layout_marginTop="58dp"
+            android:text="All free money for period" />
+
+        <TextView
+            android:id="@+id/all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/all_left"
+            android:layout_alignBottom="@+id/all_left"
+            android:layout_toEndOf="@+id/HelloText"
+            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
+        <Button
+            android:id="@+id/showExpenses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/exp"
+            android:layout_toEndOf="@+id/HelloText"
+            android:text="Expenses" />
+
+        <EditText
+            android:id="@+id/note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/expences"
+            android:layout_below="@+id/expences"
+            android:ems="10"
+            android:hint="Note"
+            android:inputType="text"
+            android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
         <EditText
             android:id="@+id/oo"
@@ -102,12 +117,12 @@
             android:inputType="textPersonName"
             android:text="ID"
             android:visibility="invisible"
-            tools:layout_editor_absoluteX="26dp"
-            tools:layout_editor_absoluteY="374dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="26dp"
+            tools:layout_editor_absoluteY="374dp" />
 
         <!--<Button
             android:id="@+id/ooo"
@@ -141,10 +156,8 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ooo"
             app:layout_constraintTop_toBottomOf="@+id/button" />
 
-    </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>
 

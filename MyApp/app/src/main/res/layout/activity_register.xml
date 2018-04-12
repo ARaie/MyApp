@@ -48,6 +48,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/editText_Marks"
                     android:layout_marginTop="76dp"
+                    android:textColor="@color/background"
                     android:text="Add user" />
 
         </LinearLayout>

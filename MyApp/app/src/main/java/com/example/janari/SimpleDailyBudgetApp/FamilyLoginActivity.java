@@ -28,7 +28,7 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    String ID, originalBudget, userExpenses, family;
+    String ID;
     private EditText emailField, passwordField;
     private Button signInButton, signUpButton;
 
@@ -61,19 +61,10 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         ID = extras.getString("id");
-        originalBudget = extras.getString("original");
-        userExpenses = extras.getString("exe");
-        family = extras.getString("family");
 
         // Set data from intent to fields
         TextView userID = (TextView) findViewById(R.id.id);
         userID.setText(ID);
-        TextView original = (TextView) findViewById(R.id.original);
-        original.setText(originalBudget);
-        TextView exepenses = (TextView) findViewById(R.id.exe);
-        exepenses.setText(userExpenses);
-        TextView familyB = (TextView) findViewById(R.id.fam);
-        familyB.setText(family);
     }
     @Override
     public void onStart() {
@@ -138,24 +129,15 @@ public class FamilyLoginActivity extends AppCompatActivity implements View.OnCli
         // When login is successful, all important data are sent with intent to MessageActivity class
         TextView userId = (TextView) findViewById(R.id.id);
         String string = userId.getText().toString();
-        TextView original = (TextView) findViewById(R.id.original);
-        String string2 = original.getText().toString();
-        TextView userExpenses = (TextView) findViewById(R.id.exe);
-        String string3 = userExpenses.getText().toString();
         TextView email = (TextView) findViewById(R.id.field_email);
         String string4 = email.getText().toString();
         TextView password = (TextView) findViewById(R.id.field_password);
         String string5 = password.getText().toString();
-        TextView fam = (TextView) findViewById(R.id.fam);
-        String string6 = fam.getText().toString();
         Intent intent = new Intent(FamilyLoginActivity.this, MessageActivity.class);
         Bundle extras = new Bundle();
         extras.putString("id", string);
-        extras.putString("original", string2);
-        extras.putString("exe", string3);
         extras.putString("email", string4);
         extras.putString("password", string5);
-        extras.putString("family", string6);
         intent.putExtras(extras);
         startActivity(intent);
         finish();

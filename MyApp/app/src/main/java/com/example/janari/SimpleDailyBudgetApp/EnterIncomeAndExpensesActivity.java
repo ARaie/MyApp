@@ -5,6 +5,7 @@
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
@@ -34,6 +35,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
     DBHelper budgetDB;
     DataHelper InputDB;
     String dailySum = "", ID, mIncome, mExpenses, mStart, mEnd, Days, sum;
+    double periodDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +56,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         ID = getIntent().getStringExtra("id");
         TextView start = (TextView) findViewById(R.id.o);
         start.setText(ID);
-
-
-        // View all user money that is left for selected period
-        String all = view_sum();
-        double leftSum = Double.parseDouble(all);
-        TextView setUserName = (TextView) findViewById(R.id.all);
-        setUserName.setText( String.format( "%.2f", leftSum) );
 
 
         // Calendar activity code
@@ -142,17 +137,40 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Check that all fields are filled
-                CheckFieldsAreFilled();
+                // Dialog window to remind user to not recalculate existing data.
+                AlertDialog.Builder dialog = new AlertDialog.Builder(EnterIncomeAndExpensesActivity.this);
+                dialog.setCancelable(false);
+                dialog.setTitle("Calculating daily sum");
+                dialog.setMessage("When daily sum is already calculated then recalculating deletes your existing data" );
+                dialog.setPositiveButton("Calculate", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Check that all fields are filled
+                        CheckFieldsAreFilled();
 
-                // Daily sum calculating method
-                CalculateDataFunction();
+                        // Daily sum calculating method
+                        CalculateDataFunction();
 
-                // Method that adds data do user budget database
-                AddDaily();
+                        if (EmptyField == true){
 
-                //Method that adds data to input database and refresh it
-                AddData();
+                            // Method that adds data do user budget database
+                            AddDaily();
+
+                            //Method that adds data to input database and refresh it
+                            AddData();
+                        }
+                    }
+                })
+                        .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Action for "Cancel".
+                            }
+                        });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
+
 
             }
         });
@@ -179,6 +197,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(EnterIncomeAndExpensesActivity.this, NavigationDrawerActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -245,16 +264,23 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             EditText start = (EditText) findViewById(R.id.start_date);
             String stringStart = start.getText().toString();
             mStart = stringStart;
+            String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
             EditText end = (EditText) findViewById(R.id.end_date);
             String stringEnd = end.getText().toString();
             mEnd = stringEnd;
 
             // Days and sum are saved also separately to database for using them in further calculations
-            double days = Daybetween(stringStart, stringEnd, "dd.MM.yyyy") + 1;
-            Days = String.valueOf(days);
+            periodDays = Daybetween(today, stringEnd, "dd.MM.yyyy") + 1;
+
+            //TODO Mingi kala on sees ümardamisega
+            // When period is in future
+            start();
+
+            Days = String.format( "%.0f", periodDays);
+            double roundedDays = Double.parseDouble(Days);
             double sumDouble = incomeValue - fixedExpensesValue;
             sum = String.valueOf(sumDouble);
-            double value = (incomeValue - fixedExpensesValue) / days;
+            double value = (incomeValue - fixedExpensesValue) / roundedDays;
             String calculated = String.valueOf(value);
 
             // I use Indent to send calculated value to NavigationDrawerActivity
@@ -264,6 +290,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             dailySum = calculated;
             intent.putExtra("dailySum", dailySum);
             startActivity(intent);
+            finish();
 
 
         }else {
@@ -396,18 +423,23 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
         }
     }
 
-    // Method to show user all money that is left for selected period
-    public String view_sum() {
+    // Method to handle the end of user selected period
+    public void start(){
 
-        Cursor res = budgetDB.AllSum(ID);
-        if (res.getCount() == 0) {
+        String today = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Date Today = null;
+        Date Tomorrow = null;
+        try {
+            Today = sdf.parse(today);
+            Tomorrow = sdf.parse(mStart);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        double startDate = (Tomorrow.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000);
+        if (startDate > 0) {
 
-            String calculatedSum = "0";
-            return calculatedSum;
-        }else{
-
-            String calculatedSum = budgetDB.Sum(ID);
-            return calculatedSum;
+            periodDays = Daybetween(mStart, mEnd, "dd.MM.yyyy") + 1;
         }
     }
 }
