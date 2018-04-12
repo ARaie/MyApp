@@ -636,14 +636,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Cursor res = expenseDB.getAllData();
         if (res.getCount() == 0) {
             // show message
-            showMessage("Error", "Nothing found");
+            showMessage("Expenses", "Nothing found");
             return;
         }
 
         StringBuffer buffer = new StringBuffer();
         while (res.moveToNext()) {
-            buffer.append("Sum :" + res.getString(1) + "\n");
-            buffer.append("Note :" + res.getString(2) + "\n");
+            buffer.append("Sum:  " + res.getString(1) + "\n");
+            buffer.append("Note:  " + res.getString(2) + "\n\n");
         }
 
         // Show all data
