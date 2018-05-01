@@ -77,12 +77,6 @@
             tools:layout_editor_absoluteX="97dp"
             tools:layout_editor_absoluteY="16dp"/>
 
-        <!--<Button
-            android:id="@+id/i"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />-->
-
         <TextView
             android:id="@+id/o"
             android:layout_width="match_parent"

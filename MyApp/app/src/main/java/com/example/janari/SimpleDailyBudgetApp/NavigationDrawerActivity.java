@@ -51,7 +51,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private DatabaseReference mMessageReference;
     private FirebaseAuth mAuth;
     double Family, sumExpenses, Fam, expencesValue, doubleDays;
-    boolean flag = false;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -204,8 +203,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             // Method that updates widget view
                             updateWidget();
 
-
-
                             // Family budget refreshing
                             if (mAuth.getCurrentUser() != null) {
                                 FirebaseUser user = mAuth.getCurrentUser();
@@ -238,8 +235,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             });
 
             // Button to show expenses
-            Button be = (Button) findViewById(R.id.showExpenses);
-            be.setOnClickListener(new View.OnClickListener() {
+            Button ExpensesBTN = (Button) findViewById(R.id.showExpenses);
+            ExpensesBTN.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -378,8 +375,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         Intent i = new Intent(this, Widget.class);
         i.setAction("yourpackage.TEXT_CHANGED");
-        //Toast.makeText(getApplicationContext(),budget.getText().toString()+"from the activity",
-               // Toast.LENGTH_SHORT).show();
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), Widget.class));
         i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
         i.putExtra("title", budget.getText().toString());
@@ -551,9 +546,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         double endDate = (Tomorrow.getTime() - Today.getTime()) / (24 * 60 * 60 * 1000);
         if (endDate < 0) {
 
-            // TODO databases could be emptied to start new period
-            //budgetDB.delete();
-            //InputDB.delete();
             TextView over = (TextView) findViewById(R.id.daily_sum);
             over.setText("Period is over");
             expenseDB.delete();
@@ -577,7 +569,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             return date;
         }
     }
-    // Method to get period end date from local database
+    // Method to get period start date from local database
     public String viewStart() {
 
         TextView id = (TextView) findViewById(R.id.oo);
@@ -613,24 +605,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
         String note = notes.getText().toString();
 
         expenseDB.insertExpenses(expenses, note);
-        //UpdateExpenses();
-
-    }
-    // Refreshing data in database
-    public void UpdateExpenses() {
-
-        TextView id = (TextView) findViewById(R.id.oo);
-        String ID = id.getText().toString();
-        EditText exps = (EditText) findViewById(R.id.expences);
-        String expenses = exps.getText().toString();
-        EditText notes = (EditText) findViewById(R.id.note);
-        String note = notes.getText().toString();
-
-        expenseDB.updateExpenses(ID,
-                expenses, note);
 
     }
 
+    // Method to show all notes
     public void viewData() {
 
         Cursor res = expenseDB.getAllData();

@@ -87,10 +87,6 @@ public class DataHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public void delete(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from " + TABLE_NAME);
-    }
     public Cursor AllIncome(String id){
 
         String query = "SELECT INCOME" +
@@ -164,24 +160,5 @@ public class DataHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
-    public Cursor AllDays(String id){
-
-        String query = "SELECT DAYS" +
-                " FROM " + TABLE_NAME +
-                " WHERE " + COL_1 + " = ?;";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(query, new String[]{ id });
-        return res;
-
-    }
-    public String Days(String id){
-
-        String query = "SELECT DAYS" +
-                " FROM " + TABLE_NAME +
-                " WHERE " + COL_1 + " = ?;";
-        SQLiteDatabase db = this.getReadableDatabase();
-        return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
-    }
-
 }
 

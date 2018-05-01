@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.util.Locale;
 
 
@@ -20,7 +19,7 @@ public class LoginActivity extends AppCompatActivity {
 
     DatabaseHelper myDb;
     EmailHelper emailDB;
-    Button LogInButton, RegisterButton, emails, btnviewAll;
+    Button LogInButton, RegisterButton;
     EditText Email, Password;
     String EmailHolder, PasswordHolder, id;
     Boolean EditTextEmptyHolder;
@@ -48,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         emailDB = new EmailHelper(this);
 
 
-        //Adding click listener to log in button.
+        //Log in button.
         LogInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,13 +64,13 @@ public class LoginActivity extends AppCompatActivity {
                 // Saving data for logged in session
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("key", "olemas"); //TODO kuhu see läheb?
+                editor.putString("key", "x");
                 editor.commit();
 
             }
         });
 
-        // Adding click listener to register button.
+        // Register button.
         RegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,80 +80,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*// TODO Temporary button for checking data in user info database
-        btnviewAll = (Button) findViewById(R.id.view_data);
-        btnviewAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //myDb.delete();
-                viewAll();
-
-            }
-        });
-
-        //TODO Temporary button for check logged in user email
-        emails = (Button) findViewById(R.id.aa);
-        emails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                viewEmails();
-
-            }
-        });*/
-    }
-
-    // TODO Temporary two functions to check data in database
-    public void viewAll() {
-
-        Cursor res = myDb.getAllData();
-        if (res.getCount() == 0) {
-            // show message
-            showMessage("Error", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
-            buffer.append("Id :" + res.getString(0) + "\n");
-            buffer.append("Name :" + res.getString(1) + "\n");
-            buffer.append("Email :" + res.getString(2) + "\n");
-            buffer.append("Password :" + res.getString(3) + "\n\n");
-
-        }
-
-        // Show all data
-        showMessage("Data", buffer.toString());
-    }
-    // TODO Temporary two functions to check data in database
-    public void viewEmails() {
-
-        Cursor res = emailDB.getAllData();
-        if (res.getCount() == 0) {
-            // show message
-            showMessage("Error", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
-            buffer.append("Id :" + res.getString(0) + "\n");
-            buffer.append("Name :" + res.getString(1) + "\n");
-
-        }
-
-        // Show all data
-        showMessage("Data", buffer.toString());
-    }
-
-    public void showMessage(String title, String Message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
     }
 
    // Login function starts from here.

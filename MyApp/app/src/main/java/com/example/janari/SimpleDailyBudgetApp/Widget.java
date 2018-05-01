@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class Widget extends AppWidgetProvider {
 
@@ -23,7 +22,6 @@ public class Widget extends AppWidgetProvider {
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
 
-            // TODO Don't know is this necessary code
             Intent intent = new Intent(context, NavigationDrawerActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
@@ -40,7 +38,6 @@ public class Widget extends AppWidgetProvider {
         String action = intent.getAction();
         Bundle extras = intent.getExtras();
         String title1 = extras.getString("title");
-        //Toast.makeText(context, title1,Toast.LENGTH_LONG).show();
 
         if (action != null && action.equals(APPWIDGET_UPDATE)) {
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

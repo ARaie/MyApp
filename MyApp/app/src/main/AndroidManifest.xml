@@ -16,10 +16,6 @@
             android:label="Login" />
         <activity android:name=".RegisterActivity"
             android:label="Register"/>
-        <!--<activity
-            android:name=".MainActivity"
-            android:label="Daily view"
-            android:theme="@style/AppTheme.NoActionBar" />-->
         <activity
             android:name=".EnterIncomeAndExpensesActivity"
             android:label="Enter income and expenses"

@@ -1,7 +1,3 @@
-
-// I can't change root module name, I am looking for a way to change MyApp name
-// Same thing is with package name. The name is such because I created the project on Janari's computer.
-
 package com.example.janari.SimpleDailyBudgetApp;
 
 import android.app.DatePickerDialog;
@@ -51,8 +47,10 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         budgetDB = new DBHelper(this);
         InputDB = new DataHelper(this);
+
         ID = getIntent().getStringExtra("id");
         TextView start = (TextView) findViewById(R.id.o);
         start.setText(ID);
@@ -175,20 +173,7 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             }
         });
 
-        //TODO Temporary. Checking input database
-        /*Button i = (Button) findViewById(R.id.i);
-        i.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                //InputDB.delete();
-                viewData();
-        }
-    });*/
-
-
-        // Back "button", may be same like in familyActivity page
+        // "Back" button
         ImageView back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
 
@@ -272,7 +257,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
             // Days and sum are saved also separately to database for using them in further calculations
             periodDays = Daybetween(today, stringEnd, "dd.MM.yyyy") + 1;
 
-            //TODO Mingi kala on sees ümardamisega
             // When period is in future
             start();
 
@@ -311,39 +295,6 @@ public class EnterIncomeAndExpensesActivity extends AppCompatActivity {
 
         budgetDB.updateSum(ID,
                 dailySum, sum);
-    }
-
-    // TODO Temporary for checking input database
-    public void viewData() {
-
-        Cursor res = InputDB.getAllData();
-        if (res.getCount() == 0) {
-            // show message
-            showMessage("Error", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
-            buffer.append("Id :" + res.getString(0) + "\n");
-            buffer.append("Name :" + res.getString(1) + "\n");
-            buffer.append("Email :" + res.getString(2) + "\n");
-            buffer.append("Password :" + res.getString(3) + "\n");
-            buffer.append("Password :" + res.getString(4) + "\n");
-            buffer.append("Password :" + res.getString(5) + "\n");
-
-        }
-
-        // Show all data
-        showMessage("Data", buffer.toString());
-    }
-
-    public void showMessage(String title, String Message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
     }
 
     // Add and update data for user entered period, income and expenses

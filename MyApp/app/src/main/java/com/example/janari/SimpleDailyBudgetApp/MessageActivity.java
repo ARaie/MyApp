@@ -188,23 +188,6 @@ public class  MessageActivity extends AppCompatActivity {
         view.setText(date);
     }
 
-    // Method for refresh Firebase user
-    private void signIn() {
-
-        String emailRefresh = email.getText().toString();
-        String passwordRefresh = password.getText().toString();
-
-        mAuth.signInWithEmailAndPassword(emailRefresh, passwordRefresh)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()) {
-                           task.getResult().getUser();
-                        }
-                    }
-                });
-    }
     public String view_sum() {
 
         Cursor res = budgetDB.AllSum(ID);

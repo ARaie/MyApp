@@ -51,10 +51,6 @@ public class EmailHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public void delete(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from " + TABLE_NAME);
-    }
     public Cursor viewEmail(){
 
         String query = "SELECT *" +

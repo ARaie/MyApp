@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Locale;
@@ -155,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
             // Saving data for logged in session
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0); // 0 - for private mode
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString("key", "olemas"); //TODO kuhu see läheb?
+            editor.putString("key", "x");
             editor.commit();
 
             // Starts login activity

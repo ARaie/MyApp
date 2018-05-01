@@ -61,12 +61,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getAllData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
-        return res;
-    }
-
     public boolean updateSum(String id,String daily_sum, String sum) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -96,10 +90,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return DatabaseUtils.stringForQuery(db, query, new String[]{ id });
     }
 
-    public void delete(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from " + TABLE_NAME);
-    }
     public Cursor AllSum(String id){
 
         String query = "SELECT SUM" +
